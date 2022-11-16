@@ -1,54 +1,73 @@
-import React, {
-    // Fragment,
-    useState,
-    useCallback
-} from 'react';
+// Import Libary
+import React, { useState, useCallback } from 'react';
 import ReactFlow, {
     ReactFlowProvider,
     useNodesState,
     useEdgesState,
     addEdge,
     useReactFlow,
-    // ConnectionLineType,
+    MiniMap,
+    Controls,
+    Background,
+    MarkerType,
 } from 'reactflow';
-import 'reactflow/dist/style.css';
+import Select from 'react-select'
+import { Form, Button, Modal } from "react-bootstrap";
 
+
+// Import Cascading Style Sheets 
+import 'reactflow/dist/style.css';
 import './Decision-flow.css'
 
-const flowKey = 'example-flow';
-
-
-const initialNodes = [
-    // { id: '1', data: { label: 'Node 1' }, position: { x: 100, y: 100 } },
-    // { id: '2', data: { label: 'Node 2' }, position: { x: 100, y: 200 } },
-];
-
-const initialEdges = [
-    // { id: 'e1-2', source: '1', target: '2' }
-];
+// import CustomNode from './CustomNode/CustomNode';
+import { initialNodes, initialEdges } from './initialElements'
+import ButtonEdge from './ButtonEdge/ButtonEdge';
+// import ExportModal, { setTextJSONExport } from './Modal/ExportModal'
 
 const flow_id = 170;
+
+const FlowSessionKey = `Session-${flow_id}`;
+
+const edgeTypes = {
+    buttonedge: ButtonEdge,
+};
+
 const Decision = () => {
 
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [rfInstance, setRfInstance] = useState(null);
     const { setViewport } = useReactFlow();
-    const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+    const onConnect = useCallback(
+        (params) => setEdges((eds) => addEdge({ ...params, type: 'buttonedge', markerEnd: { type: MarkerType.ArrowClosed, }, style: { strokeWidth: 2 } }, eds)),
+        [setEdges]
+    );
 
     const generateFloeNodeID = () => `${flow_id.toString() + nodes.length.toString().padStart(3, '0')}`
     // const generateFloeEdgeID = (running) => `${flow_id.toString() + running.toString().padStart(4, '0')}`
 
     const [nodeName, setNodeName] = useState("")
     const [nodeType, setNodeType] = useState("")
-    const [subFlowId, setSubFlow] = useState(null)
-    const [functionRef, setFunctionRef] = useState(null)
-    const [functionRefParam, setFunctionRefParam] = useState(null)
-    const [defaultParam, setDefaultParam] = useState(null)
-    const [step, setStep] = useState(null)
+    const [subFlowId, setSubFlow] = useState("")
+    const [functionRef, setFunctionRef] = useState("")
+    const [functionRefParam, setFunctionRefParam] = useState("")
+    const [defaultParam, setDefaultParam] = useState("")
+    const [step, setStep] = useState("")
 
-
-    const onAdd = () => {
+    const nodeTypeOption = [
+        { value: 'DECISION', label: 'Decision' },
+        { value: 'FUNCTION', label: 'Function' },
+        { value: 'SUBFLOW', label: 'Subflow' }
+    ]
+    const stepOption = [
+        { value: 'NEXT', label: 'Next' },
+        { value: 'OUT', label: 'Out' },
+        { value: 'END', label: 'End' }
+    ]
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const onSubmit = () => {
         setNodes((e) =>
             e.concat({
                 id: generateFloeNodeID(),
@@ -65,10 +84,23 @@ const Decision = () => {
                     step: `${step}`
 
                 },
+                // type: 'custom',
                 position: { x: 0, y: 0 },
             })
         );
+        setShow(false);
+        resetObjectNode()
     };
+
+    const resetObjectNode = () => {
+        setNodeName("")
+        setNodeType("")
+        setSubFlow("")
+        setFunctionRef("")
+        setFunctionRefParam("")
+        setDefaultParam("")
+        setStep("")
+    }
 
     const onExport = () => {
         const flow = rfInstance.toObject();
@@ -115,14 +147,13 @@ const Decision = () => {
     const onSave = useCallback(() => {
         if (rfInstance) {
             const flow = rfInstance.toObject();
-            localStorage.setItem(flowKey, JSON.stringify(flow));
+            localStorage.setItem(FlowSessionKey, JSON.stringify(flow));
         }
     }, [rfInstance]);
 
     const onRestore = useCallback(() => {
         const restoreFlow = async () => {
-            const flow = JSON.parse(localStorage.getItem(flowKey));
-
+            const flow = JSON.parse(localStorage.getItem(FlowSessionKey));
             if (flow) {
                 const { x = 0, y = 0, zoom = 1 } = flow.viewport;
                 setNodes(flow.nodes || []);
@@ -130,11 +161,8 @@ const Decision = () => {
                 setViewport({ x, y, zoom });
             }
         };
-
         restoreFlow();
     }, [setNodes, setViewport]);
-
-
     return (
         <ReactFlow
             nodes={nodes}
@@ -143,52 +171,113 @@ const Decision = () => {
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onInit={setRfInstance}
+            edgeTypes={edgeTypes}
+            fitView
+            attributionPosition="top-right"
         >
             <div className="save__controls">
-                <button onClick={onSave}>save</button>
-                <button onClick={onRestore}>restore</button>
+                <Button variant="primary" onClick={handleShow}>
+                    Add Node
+                </Button>
+                <Modal
+                    size="lg"
+                    show={show}
+                    onHide={handleClose}
+                    aria-labelledby="contained-modal-title-lg-vcenter"
+                    centered
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>New Node</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Node Name</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Node Name"
+                                    value={nodeName}
+                                    onChange={e => setNodeName(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Node Type</Form.Label>
+                                <Select
+                                    options={nodeTypeOption}
+                                    placeholder="Select Node type"
+                                    isSearchable={false}
+                                    onChange={e => setNodeType(e.value)} />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Subflow</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Subflow"
+                                    value={subFlowId}
+                                    onChange={e => setSubFlow(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Function Ref</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Function Ref"
+                                    value={functionRef}
+                                    onChange={e => setFunctionRef(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Function Ref Param</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Function Ref Param"
+                                    value={functionRefParam}
+                                    onChange={e => setFunctionRefParam(e.target.value)}
+                                />
+                            </Form.Group>
 
-                <button onClick={onExport}>Export Json</button>
-                <button onClick={onAdd}>Add node</button>
-                <br />
-                <div>
-                    <label>Node name : </label>
-                    <input type="text"
-                        onChange={e => setNodeName(e.target.value)}
-                        name="nodeName" />
-                    <br />
-                    <label>Node type : </label>
-                    <input type="text"
-                        onChange={e => setNodeType(e.target.value)}
-                        name="nodeType" />
-                    <br />
-                    <label>Subflow : </label>
-                    <input type="text"
-                        onChange={e => setSubFlow(e.target.value)}
-                        name="subflow" />
-                    <br />
-                    <label>Function Ref : </label>
-                    <input type="text"
-                        onChange={e => setFunctionRef(e.target.value)}
-                        name="functionRef" />
-                    <br />
-
-                    <label>Function Ref Param : </label>
-                    <input type="text"
-                        onChange={e => setFunctionRefParam(e.target.value)}
-                        name="functionRefParam" />
-                    <br />
-                    <label>Default Param : </label>
-                    <input type="text"
-                        onChange={e => setDefaultParam(e.target.value)}
-                        name="defaultParam" />
-                    <br />
-                    <label>Step ( NEXT / END / OUT ) : </label>
-                    <input type="text"
-                        onChange={e => setStep(e.target.value)}
-                        name="step" />
-                </div>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Default Param</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Default Param"
+                                    value={defaultParam}
+                                    onChange={e => setDefaultParam(e.target.value)}
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Step Node</Form.Label>
+                                <Select
+                                    options={stepOption}
+                                    placeholder="Step Node"
+                                    isSearchable={false}
+                                    onChange={e => setStep(e.value)} />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={onSubmit}>
+                            Save
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Button variant="primary" onClick={onExport}>
+                    Export JSON
+                </Button>
+                <Button variant="primary" onClick={onSave}>
+                    Save Seesion
+                </Button>
+                <Button variant="primary" onClick={onRestore}>
+                    Restore
+                </Button>
+                {/* <ExportModal /> */}
             </div>
+            <MiniMap />
+            <Controls />
+            <Background color="#aaa" gap={16} />
         </ReactFlow>
     );
 };
@@ -198,4 +287,3 @@ export default () => (
         <Decision />
     </ReactFlowProvider>
 );
-
