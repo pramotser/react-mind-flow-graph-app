@@ -1,17 +1,12 @@
-import React from 'react';
+import React, { useState } from "react";
 import { getBezierPath } from 'reactflow';
+import ModalEdge from '../Modal/EdgeModal'
 
 import * as BiIcons from 'react-icons/bi'
 
 import './ButtonEdge.css';
 
 const foreignObjectSize = 40;
-
-const onEdgeClick = (evt, id) => {
-  evt.stopPropagation();
-  console.log('EdgeId : ',id)
-  // alert(`remove ${id}`);
-};
 
 export default function CustomEdge({
   id,
@@ -23,6 +18,8 @@ export default function CustomEdge({
   targetPosition,
   style = {},
   markerEnd,
+  source,
+  target
 }) {
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
@@ -32,6 +29,17 @@ export default function CustomEdge({
     targetY,
     targetPosition,
   });
+
+  const [openModal, setOpenModal] = useState(false);
+  const [idEdge, setIdEdge] = useState('');
+  const onEdgeClick = (evt, id) => {
+    setIdEdge(id)
+    setOpenModal(true);
+  };
+
+  const onCloseModalEdge = () => {
+    setOpenModal(false);
+  }
 
   return (
     <>
@@ -54,6 +62,9 @@ export default function CustomEdge({
           <BiIcons.BiEdit />
         </button>
       </foreignObject>
+      <div>
+        <ModalEdge cModal={onCloseModalEdge} showModalEdge={openModal} idEdge={idEdge} sourceNode={source} targetNode={target} />
+      </div>
     </>
   );
 }

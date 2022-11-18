@@ -12,7 +12,7 @@ import ReactFlow, {
     MarkerType,
 } from 'reactflow';
 import Select from 'react-select'
-import { Form, Button, Modal } from "react-bootstrap";
+import { Form, Button, Modal, Card, Collapse } from "react-bootstrap";
 
 
 // Import Cascading Style Sheets 
@@ -22,7 +22,7 @@ import './Decision-flow.css'
 // import CustomNode from './CustomNode/CustomNode';
 import { initialNodes, initialEdges } from './initialElements'
 import ButtonEdge from './ButtonEdge/ButtonEdge';
-// import ExportModal, { setTextJSONExport } from './Modal/ExportModal'
+import ExportModal from './Modal/ExportModal'
 
 const flow_id = 170;
 
@@ -65,8 +65,28 @@ const Decision = () => {
         { value: 'END', label: 'End' }
     ]
     const [show, setShow] = useState(false);
+    const [openCollapseFunction, setOpenCollapseFunction] = useState(false);
+    const [openCollapseSubFlow, setOpenCollapseSubFlow] = useState(false);
+    const [openCollapseDecision, setOpenCollapseDecision] = useState(false);
+
+    const openCollapse = (nodeType) => {
+        setSubFlow("")
+        setFunctionRef("")
+        setFunctionRefParam("")
+        setDefaultParam("")
+        setStep("")
+        setOpenCollapseFunction((nodeType === 'FUNCTION'))
+        setOpenCollapseSubFlow((nodeType === 'SUBFLOW'))
+        setOpenCollapseDecision((nodeType === 'DECISION'))
+    }
+
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setShow(true);
+        setOpenCollapseFunction(false)
+        setOpenCollapseSubFlow(false)
+        setOpenCollapseDecision(false)
+    };
     const onSubmit = () => {
         setNodes((e) =>
             e.concat({
@@ -92,6 +112,8 @@ const Decision = () => {
         resetObjectNode()
     };
 
+    const returnJsonData = () => `${JSON.stringify(rfInstance.toObject())}`
+
     const resetObjectNode = () => {
         setNodeName("")
         setNodeType("")
@@ -104,10 +126,11 @@ const Decision = () => {
 
     const onExport = () => {
         const flow = rfInstance.toObject();
-        const nodes = flow.nodes;
-        const edges = flow.edges;
-        console.log("Node React Flow : ", nodes)
-        console.log("Edge React Flow : ", edges)
+        console.log(flow)
+        // const nodes = flow.nodes;
+        // const edges = flow.edges;
+        // console.log("Node React Flow : ", nodes)
+        // console.log("Edge React Flow : ", edges)
         // const flowNodeList = []
         // const flowEdgeList = []
 
@@ -163,6 +186,19 @@ const Decision = () => {
         };
         restoreFlow();
     }, [setNodes, setViewport]);
+
+
+    const onNodeClick = (event, node) => {
+
+        console.log('click node', node.id)
+        // if (node) {?
+            
+            
+            
+
+        
+
+    };
     return (
         <ReactFlow
             nodes={nodes}
@@ -173,6 +209,7 @@ const Decision = () => {
             onInit={setRfInstance}
             edgeTypes={edgeTypes}
             fitView
+            onNodeClick={onNodeClick}
             attributionPosition="top-right"
         >
             <div className="save__controls">
@@ -206,44 +243,73 @@ const Decision = () => {
                                     options={nodeTypeOption}
                                     placeholder="Select Node type"
                                     isSearchable={false}
-                                    onChange={e => setNodeType(e.value)} />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Subflow</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Subflow"
-                                    value={subFlowId}
-                                    onChange={e => setSubFlow(e.target.value)}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Function Ref</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Function Ref"
-                                    value={functionRef}
-                                    onChange={e => setFunctionRef(e.target.value)}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Function Ref Param</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Function Ref Param"
-                                    value={functionRefParam}
-                                    onChange={e => setFunctionRefParam(e.target.value)}
-                                />
+                                    onChange={e => { setNodeType(e.value); openCollapse(e.value); }} />
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <Form.Label>Default Param</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Default Param"
-                                    value={defaultParam}
-                                    onChange={e => setDefaultParam(e.target.value)}
-                                />
+                                <Collapse in={openCollapseDecision} dimension="height">
+                                    <div id="example-collapse-text">
+                                        <Card body >
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Default Param</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Default Param"
+                                                    value={defaultParam}
+                                                    onChange={e => setDefaultParam(e.target.value)}
+                                                />
+                                            </Form.Group>
+                                        </Card>
+                                    </div>
+                                </Collapse>
+                                <Collapse in={openCollapseFunction} dimension="height">
+                                    <div id="example-collapse-text">
+                                        <Card body >
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Function Ref</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Function Ref"
+                                                    value={functionRef}
+                                                    onChange={e => setFunctionRef(e.target.value)}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Function Ref Param</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Function Ref Param"
+                                                    value={functionRefParam}
+                                                    onChange={e => setFunctionRefParam(e.target.value)}
+                                                />
+                                            </Form.Group>
+                                        </Card>
+                                    </div>
+                                </Collapse>
+                                <Collapse in={openCollapseSubFlow} dimension="height">
+                                    <div id="example-collapse-text">
+                                        <Card body >
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Subflow</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Subflow"
+                                                    value={subFlowId}
+                                                    onChange={e => setSubFlow(e.target.value)}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label>Default Param</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Default Param"
+                                                    value={defaultParam}
+                                                    onChange={e => setDefaultParam(e.target.value)}
+                                                />
+                                            </Form.Group>
+                                        </Card>
+                                    </div>
+                                </Collapse>
                             </Form.Group>
                             <Form.Group className="mb-3">
                                 <Form.Label>Step Node</Form.Label>
@@ -273,7 +339,7 @@ const Decision = () => {
                 <Button variant="primary" onClick={onRestore}>
                     Restore
                 </Button>
-                {/* <ExportModal /> */}
+                {/* <ExportModal exportJson={returnJsonData} /> */}
             </div>
             <MiniMap />
             <Controls />

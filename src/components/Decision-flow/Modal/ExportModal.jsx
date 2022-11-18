@@ -8,8 +8,8 @@ export const setTextJSONExport = (JSONFlowData) =>{
     JSONExport = JSONFlowData
 }
 
-function ExportModal() {
-
+function ExportModal(props) {
+    console.log(props.exportJson);
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
