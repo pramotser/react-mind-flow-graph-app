@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Modal, Button, Form, Table } from 'react-bootstrap'
 import Select from 'react-select'
+import {edgeTypeOption , edgeConditionOption , edgeParamConditionOption} from '../../config/DataConfig'
 
 function ModalEdge(props) {
     console.log(props.showModalEdge);
@@ -10,29 +11,6 @@ function ModalEdge(props) {
     const [edgeParamCondition, setEdgeParamCondition] = useState("")
     const [edgeParamCompare, setEdgeParamCompare] = useState("")
     const [edgeResult, setEdgeResult] = useState("")
-
-    const edgeConditionOption = [
-        { value: 'OR', label: 'Or' },
-        { value: 'AND', label: 'And' }
-    ]
-    const edgeTypeOption = [
-        { value: 'STRING', label: 'String' },
-        { value: 'DOUBLE', label: 'Double' }
-    ]
-    const edgeParamConditionOption =
-        [
-            { value: 'EQUALS', label: 'EQUALS' },
-            { value: '<=', label: '<=' },
-            { value: '<', label: '<' },
-            { value: 'NOTEQUALS', label: 'NOTEQUALS' },
-            { value: '>=', label: '>=' },
-            { value: 'LIKE', label: 'LIKE' },
-            { value: '>', label: '>' },
-            { value: 'ISNULL', label: 'ISNULL' },
-            { value: '==', label: '==' },
-            { value: 'ISNOTNULL', label: 'ISNOTNULL' },
-            { value: 'CONTAIN', label: 'CONTAIN' },
-        ]
 
     return (
         <>

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Collapse, Card } from 'react-bootstrap'
 import Select from 'react-select'
-import { Controls } from 'reactflow';
-// import './modal-node.css'
+import { nodeTypeOption, stepOption } from '../../config/DataConfig'
 
 
 function ModalNode(props) {
+    const [modeNodeModal, setNodeModel] = useState("")
+
     const [nodeName, setNodeName] = useState("")
     const [nodeType, setNodeType] = useState([])
     const [subFlowId, setSubFlow] = useState("")
@@ -18,34 +19,36 @@ function ModalNode(props) {
     const [openCollapseSubFlow, setOpenCollapseSubFlow] = useState(false);
     const [openCollapseDecision, setOpenCollapseDecision] = useState(false);
 
-
     useEffect(() => {
-        // console.log(props.nodeModel.data)
-        if (props.nodeModel.data !== undefined) {
-            const nodeTypeFilter = nodeTypeOption.filter(type => type.value === props.nodeModel.data["nodeType"]);
-            setNodeName(props.nodeModel.data["nodeName"])
-            setNodeType(nodeTypeFilter)
-            setOpenCollapseFunction((props.nodeModel.data["nodeType"] === 'FUNCTION'))
-            setOpenCollapseSubFlow((props.nodeModel.data["nodeType"] === 'SUBFLOW'))
-            setOpenCollapseDecision((props.nodeModel.data["nodeType"] === 'DECISION'))
-            setSubFlow(props.nodeModel.data["subFlowId"])
-            setFunctionRef(props.nodeModel.data["functionRef"])
-            setFunctionRefParam(props.nodeModel.data["functionRefParam"])
-            setDefaultParam(props.nodeModel.data["defaultParam"])
-            setStep(props.nodeModel.data["step"])
+        setNodeModel(props.modeNodeModal)
+        if (props.modeNodeModal === 'Edit') {
+            if (props.nodeModel.data !== undefined) {
+                const nodeTypeFilter = nodeTypeOption.filter(type => type.value === props.nodeModel.data["nodeType"]);
+                setNodeName(props.nodeModel.data["nodeName"])
+                setNodeType(nodeTypeFilter)
+                setOpenCollapseFunction((props.nodeModel.data["nodeType"] === 'FUNCTION'))
+                setOpenCollapseSubFlow((props.nodeModel.data["nodeType"] === 'SUBFLOW'))
+                setOpenCollapseDecision((props.nodeModel.data["nodeType"] === 'DECISION'))
+                setSubFlow(props.nodeModel.data["subFlowId"])
+                setFunctionRef(props.nodeModel.data["functionRef"])
+                setFunctionRefParam(props.nodeModel.data["functionRefParam"])
+                setDefaultParam(props.nodeModel.data["defaultParam"])
+                setStep(props.nodeModel.data["step"])
+            }
+        } else {
+            setNodeName("")
+            setNodeType([])
+            setSubFlow("")
+            setFunctionRef("")
+            setFunctionRefParam("")
+            setDefaultParam("")
+            setStep("")
+            setOpenCollapseFunction((nodeType.value === 'FUNCTION'))
+            setOpenCollapseSubFlow((nodeType.value === 'SUBFLOW'))
+            setOpenCollapseDecision((nodeType.value === 'DECISION'))
         }
     }, [props])
 
-    const nodeTypeOption = [
-        { value: 'DECISION', label: 'Decision' },
-        { value: 'FUNCTION', label: 'Function' },
-        { value: 'SUBFLOW', label: 'Subflow' }
-    ]
-    const stepOption = [
-        { value: 'NEXT', label: 'Next' },
-        { value: 'OUT', label: 'Out' },
-        { value: 'END', label: 'End' }
-    ]
     const openCollapse = (nodeType) => {
         setSubFlow("")
         setFunctionRef("")
@@ -55,6 +58,28 @@ function ModalNode(props) {
         setOpenCollapseFunction((nodeType.value === 'FUNCTION'))
         setOpenCollapseSubFlow((nodeType.value === 'SUBFLOW'))
         setOpenCollapseDecision((nodeType.value === 'DECISION'))
+    }
+
+    const onSubmit = () => {
+        var nodeId = (modeNodeModal === 'Add') ? props.generateFloeNodeID() : props.nodeModel.id
+        var node = {
+            id: nodeId,
+            data: {
+                label: `${nodeName}`,
+                flowNodeId: Number.parseInt(nodeId),
+                flowId: props.flowId,
+                nodeType: `${nodeType.value}`,
+                nodeName: `${nodeName}`,
+                subFlowId: `${subFlowId}`,
+                functionRef: `${functionRef}`,
+                functionRefParam: `${functionRefParam}`,
+                defaultParam: `${defaultParam}`,
+                step: `${step}`
+
+            },
+            position: { x: 0, y: 0 },
+        }
+        props.saveNode(modeNodeModal, node)
     }
 
     return (
@@ -67,7 +92,7 @@ function ModalNode(props) {
                 centered
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>New Node</Modal.Title>
+                    <Modal.Title>{(props.modeNodeModal === 'Add') ? 'New' : 'Edit'} Node</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -89,7 +114,6 @@ function ModalNode(props) {
                                 value={nodeType}
                                 onChange={e => { setNodeType(e); openCollapse(e); }} />
                         </Form.Group>
-
                         <Form.Group className="mb-3">
                             <Collapse in={openCollapseDecision} dimension="height">
                                 <div id="example-collapse-text">
@@ -171,8 +195,11 @@ function ModalNode(props) {
                     <Button variant="secondary" onClick={props.cModal}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={props.cModal}>
+                    <Button variant="primary" hidden={(props.modeNodeModal === 'Edit')} onClick={onSubmit}>
                         Save
+                    </Button>
+                    <Button variant="success" hidden={(props.modeNodeModal === 'Add')} onClick={onSubmit}>
+                        Edit
                     </Button>
                 </Modal.Footer>
             </Modal>

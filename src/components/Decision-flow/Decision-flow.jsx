@@ -11,19 +11,17 @@ import ReactFlow, {
     Background,
     MarkerType,
 } from 'reactflow';
-import Select from 'react-select'
-import { Form, Button, Modal, Card, Collapse } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 
 // Import Cascading Style Sheets 
 import 'reactflow/dist/style.css';
 import './Decision-flow.css'
 
-// import CustomNode from './CustomNode/CustomNode';
 import { initialNodes, initialEdges } from './initialElements'
 import ButtonEdge from './ButtonEdge/ButtonEdge';
 import ExportModal from './Modal/ExportModal'
-import ModalNode from  './Modal/NodeModal'
+import ModalNode from './Modal/NodeModal'
 
 const flow_id = 170;
 
@@ -45,85 +43,6 @@ const Decision = () => {
     );
 
     const generateFloeNodeID = () => `${flow_id.toString() + nodes.length.toString().padStart(3, '0')}`
-    // const generateFloeEdgeID = (running) => `${flow_id.toString() + running.toString().padStart(4, '0')}`
-
-    const [nodeName, setNodeName] = useState("")
-    const [nodeType, setNodeType] = useState("")
-    const [subFlowId, setSubFlow] = useState("")
-    const [functionRef, setFunctionRef] = useState("")
-    const [functionRefParam, setFunctionRefParam] = useState("")
-    const [defaultParam, setDefaultParam] = useState("")
-    const [step, setStep] = useState("")
-
-    const nodeTypeOption = [
-        { value: 'DECISION', label: 'Decision' },
-        { value: 'FUNCTION', label: 'Function' },
-        { value: 'SUBFLOW', label: 'Subflow' }
-    ]
-    const stepOption = [
-        { value: 'NEXT', label: 'Next' },
-        { value: 'OUT', label: 'Out' },
-        { value: 'END', label: 'End' }
-    ]
-    const [show, setShow] = useState(false);
-    const [openCollapseFunction, setOpenCollapseFunction] = useState(false);
-    const [openCollapseSubFlow, setOpenCollapseSubFlow] = useState(false);
-    const [openCollapseDecision, setOpenCollapseDecision] = useState(false);
-
-    const openCollapse = (nodeType) => {
-        setSubFlow("")
-        setFunctionRef("")
-        setFunctionRefParam("")
-        setDefaultParam("")
-        setStep("")
-        setOpenCollapseFunction((nodeType === 'FUNCTION'))
-        setOpenCollapseSubFlow((nodeType === 'SUBFLOW'))
-        setOpenCollapseDecision((nodeType === 'DECISION'))
-    }
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => {
-        setShow(true);
-        setOpenCollapseFunction(false)
-        setOpenCollapseSubFlow(false)
-        setOpenCollapseDecision(false)
-    };
-    const onSubmit = () => {
-        setNodes((e) =>
-            e.concat({
-                id: generateFloeNodeID(),
-                data: {
-                    label: `${nodeName}`,
-                    flowNodeId: Number.parseInt(generateFloeNodeID()),
-                    flowId: flow_id,
-                    nodeType: `${nodeType}`,
-                    nodeName: `${nodeName}`,
-                    subFlowId: `${subFlowId}`,
-                    functionRef: `${functionRef}`,
-                    functionRefParam: `${functionRefParam}`,
-                    defaultParam: `${defaultParam}`,
-                    step: `${step}`
-
-                },
-                // type: 'custom',
-                position: { x: 0, y: 0 },
-            })
-        );
-        setShow(false);
-        resetObjectNode()
-    };
-
-    const returnJsonData = () => `${JSON.stringify(rfInstance.toObject())}`
-
-    const resetObjectNode = () => {
-        setNodeName("")
-        setNodeType("")
-        setSubFlow("")
-        setFunctionRef("")
-        setFunctionRefParam("")
-        setDefaultParam("")
-        setStep("")
-    }
 
     const onExport = () => {
         const flow = rfInstance.toObject();
@@ -189,21 +108,48 @@ const Decision = () => {
     }, [setNodes, setViewport]);
 
 
+
+
+    // Modal Node
+    const [modeNodeModal, setModeNodeModal] = useState("")
     const [openModalNode, setOpenModalNode] = useState(false);
-    const [nodeIdForModal , setNodeIdForModal] = useState("")
-    const [nodeModel , setNodeModel] = useState({})
+    const [nodeModel, setNodeModel] = useState({})
+
+    const onAddNodeClick = () => {
+        setModeNodeModal("Add")
+        setOpenModalNode(true);
+    }
+
+    const onNodeClick = (event, node) => {
+        console.log('click node', node.id)
+        setModeNodeModal("Edit")
+        if (node) {
+            setNodeModel(node)
+            setOpenModalNode(true);
+        }
+    };
+
     const onCloseModalNode = () => {
         setOpenModalNode(false);
     }
-    const onNodeClick = (event, node) => {
-        console.log('click node', node.id)
-        if (node) {
-            setNodeModel(node)
-            setNodeIdForModal(node.id)
-            setOpenModalNode(true);
-            // setTypeNode(node.typeNode);
+
+    const saveNode = (mode, node) => {
+        if (mode === "Add") {
+            setNodes((e) =>
+                e.concat(node)
+            );
+        } else {
+            setNodes((nds) =>
+                nds.map((n) => {
+                    if (n.id === node.id) {
+                        n = node
+                    }
+                    return n;
+                })
+            );
         }
-    };
+        setOpenModalNode(false);
+    }
 
     return (
         <ReactFlow
@@ -219,123 +165,9 @@ const Decision = () => {
             attributionPosition="top-right"
         >
             <div className="save__controls">
-                <Button variant="primary" onClick={handleShow}>
+                <Button variant="primary" onClick={onAddNodeClick}>
                     Add Node
                 </Button>
-                <Modal
-                    size="lg"
-                    show={show}
-                    onHide={handleClose}
-                    aria-labelledby="contained-modal-title-lg-vcenter"
-                    centered
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>New Node</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Node Name</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Node Name"
-                                    value={nodeName}
-                                    onChange={e => setNodeName(e.target.value)}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Node Type</Form.Label>
-                                <Select
-                                    options={nodeTypeOption}
-                                    placeholder="Select Node type"
-                                    isSearchable={false}
-                                    onChange={e => { setNodeType(e.value); openCollapse(e.value); }} />
-                            </Form.Group>
-
-                            <Form.Group className="mb-3">
-                                <Collapse in={openCollapseDecision} dimension="height">
-                                    <div id="example-collapse-text">
-                                        <Card body >
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Default Param</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    placeholder="Default Param"
-                                                    value={defaultParam}
-                                                    onChange={e => setDefaultParam(e.target.value)}
-                                                />
-                                            </Form.Group>
-                                        </Card>
-                                    </div>
-                                </Collapse>
-                                <Collapse in={openCollapseFunction} dimension="height">
-                                    <div id="example-collapse-text">
-                                        <Card body >
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Function Ref</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    placeholder="Function Ref"
-                                                    value={functionRef}
-                                                    onChange={e => setFunctionRef(e.target.value)}
-                                                />
-                                            </Form.Group>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Function Ref Param</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    placeholder="Function Ref Param"
-                                                    value={functionRefParam}
-                                                    onChange={e => setFunctionRefParam(e.target.value)}
-                                                />
-                                            </Form.Group>
-                                        </Card>
-                                    </div>
-                                </Collapse>
-                                <Collapse in={openCollapseSubFlow} dimension="height">
-                                    <div id="example-collapse-text">
-                                        <Card body >
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Subflow</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    placeholder="Subflow"
-                                                    value={subFlowId}
-                                                    onChange={e => setSubFlow(e.target.value)}
-                                                />
-                                            </Form.Group>
-                                            <Form.Group className="mb-3">
-                                                <Form.Label>Default Param</Form.Label>
-                                                <Form.Control
-                                                    type="text"
-                                                    placeholder="Default Param"
-                                                    value={defaultParam}
-                                                    onChange={e => setDefaultParam(e.target.value)}
-                                                />
-                                            </Form.Group>
-                                        </Card>
-                                    </div>
-                                </Collapse>
-                            </Form.Group>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Step Node</Form.Label>
-                                <Select
-                                    options={stepOption}
-                                    placeholder="Step Node"
-                                    isSearchable={false}
-                                    onChange={e => setStep(e.value)} />
-                            </Form.Group>
-                        </Form>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
-                            Close
-                        </Button>
-                        <Button variant="primary" onClick={onSubmit}>
-                            Save
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
                 <Button variant="primary" onClick={onExport}>
                     Export JSON
                 </Button>
@@ -350,8 +182,15 @@ const Decision = () => {
             <MiniMap />
             <Controls />
             <Background color="#aaa" gap={16} />
-
-            <ModalNode cModal={onCloseModalNode} showModalNode={openModalNode} idNode={nodeIdForModal} nodeModel={nodeModel} />
+            <ModalNode
+                cModal={onCloseModalNode}
+                generateFloeNodeID={generateFloeNodeID}
+                saveNode={saveNode}
+                showModalNode={openModalNode}
+                flowId={flow_id}
+                nodeModel={nodeModel}
+                modeNodeModal={modeNodeModal}
+            />
         </ReactFlow>
     );
 };
