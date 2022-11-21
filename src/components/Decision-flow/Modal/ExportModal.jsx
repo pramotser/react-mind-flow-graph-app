@@ -1,30 +1,21 @@
-import React, { useState } from 'react';
-import { Form, Button, Modal } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap'
 
-var JSONExport = ""
 
-export const setTextJSONExport = (JSONFlowData) =>{
-    console.log(JSONFlowData)
-    JSONExport = JSONFlowData
-}
+function ModalExport(props) {
+    const [jsonData, setJsonData] = useState("")
 
-function ExportModal(props) {
-    console.log(props.exportJson);
-    const [show, setShow] = useState(false);
+    useEffect(() => {
+        setJsonData(props.jsonData)
+    }, [props])
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Export JSON
-            </Button>
             <Modal
                 size="lg"
-                show={show}
-                onHide={handleClose}
+                show={props.showModalExport}
+                onHide={props.onCloseModalExport}
                 aria-labelledby="contained-modal-title-lg-vcenter"
-                keyboard={false}
                 centered
             >
                 <Modal.Header closeButton>
@@ -36,12 +27,12 @@ function ExportModal(props) {
                             className="mb-3"
                             controlId="exampleForm.ControlTextarea1"
                         >
-                            <Form.Control as="textarea" value={JSONExport} rows={3} disabled={true} />
+                            <Form.Control as="textarea" value={jsonData} rows={3} disabled={true} />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={props.onCloseModalExport}>
                         Close
                     </Button>
                 </Modal.Footer>
@@ -49,4 +40,5 @@ function ExportModal(props) {
         </>
     );
 }
-export default ExportModal;
+
+export default ModalExport;

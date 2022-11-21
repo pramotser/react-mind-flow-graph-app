@@ -18,7 +18,7 @@ import { Button } from "react-bootstrap";
 import 'reactflow/dist/style.css';
 import './Decision-flow.css'
 
-import { initialNodes, initialEdges } from './initialElements'
+import { initialNodes, initialEdges } from '../config/DataConfig'
 import ButtonEdge from './ButtonEdge/ButtonEdge';
 import ExportModal from './Modal/ExportModal'
 import ModalNode from './Modal/NodeModal'
@@ -44,49 +44,6 @@ const Decision = () => {
 
     const generateFloeNodeID = () => `${flow_id.toString() + nodes.length.toString().padStart(3, '0')}`
 
-    const onExport = () => {
-        const flow = rfInstance.toObject();
-        console.log(flow)
-        // const nodes = flow.nodes;
-        // const edges = flow.edges;
-        // console.log("Node React Flow : ", nodes)
-        // console.log("Edge React Flow : ", edges)
-        // const flowNodeList = []
-        // const flowEdgeList = []
-
-        // nodes.map((node) => {
-        //     // if (node.data.step !== "END" && node.data.step !== "OUT") {
-        //         var rowFlowNode = {
-        //             flowNodeId: node.data.flowNodeId,
-        //             flowId: node.data.flowId,
-        //             nodeType: node.data.nodeType,
-        //             nodeName: node.data.nodeName,
-        //             subFlowId: node.data.subFlowId,
-        //             functionRef: node.data.functionRef,
-        //             functionRefParam: node.data.functionRefParam,
-        //             defaultParam: node.data.defaultParam,
-        //         }
-        //         flowNodeList.push(rowFlowNode)
-        //     // }
-        // })
-
-        // edges.map((edge , index) => {
-        //     var stepNode = nodes.filter(
-        //         (node) => node.data.flowNodeId === Number.parseInt(edge.target)
-        //     )[0].data.step;
-        //     var rowFlowEdge = {
-        //         flowEdgeId: Number.parseInt(generateFloeEdgeID(index)),
-        //         step: stepNode,
-        //         flowNodeId: edge.source,
-        //         flowEdgeResult: edge.target
-        //     }
-        //     flowEdgeList.push(rowFlowEdge)
-        // })
-
-        // console.log('Node : ', flowNodeList)
-        // console.log('Edge : ', flowEdgeList)
-    }
-
     const onSave = useCallback(() => {
         if (rfInstance) {
             const flow = rfInstance.toObject();
@@ -106,9 +63,6 @@ const Decision = () => {
         };
         restoreFlow();
     }, [setNodes, setViewport]);
-
-
-
 
     // Modal Node
     const [modeNodeModal, setModeNodeModal] = useState("")
@@ -151,6 +105,59 @@ const Decision = () => {
         setOpenModalNode(false);
     }
 
+
+    // Modal Export
+    const [jsonData, setJsonData] = useState("")
+    const [openModalExport, setOpenModalExport] = useState(false);
+    const onExportModal = () => {
+        setJsonData(JSON.stringify(rfInstance.toObject()));
+        setOpenModalExport(true);
+
+        // const nodes = flow.nodes;
+        // const edges = flow.edges;
+        // console.log("Node React Flow : ", nodes)
+        // console.log("Edge React Flow : ", edges)
+        // const flowNodeList = []
+        // const flowEdgeList = []
+
+        // nodes.map((node) => {
+        //     // if (node.data.step !== "END" && node.data.step !== "OUT") {
+        //         var rowFlowNode = {
+        //             flowNodeId: node.data.flowNodeId,
+        //             flowId: node.data.flowId,
+        //             nodeType: node.data.nodeType,
+        //             nodeName: node.data.nodeName,
+        //             subFlowId: node.data.subFlowId,
+        //             functionRef: node.data.functionRef,
+        //             functionRefParam: node.data.functionRefParam,
+        //             defaultParam: node.data.defaultParam,
+        //         }
+        //         flowNodeList.push(rowFlowNode)
+        //     // }
+        // })
+
+        // edges.map((edge , index) => {
+        //     var stepNode = nodes.filter(
+        //         (node) => node.data.flowNodeId === Number.parseInt(edge.target)
+        //     )[0].data.step;
+        //     var rowFlowEdge = {
+        //         flowEdgeId: Number.parseInt(generateFloeEdgeID(index)),
+        //         step: stepNode,
+        //         flowNodeId: edge.source,
+        //         flowEdgeResult: edge.target
+        //     }
+        //     flowEdgeList.push(rowFlowEdge)
+        // })
+
+        // console.log('Node : ', flowNodeList)
+        // console.log('Edge : ', flowEdgeList)
+    }
+
+    const onCloseModalExport = () => {
+        setOpenModalExport(false);
+    }
+
+
     return (
         <ReactFlow
             nodes={nodes}
@@ -168,7 +175,7 @@ const Decision = () => {
                 <Button variant="primary" onClick={onAddNodeClick}>
                     Add Node
                 </Button>
-                <Button variant="primary" onClick={onExport}>
+                <Button variant="primary" onClick={onExportModal}>
                     Export JSON
                 </Button>
                 <Button variant="primary" onClick={onSave}>
@@ -177,19 +184,24 @@ const Decision = () => {
                 <Button variant="primary" onClick={onRestore}>
                     Restore
                 </Button>
-                {/* <ExportModal exportJson={returnJsonData} /> */}
+
             </div>
             <MiniMap />
             <Controls />
             <Background color="#aaa" gap={16} />
             <ModalNode
-                cModal={onCloseModalNode}
+                onCloseModalNode={onCloseModalNode}
                 generateFloeNodeID={generateFloeNodeID}
                 saveNode={saveNode}
                 showModalNode={openModalNode}
                 flowId={flow_id}
                 nodeModel={nodeModel}
                 modeNodeModal={modeNodeModal}
+            />
+            <ExportModal
+                showModalExport={openModalExport}
+                onCloseModalExport={onCloseModalExport}
+                jsonData={jsonData}
             />
         </ReactFlow>
     );

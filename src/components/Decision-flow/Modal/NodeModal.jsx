@@ -87,7 +87,7 @@ function ModalNode(props) {
             <Modal
                 size="lg"
                 show={props.showModalNode}
-                onHide={props.cModal}
+                onHide={props.onCloseModalNode}
                 aria-labelledby="contained-modal-title-lg-vcenter"
                 centered
             >
@@ -192,7 +192,7 @@ function ModalNode(props) {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={props.cModal}>
+                    <Button variant="secondary" onClick={props.onCloseModalNode}>
                         Close
                     </Button>
                     <Button variant="primary" hidden={(props.modeNodeModal === 'Edit')} onClick={onSubmit}>

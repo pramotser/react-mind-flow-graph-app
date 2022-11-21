@@ -1,3 +1,12 @@
+export const initialNodes = [
+
+];
+
+export const initialEdges = [
+
+];
+
+
 export const nodeTypeOption = [
     { value: 'DECISION', label: 'Decision' },
     { value: 'FUNCTION', label: 'Function' },
