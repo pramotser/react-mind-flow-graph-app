@@ -23,6 +23,7 @@ import './Decision-flow.css'
 import { initialNodes, initialEdges } from './initialElements'
 import ButtonEdge from './ButtonEdge/ButtonEdge';
 import ExportModal from './Modal/ExportModal'
+import ModalNode from  './Modal/NodeModal'
 
 const flow_id = 170;
 
@@ -188,17 +189,22 @@ const Decision = () => {
     }, [setNodes, setViewport]);
 
 
+    const [openModalNode, setOpenModalNode] = useState(false);
+    const [nodeIdForModal , setNodeIdForModal] = useState("")
+    const [nodeModel , setNodeModel] = useState({})
+    const onCloseModalNode = () => {
+        setOpenModalNode(false);
+    }
     const onNodeClick = (event, node) => {
-
         console.log('click node', node.id)
-        // if (node) {?
-            
-            
-            
-
-        
-
+        if (node) {
+            setNodeModel(node)
+            setNodeIdForModal(node.id)
+            setOpenModalNode(true);
+            // setTypeNode(node.typeNode);
+        }
     };
+
     return (
         <ReactFlow
             nodes={nodes}
@@ -344,6 +350,8 @@ const Decision = () => {
             <MiniMap />
             <Controls />
             <Background color="#aaa" gap={16} />
+
+            <ModalNode cModal={onCloseModalNode} showModalNode={openModalNode} idNode={nodeIdForModal} nodeModel={nodeModel} />
         </ReactFlow>
     );
 };

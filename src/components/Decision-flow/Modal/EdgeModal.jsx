@@ -1,11 +1,43 @@
-import { Modal, Button, Form } from 'react-bootstrap'
+import { useState } from 'react';
+import { Modal, Button, Form, Table } from 'react-bootstrap'
+import Select from 'react-select'
 
 function ModalEdge(props) {
     console.log(props.showModalEdge);
+    const [edgeCondition, setEdgeCondition] = useState("")
+    const [edgeType, setEdgeType] = useState("")
+    const [edgeParam, setEdgeParam] = useState("")
+    const [edgeParamCondition, setEdgeParamCondition] = useState("")
+    const [edgeParamCompare, setEdgeParamCompare] = useState("")
+    const [edgeResult, setEdgeResult] = useState("")
+
+    const edgeConditionOption = [
+        { value: 'OR', label: 'Or' },
+        { value: 'AND', label: 'And' }
+    ]
+    const edgeTypeOption = [
+        { value: 'STRING', label: 'String' },
+        { value: 'DOUBLE', label: 'Double' }
+    ]
+    const edgeParamConditionOption =
+        [
+            { value: 'EQUALS', label: 'EQUALS' },
+            { value: '<=', label: '<=' },
+            { value: '<', label: '<' },
+            { value: 'NOTEQUALS', label: 'NOTEQUALS' },
+            { value: '>=', label: '>=' },
+            { value: 'LIKE', label: 'LIKE' },
+            { value: '>', label: '>' },
+            { value: 'ISNULL', label: 'ISNULL' },
+            { value: '==', label: '==' },
+            { value: 'ISNOTNULL', label: 'ISNOTNULL' },
+            { value: 'CONTAIN', label: 'CONTAIN' },
+        ]
+
     return (
         <>
             <Modal
-                size="lg"
+                size="xl"
                 show={props.showModalEdge}
                 onHide={props.cModal}
                 aria-labelledby="contained-modal-title-lg-vcenter"
@@ -25,6 +57,76 @@ function ModalEdge(props) {
                                 disabled
                             />
                         </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Table responsive>
+                                <thead>
+                                    <tr>
+                                        <th>Edge Condition</th>
+                                        <th>Edge Type</th>
+                                        <th>Edge Param</th>
+                                        <th>Edge Param Condition</th>
+                                        <th>Edge Param Compare</th>
+                                        <th>Edge Result</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <Select
+                                                options={edgeConditionOption}
+                                                placeholder="Edge Condition"
+                                                isSearchable={false}
+                                                value={edgeCondition}
+                                                onChange={e => setEdgeCondition(e.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <Select
+                                                options={edgeTypeOption}
+                                                placeholder="Edge Type"
+                                                isSearchable={false}
+                                                value={edgeType}
+                                                onChange={e => setEdgeType(e.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Edge Param"
+                                                value={edgeParam}
+                                                onChange={e => setEdgeParam(e.target.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <Select
+                                                options={edgeParamConditionOption}
+                                                placeholder="Edge Param Condition"
+                                                isSearchable={false}
+                                                value={edgeParamCondition}
+                                                onChange={e => setEdgeParamCondition(e.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Edge Param Compare"
+                                                value={edgeParamCompare}
+                                                onChange={e => setEdgeParamCompare(e.target.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <Form.Control
+                                                type="text"
+                                                placeholder="Edge Result"
+                                                value={edgeResult}
+                                                onChange={e => setEdgeResult(e.target.value)}
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </Table>
+                        </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
@@ -36,37 +138,6 @@ function ModalEdge(props) {
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-
-
-
-
-
-            {/* <Modal size="lg"
-                aria-labelledby="contained-modal-title-vcenter" centered show={props.showModalEdge} onHide={props.cModal}>
-
-                <Modal.Header closeButton>
-                    <Modal.Title>Condition Edge</Modal.Title>
-                </Modal.Header>
-
-
-                <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter">Edit Edge Id: {props.idEdge}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div>Edge Id: {props.idEdge} </div>
-                    <div style={{ color: 'red' }} >Source Node: {props.sourceNode} </div>
-                    <div style={{ color: 'Blue' }} >Target Node: {props.targetNode} </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={props.cModal}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={props.cModal}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal> */}
         </>
     );
 }
