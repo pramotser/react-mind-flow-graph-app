@@ -1,0 +1,30 @@
+.modal-body-edge{
+    height: 600px
+}
+
+.max-height {
+    height:100%
+}
+
+.table-responsive{
+    /* height: 400px; */
+}
+
+table {
+    overflow-x: scroll;
+    max-height: 400px;
+  }
+
+td,th {
+  width: 1%;
+}
+
+.table-fixed thead {
+  width: 97%;
+}
+
+.table-fixed tbody {
+  height: 150px;
+  overflow-y: scroll;
+  width: 100%;
+}

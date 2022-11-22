@@ -62,7 +62,7 @@ function ModalNode(props) {
 
     const onSubmit = () => {
         var nodeId = (modeNodeModal === 'Add') ? props.generateFloeNodeID() : props.nodeModel.id
-        var node = {
+        props.saveNode(modeNodeModal, {
             id: nodeId,
             data: {
                 label: `${nodeName}`,
@@ -78,8 +78,7 @@ function ModalNode(props) {
 
             },
             position: { x: 0, y: 0 },
-        }
-        props.saveNode(modeNodeModal, node)
+        })
     }
 
     return (
