@@ -43,6 +43,11 @@ function ModalEdge(props) {
     }
 
 
+    const onClose = () =>{
+        // setEdgeParamData([])
+        props.cModal()
+    }
+
     return (
         <>
             <Modal
@@ -83,6 +88,7 @@ function ModalEdge(props) {
                                             <th>Edge Param Condition</th>
                                             <th>Edge Param Compare</th>
                                             <th>Edge Value Compare</th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -142,7 +148,7 @@ function ModalEdge(props) {
                                                     </td>
 
                                                     <td>
-                                                    
+                                                    <Button variant="danger" >Delete</Button>
                                                     </td>
                                                 </tr>
                                             ))
@@ -154,7 +160,7 @@ function ModalEdge(props) {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={props.cModal}>
+                    <Button variant="secondary" onClick={onClose}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={onSave}>

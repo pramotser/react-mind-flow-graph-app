@@ -11,6 +11,7 @@ import ReactFlow, {
     MarkerType,
 } from 'reactflow';
 import { Button } from "react-bootstrap";
+import Swal from 'sweetalert2'
 
 import 'reactflow/dist/style.css';
 import './Decision-flow.css'
@@ -46,11 +47,36 @@ const Decision = () => {
 
     const generateFloeNodeID = () => `${flow_id.toString() + nodes.length.toString().padStart(3, '0')}`
 
+
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-success',
+            cancelButton: 'btn btn-danger'
+        },
+        buttonsStyling: false
+    })
+
+
+
+
     const onSave = useCallback(() => {
-        if (rfInstance) {
-            const flow = rfInstance.toObject();
-            localStorage.setItem(FlowSessionKey, JSON.stringify(flow));
-        }
+        Swal.fire({
+            title: 'Do you want to save the changes?',
+            showConfirmButton: true,
+            confirmButtonText: 'Save',
+            confirmButtonColor: '#8CD4F5',
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (rfInstance) {
+                    const flow = rfInstance.toObject();
+                    localStorage.setItem(FlowSessionKey, JSON.stringify(flow));
+                    Swal.fire('Saved!', '', 'success')
+                }
+            } else {
+                Swal.fire('Changes are not saved', '', 'info')
+            }
+        })
     }, [rfInstance]);
 
     const onRestore = useCallback(() => {
