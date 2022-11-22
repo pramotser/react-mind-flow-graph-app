@@ -19,7 +19,8 @@ export default function CustomEdge({
 	style = {},
 	markerEnd,
 	source,
-	target
+	target,
+	data
 }) {
 	const [edgePath, labelX, labelY] = getBezierPath({
 		sourceX,
@@ -30,6 +31,7 @@ export default function CustomEdge({
 		targetPosition,
 	});
 
+
 	const [openModal, setOpenModal] = useState(false);
 	const [idEdge, setIdEdge] = useState('');
 	const onEdgeClick = (evt, id) => {
@@ -38,6 +40,12 @@ export default function CustomEdge({
 	};
 
 	const onCloseModalEdge = () => {
+		setOpenModal(false);
+		// data.saveEdgeParam(id,"sss")
+	}
+
+	const onSaveEdgeParam = (edgeParam) =>{
+		data.saveEdgeParam(id,edgeParam)
 		setOpenModal(false);
 	}
 
@@ -63,7 +71,14 @@ export default function CustomEdge({
 				</button>
 			</foreignObject>
 			<div>
-				<ModalEdge cModal={onCloseModalEdge} showModalEdge={openModal} idEdge={idEdge} sourceNode={source} targetNode={target} />
+				<ModalEdge
+					cModal={onCloseModalEdge}
+					onSaveEdgeParam={onSaveEdgeParam}
+					showModalEdge={openModal}
+					idEdge={idEdge}
+					sourceNode={source}
+					targetNode={target}
+				/>
 			</div>
 		</>
 	);

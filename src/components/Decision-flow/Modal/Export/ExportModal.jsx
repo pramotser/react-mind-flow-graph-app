@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap'
 
+import './ExportModal.css'
 
 function ModalExport(props) {
     const [jsonData, setJsonData] = useState("")

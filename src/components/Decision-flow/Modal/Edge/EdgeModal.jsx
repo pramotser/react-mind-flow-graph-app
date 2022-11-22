@@ -2,21 +2,12 @@ import { useState } from 'react';
 import { Modal, Button, Form, Table } from 'react-bootstrap'
 import Select from 'react-select'
 import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/DataConfig'
+import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../../Util/Util'
 
 import './EdgeModal.css'
 
 function ModalEdge(props) {
-    // console.log(props.showModalEdge);
-    // const [edgeCondition, setEdgeCondition] = useState("")
-    // const [edgeType, setEdgeType] = useState("")
-    // const [edgeParam, setEdgeParam] = useState("")
-    // const [edgeParamCondition, setEdgeParamCondition] = useState("")
-    // const [edgeParamCompare, setEdgeParamCompare] = useState("")
-    // const [edgeResult, setEdgeResult] = useState("")
-
-    const [edgeParamData, setEdgeParamData] = useState([
-
-    ])
+    const [edgeParamData, setEdgeParamData] = useState([])
 
     const generateEdgeParam = () => `${edgeParamData.length.toString().padStart(3, '0')}`
 
@@ -32,29 +23,23 @@ function ModalEdge(props) {
         );
     }
 
-    const onChangeEdgeType = (edgeParamId, field, event) => {
-        console.log("edgeParamId :", edgeParamId)
-        console.log("event.value : ", event)
-    }
-
     const onAddCondition = () => {
-        var edgeParam = {
-            edgeId: props.idEdge,
-            edgeParamId: generateEdgeParam(),
-            edgeCondition: [],
-            edgeType: [],
-            edgeParam: "",
-            edgeParamCondition: [],
-            edgeParamCompare: "",
-            edgeResult: ""
-        }
         setEdgeParamData(
-            (e) => e.concat(edgeParam)
+            (e) => e.concat({
+                edgeId: props.idEdge,
+                edgeParamId: generateEdgeParam(),
+                edgeCondition: [],
+                edgeType: [],
+                edgeParam: "",
+                edgeParamCondition: [],
+                edgeParamCompare: "",
+                edgeValueCompare: ""
+            })
         )
     }
 
     const onSave = () => {
-        console.log("edgeParamData : ", edgeParamData)
+        props.onSaveEdgeParam(edgeParamData);
     }
 
 
@@ -89,7 +74,7 @@ function ModalEdge(props) {
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <div className="container">
-                                <Table responsive className='max-height'>
+                                <Table responsive="true" className='max-height'>
                                     <thead>
                                         <tr>
                                             <th>Edge Condition</th>
@@ -97,7 +82,7 @@ function ModalEdge(props) {
                                             <th>Edge Param</th>
                                             <th>Edge Param Condition</th>
                                             <th>Edge Param Compare</th>
-                                            <th>Edge Result</th>
+                                            <th>Edge Value Compare</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -109,8 +94,8 @@ function ModalEdge(props) {
                                                             options={edgeConditionOption}
                                                             placeholder="Edge Condition"
                                                             isSearchable={false}
-                                                            defaultValue={item.edgeCondition}
-                                                            onChange={e => onChangeEdgeParam(item.edgeParamId, "edgeCondition", e)}
+                                                            defaultValue={getEdgeConditionOptionObject(item.edgeCondition)}
+                                                            onChange={e => onChangeEdgeParam(item.edgeParamId, "edgeCondition", e.value)}
                                                         />
                                                     </td>
                                                     <td>
@@ -118,8 +103,8 @@ function ModalEdge(props) {
                                                             options={edgeTypeOption}
                                                             placeholder="Edge Type"
                                                             isSearchable={false}
-                                                            defaultValue={item.edgeType}
-                                                            onChange={e => onChangeEdgeParam(item.edgeParamId, "edgeType", e)}
+                                                            defaultValue={getEdgeTypeOptionObject(item.edgeType)}
+                                                            onChange={e => onChangeEdgeParam(item.edgeParamId, "edgeType", e.value)}
                                                         />
                                                     </td>
                                                     <td>
@@ -135,8 +120,8 @@ function ModalEdge(props) {
                                                             options={edgeParamConditionOption}
                                                             placeholder="Edge Param Condition"
                                                             isSearchable={false}
-                                                            defaultValue={item.edgeParamCondition}
-                                                            onChange={e => onChangeEdgeParam(item.edgeParamId, "edgeParamCondition", e)}
+                                                            defaultValue={getEdgeParamConditionOptionObject(item.edgeParamCondition)}
+                                                            onChange={e => onChangeEdgeParam(item.edgeParamId, "edgeParamCondition", e.value)}
                                                         />
                                                     </td>
                                                     <td>
@@ -150,10 +135,14 @@ function ModalEdge(props) {
                                                     <td>
                                                         <Form.Control
                                                             type="text"
-                                                            placeholder="Edge Result"
-                                                            defaultValue={item.edgeResult}
-                                                            onChange={e => onChangeEdgeParam(item.edgeParamId, "edgeResult", e.target.value)}
+                                                            placeholder="Edge Value Compare"
+                                                            defaultValue={item.edgeValueCompare}
+                                                            onChange={e => onChangeEdgeParam(item.edgeParamId, "edgeValueCompare", e.target.value)}
                                                         />
+                                                    </td>
+
+                                                    <td>
+                                                    
                                                     </td>
                                                 </tr>
                                             ))

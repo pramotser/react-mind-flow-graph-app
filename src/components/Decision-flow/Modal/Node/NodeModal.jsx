@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Collapse, Card } from 'react-bootstrap'
 import Select from 'react-select'
-import { nodeTypeOption, stepOption } from '../../config/DataConfig'
-
+import { nodeTypeOption, stepOption } from '../../../config/DataConfig'
+import { getNodeTypeObject, getStepObject } from '../../../Util/Util'
+import './NodeModal.css'
 
 function ModalNode(props) {
     const [modeNodeModal, setNodeModel] = useState("")
 
     const [nodeName, setNodeName] = useState("")
-    const [nodeType, setNodeType] = useState([])
+    const [nodeType, setNodeType] = useState("")
     const [subFlowId, setSubFlow] = useState("")
     const [functionRef, setFunctionRef] = useState("")
     const [functionRefParam, setFunctionRefParam] = useState("")
@@ -21,43 +22,42 @@ function ModalNode(props) {
 
     useEffect(() => {
         setNodeModel(props.modeNodeModal)
+        initialForm()
         if (props.modeNodeModal === 'Edit') {
-            if (props.nodeModel.data !== undefined) {
-                const nodeTypeFilter = nodeTypeOption.filter(type => type.value === props.nodeModel.data["nodeType"]);
-                setNodeName(props.nodeModel.data["nodeName"])
-                setNodeType(nodeTypeFilter)
-                setOpenCollapseFunction((props.nodeModel.data["nodeType"] === 'FUNCTION'))
-                setOpenCollapseSubFlow((props.nodeModel.data["nodeType"] === 'SUBFLOW'))
-                setOpenCollapseDecision((props.nodeModel.data["nodeType"] === 'DECISION'))
-                setSubFlow(props.nodeModel.data["subFlowId"])
-                setFunctionRef(props.nodeModel.data["functionRef"])
-                setFunctionRefParam(props.nodeModel.data["functionRefParam"])
-                setDefaultParam(props.nodeModel.data["defaultParam"])
-                setStep(props.nodeModel.data["step"])
+            if (props.nodeModel !== undefined) {
+                setNodeName(props.nodeModel["nodeName"])
+                setNodeType(getNodeTypeObject(props.nodeModel["nodeType"]))
+                openCollapse(props.nodeModel["nodeType"])
+                setSubFlow(props.nodeModel["subFlowId"])
+                setFunctionRef(props.nodeModel["functionRef"])
+                setFunctionRefParam(props.nodeModel["functionRefParam"])
+                setDefaultParam(props.nodeModel["defaultParam"])
+                setStep(getStepObject(props.nodeModel["step"]))
             }
-        } else {
-            setNodeName("")
-            setNodeType([])
-            setSubFlow("")
-            setFunctionRef("")
-            setFunctionRefParam("")
-            setDefaultParam("")
-            setStep("")
-            setOpenCollapseFunction((nodeType.value === 'FUNCTION'))
-            setOpenCollapseSubFlow((nodeType.value === 'SUBFLOW'))
-            setOpenCollapseDecision((nodeType.value === 'DECISION'))
         }
     }, [props])
+
+    const initialForm = () => {
+        setNodeName("")
+        setNodeType("")
+        setSubFlow("")
+        setFunctionRef("")
+        setFunctionRefParam("")
+        setDefaultParam("")
+        setStep("")
+        openCollapse("")
+    }
+
+
 
     const openCollapse = (nodeType) => {
         setSubFlow("")
         setFunctionRef("")
         setFunctionRefParam("")
         setDefaultParam("")
-        setStep("")
-        setOpenCollapseFunction((nodeType.value === 'FUNCTION'))
-        setOpenCollapseSubFlow((nodeType.value === 'SUBFLOW'))
-        setOpenCollapseDecision((nodeType.value === 'DECISION'))
+        setOpenCollapseFunction((nodeType === 'FUNCTION'))
+        setOpenCollapseSubFlow((nodeType === 'SUBFLOW'))
+        setOpenCollapseDecision((nodeType === 'DECISION'))
     }
 
     const onSubmit = () => {
@@ -66,19 +66,22 @@ function ModalNode(props) {
             id: nodeId,
             data: {
                 label: `${nodeName}`,
-                flowNodeId: Number.parseInt(nodeId),
-                flowId: props.flowId,
-                nodeType: `${nodeType.value}`,
-                nodeName: `${nodeName}`,
-                subFlowId: `${subFlowId}`,
-                functionRef: `${functionRef}`,
-                functionRefParam: `${functionRefParam}`,
-                defaultParam: `${defaultParam}`,
-                step: `${step}`
-
             },
             position: { x: 0, y: 0 },
+            flowNodeId: Number.parseInt(nodeId),
+            flowId: props.flowId,
+            nodeType: `${nodeType.value}`,
+            nodeName: `${nodeName}`,
+            subFlowId: `${subFlowId}`,
+            functionRef: `${functionRef}`,
+            functionRefParam: `${functionRefParam}`,
+            defaultParam: `${defaultParam}`,
+            step: `${step.value}`,
         })
+    }
+
+    const onDelete = () => {
+        props.deleteNode(props.nodeModel.id)
     }
 
     return (
@@ -111,7 +114,7 @@ function ModalNode(props) {
                                 placeholder="Select Node type"
                                 isSearchable={false}
                                 value={nodeType}
-                                onChange={e => { setNodeType(e); openCollapse(e); }} />
+                                onChange={e => { setNodeType(e); openCollapse(e.value); }} />
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Collapse in={openCollapseDecision} dimension="height">
@@ -185,7 +188,7 @@ function ModalNode(props) {
                                 placeholder="Step Node"
                                 isSearchable={false}
                                 value={step}
-                                onChange={e => setStep(e.value)}
+                                onChange={e => setStep(e)}
                             />
                         </Form.Group>
                     </Form>
@@ -199,6 +202,9 @@ function ModalNode(props) {
                     </Button>
                     <Button variant="success" hidden={(props.modeNodeModal === 'Add')} onClick={onSubmit}>
                         Edit
+                    </Button>
+                    <Button variant="danger" hidden={(props.modeNodeModal === 'Add')} onClick={onDelete}>
+                        Delete
                     </Button>
                 </Modal.Footer>
             </Modal>

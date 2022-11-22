@@ -1,4 +1,3 @@
-// Import Libary
 import React, { useState, useCallback } from 'react';
 import ReactFlow, {
     ReactFlowProvider,
@@ -13,22 +12,20 @@ import ReactFlow, {
 } from 'reactflow';
 import { Button } from "react-bootstrap";
 
-
-// Import Cascading Style Sheets 
 import 'reactflow/dist/style.css';
 import './Decision-flow.css'
 
 import { initialNodes, initialEdges } from '../config/DataConfig'
 import ButtonEdge from './ButtonEdge/ButtonEdge';
-import ExportModal from './Modal/ExportModal'
-import ModalNode from './Modal/NodeModal'
+import ExportModal from './Modal/Export/ExportModal'
+import ModalNode from './Modal/Node/NodeModal'
 
 const flow_id = 170;
 
 const FlowSessionKey = `Session-${flow_id}`;
 
 const edgeTypes = {
-    buttonedge: ButtonEdge,
+    buttonedge: ButtonEdge
 };
 
 const Decision = () => {
@@ -38,7 +35,12 @@ const Decision = () => {
     const [rfInstance, setRfInstance] = useState(null);
     const { setViewport } = useReactFlow();
     const onConnect = useCallback(
-        (params) => setEdges((eds) => addEdge({ ...params, type: 'buttonedge', markerEnd: { type: MarkerType.ArrowClosed, }, style: { strokeWidth: 2 } }, eds)),
+        (params) => setEdges((eds) => addEdge({
+            ...params, type: 'buttonedge', markerEnd: { type: MarkerType.ArrowClosed, }, style: { strokeWidth: 2 },
+            data: {
+                saveEdgeParam: saveEdgeParam
+            }
+        }, eds)),
         [setEdges]
     );
 
@@ -75,7 +77,6 @@ const Decision = () => {
     }
 
     const onNodeClick = (event, node) => {
-        console.log('click node', node.id)
         setModeNodeModal("Edit")
         if (node) {
             setNodeModel(node)
@@ -105,6 +106,10 @@ const Decision = () => {
         setOpenModalNode(false);
     }
 
+    const deleteNode = (nodeId) => {
+        setNodes((nds) => nds.filter((node) => node.id !== nodeId))
+        setOpenModalNode(false);
+    }
 
     // Modal Export
     const [jsonData, setJsonData] = useState("")
@@ -115,8 +120,6 @@ const Decision = () => {
 
         // const nodes = flow.nodes;
         // const edges = flow.edges;
-        // console.log("Node React Flow : ", nodes)
-        // console.log("Edge React Flow : ", edges)
         // const flowNodeList = []
         // const flowEdgeList = []
 
@@ -148,15 +151,24 @@ const Decision = () => {
         //     }
         //     flowEdgeList.push(rowFlowEdge)
         // })
-
-        // console.log('Node : ', flowNodeList)
-        // console.log('Edge : ', flowEdgeList)
     }
 
     const onCloseModalExport = () => {
         setOpenModalExport(false);
     }
 
+    // Modal Edge Custom
+    const saveEdgeParam = (edgeId, edgeParam) => {
+        console.log("saveEdgeParam Edge ID : ", edgeId, " Edge Param : ", edgeParam)
+        setEdges((eds) =>
+            eds.map((e) => {
+                if (e.id === edgeId) {
+                    e.edgeParam = edgeParam
+                }
+                return e;
+            })
+        );
+    }
 
     return (
         <ReactFlow
@@ -193,6 +205,7 @@ const Decision = () => {
                 onCloseModalNode={onCloseModalNode}
                 generateFloeNodeID={generateFloeNodeID}
                 saveNode={saveNode}
+                deleteNode={deleteNode}
                 showModalNode={openModalNode}
                 flowId={flow_id}
                 nodeModel={nodeModel}
