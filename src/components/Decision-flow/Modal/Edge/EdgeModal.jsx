@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Button, Form, Table } from 'react-bootstrap'
+import { Modal, Button, Form, Table, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/DataConfig'
 import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../../Util/Util'
@@ -62,24 +62,27 @@ function ModalEdge(props) {
                 </Modal.Header>
                 <Modal.Body className='modal-body-edge'>
                     <Form className='max-height'>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Edge Id</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Node Name"
-                                value={props.idEdge}
-                                disabled
-                            />
-                        </Form.Group>
-
-                        <Form.Group className="mb-3" style={{ textAlign: 'right' }}>
-                            <Button variant="info" onClick={onAddCondition}>
-                                + Add
-                            </Button>
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <div className="container">
-                                <Table responsive="true" className='max-height'>
+                        <Row>
+                            <Form.Group>
+                                <Form.Label>Edge Id</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Node Name"
+                                    value={props.idEdge}
+                                    disabled
+                                />
+                            <br></br>
+                            </Form.Group>
+                            <Form.Group style={{ textAlign: 'right' }}>
+                                <Button variant="info" onClick={onAddCondition}>
+                                    + Add
+                                </Button>
+                            </Form.Group>
+                        </Row>
+                        <br></br>
+                        <Form.Group>
+                            <div className='body-table'>
+                                <Table responsive="true" className='table-fixed'>
                                     <thead>
                                         <tr>
                                             <th>Edge Condition</th>
@@ -88,7 +91,7 @@ function ModalEdge(props) {
                                             <th>Edge Param Condition</th>
                                             <th>Edge Param Compare</th>
                                             <th>Edge Value Compare</th>
-                                            <th></th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
