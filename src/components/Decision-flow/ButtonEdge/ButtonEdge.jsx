@@ -20,7 +20,7 @@ export default function CustomEdge({
 	markerEnd,
 	source,
 	target,
-	data
+	data,
 }) {
 	const [edgePath, labelX, labelY] = getBezierPath({
 		sourceX,
@@ -40,12 +40,12 @@ export default function CustomEdge({
 	};
 
 	const onCloseModalEdge = () => {
+		console.log(data)
 		setOpenModal(false);
-		// data.saveEdgeParam(id,"sss")
 	}
 
 	const onSaveEdgeParam = (edgeParam) =>{
-		data.saveEdgeParam(id,edgeParam)
+		data.functionName(id,edgeParam)
 		setOpenModal(false);
 	}
 
@@ -76,6 +76,7 @@ export default function CustomEdge({
 					onSaveEdgeParam={onSaveEdgeParam}
 					showModalEdge={openModal}
 					idEdge={idEdge}
+					edgeParam={data.edgeParam}
 					sourceNode={source}
 					targetNode={target}
 				/>

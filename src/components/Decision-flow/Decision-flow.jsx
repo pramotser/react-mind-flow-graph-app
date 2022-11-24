@@ -12,6 +12,7 @@ import ReactFlow, {
 } from 'reactflow';
 import { Button } from "react-bootstrap";
 import Swal from 'sweetalert2'
+import * as BiIcons from 'react-icons/bi'
 
 import 'reactflow/dist/style.css';
 import './Decision-flow.css'
@@ -30,34 +31,18 @@ const edgeTypes = {
 };
 
 const Decision = () => {
-
+    const generateFloeNodeID = () => `${flow_id.toString() + nodes.length.toString().padStart(3, '0')}`
     const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
     const [rfInstance, setRfInstance] = useState(null);
     const { setViewport } = useReactFlow();
-    const onConnect = useCallback(
+    const onConnect =
         (params) => setEdges((eds) => addEdge({
             ...params, type: 'buttonedge', markerEnd: { type: MarkerType.ArrowClosed, }, style: { strokeWidth: 2 },
             data: {
-                saveEdgeParam: saveEdgeParam
+                functionName: saveEdgeParam,
             }
-        }, eds)),
-        [setEdges]
-    );
-
-    const generateFloeNodeID = () => `${flow_id.toString() + nodes.length.toString().padStart(3, '0')}`
-
-
-    const swalWithBootstrapButtons = Swal.mixin({
-        customClass: {
-            confirmButton: 'btn btn-success',
-            cancelButton: 'btn btn-danger'
-        },
-        buttonsStyling: false
-    })
-
-
-
+        }, eds));
 
     const onSave = useCallback(() => {
         Swal.fire({
@@ -84,9 +69,18 @@ const Decision = () => {
             const flow = JSON.parse(localStorage.getItem(FlowSessionKey));
             if (flow) {
                 const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+                // console.log(flow.edges)
                 setNodes(flow.nodes || []);
-                setEdges(flow.edges || []);
-                setViewport({ x, y, zoom });
+                // setEdges(flow.edges || []);
+                setEdges(flow.edges.map((e) => {
+                    var edgeParam = (e.edgeParam) ? flow.edges.filter((edge) => edge.id === e.id).edgeParam : []
+                    e.data = {
+                        functionName: saveEdgeParam,
+                        edgeParam: edgeParam
+                    }
+                    return e;
+                }));
+
             }
         };
         restoreFlow();
@@ -185,16 +179,18 @@ const Decision = () => {
 
     // Modal Edge Custom
     const saveEdgeParam = (edgeId, edgeParam) => {
-        console.log("saveEdgeParam Edge ID : ", edgeId, " Edge Param : ", edgeParam)
         setEdges((eds) =>
             eds.map((e) => {
                 if (e.id === edgeId) {
-                    e.edgeParam = edgeParam
+                    e.data.edgeParam = edgeParam
                 }
                 return e;
             })
         );
+
     }
+
+    
 
     return (
         <ReactFlow
@@ -211,16 +207,16 @@ const Decision = () => {
         >
             <div className="save__controls">
                 <Button variant="primary" onClick={onAddNodeClick}>
-                    Add Node
+                    <BiIcons.BiPlusCircle /> Add Node
                 </Button>
                 <Button variant="primary" onClick={onExportModal}>
-                    Export JSON
+                    <BiIcons.BiExport /> Export JSON
                 </Button>
                 <Button variant="primary" onClick={onSave}>
                     Save Seesion
                 </Button>
                 <Button variant="primary" onClick={onRestore}>
-                    Restore
+                    <BiIcons.BiHistory /> Restore
                 </Button>
 
             </div>

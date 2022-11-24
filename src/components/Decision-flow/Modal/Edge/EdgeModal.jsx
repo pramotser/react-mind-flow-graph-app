@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Table, Row } from 'react-bootstrap'
 import Select from 'react-select'
 import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/DataConfig'
 import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../../Util/Util'
+import * as BsIcons from 'react-icons/bs'
+import * as BiIcons from 'react-icons/bi'
 
 import './EdgeModal.css'
 
@@ -10,12 +12,14 @@ function ModalEdge(props) {
     const [edgeParamData, setEdgeParamData] = useState([])
 
     const generateEdgeParam = () => `${edgeParamData.length.toString().padStart(3, '0')}`
+    useEffect(() => {
+        setEdgeParamData(props.edgeParam || [])
+    }, [props])
 
     const onChangeEdgeParam = (edgeParamId, field, value) => {
         setEdgeParamData((nds) =>
             nds.map((n) => {
                 if (n.edgeParamId === edgeParamId) {
-
                     n[field] = value
                 }
                 return n;
@@ -24,18 +28,23 @@ function ModalEdge(props) {
     }
 
     const onAddCondition = () => {
+        var edgeParam = {
+            edgeId: props.idEdge,
+            edgeParamId: generateEdgeParam(),
+            edgeCondition: [],
+            edgeType: [],
+            edgeParam: "",
+            edgeParamCondition: [],
+            edgeParamCompare: "",
+            edgeValueCompare: ""
+        };
         setEdgeParamData(
-            (e) => e.concat({
-                edgeId: props.idEdge,
-                edgeParamId: generateEdgeParam(),
-                edgeCondition: [],
-                edgeType: [],
-                edgeParam: "",
-                edgeParamCondition: [],
-                edgeParamCompare: "",
-                edgeValueCompare: ""
-            })
+            (e) => e.concat(edgeParam)
         )
+    }
+
+    const onDeleteEdgeParam = (edgeParamId) => {
+        setEdgeParamData((ep) => ep.filter((edgeParam) => edgeParam.edgeParamId !== edgeParamId))
     }
 
     const onSave = () => {
@@ -43,8 +52,8 @@ function ModalEdge(props) {
     }
 
 
-    const onClose = () =>{
-        // setEdgeParamData([])
+    const onClose = () => {
+        setEdgeParamData([])
         props.cModal()
     }
 
@@ -71,11 +80,11 @@ function ModalEdge(props) {
                                     value={props.idEdge}
                                     disabled
                                 />
-                            <br></br>
+                                <br></br>
                             </Form.Group>
                             <Form.Group style={{ textAlign: 'right' }}>
                                 <Button variant="info" onClick={onAddCondition}>
-                                    + Add
+                                    <BiIcons.BiPlusCircle /> Add
                                 </Button>
                             </Form.Group>
                         </Row>
@@ -151,7 +160,11 @@ function ModalEdge(props) {
                                                     </td>
 
                                                     <td>
-                                                    <Button variant="danger" >Delete</Button>
+                                                        <Button variant="danger"
+                                                            onClick={e => onDeleteEdgeParam(item.edgeParamId)}
+                                                        >
+                                                            <BsIcons.BsTrash /> Delete
+                                                        </Button>
                                                     </td>
                                                 </tr>
                                             ))

@@ -13,7 +13,7 @@ function ModalExport(props) {
     return (
         <>
             <Modal
-                size="lg"
+                size="xl"
                 show={props.showModalExport}
                 onHide={props.onCloseModalExport}
                 aria-labelledby="contained-modal-title-lg-vcenter"
@@ -28,7 +28,7 @@ function ModalExport(props) {
                             className="mb-3"
                             controlId="exampleForm.ControlTextarea1"
                         >
-                            <Form.Control as="textarea" value={jsonData} rows={3} disabled={true} />
+                            <Form.Control style={{ height: 400 }} as="textarea" value={jsonData} rows={3} disabled={true} />
                         </Form.Group>
                     </Form>
                 </Modal.Body>
