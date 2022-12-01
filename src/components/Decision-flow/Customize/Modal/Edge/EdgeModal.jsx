@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Table, Row } from 'react-bootstrap'
 import Select from 'react-select'
-import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/DataConfig'
-import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../../Util/Util'
+import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../../Config/DataConfig'
+import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../../../Util/Util'
 import * as BsIcons from 'react-icons/bs'
 import * as BiIcons from 'react-icons/bi'
 
@@ -13,7 +13,8 @@ function ModalEdge(props) {
 
     const generateEdgeParam = () => `${edgeParamData.length.toString().padStart(3, '0')}`
     useEffect(() => {
-        setEdgeParamData(props.edgeParam || [])
+        console.log(props.edgeParam)
+        setEdgeParamData(JSON.parse(JSON.stringify(props.edgeParam || [])))
     }, [props])
 
     const onChangeEdgeParam = (edgeParamId, field, value) => {
@@ -50,13 +51,7 @@ function ModalEdge(props) {
     const onSave = () => {
         props.onSaveEdgeParam(edgeParamData);
     }
-
-
-    const onClose = () => {
-        setEdgeParamData([])
-        props.cModal()
-    }
-
+    
     return (
         <>
             <Modal
@@ -176,7 +171,7 @@ function ModalEdge(props) {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={onClose}>
+                    <Button variant="secondary" onClick={props.cModal}>
                         Close
                     </Button>
                     <Button variant="primary" onClick={onSave}>

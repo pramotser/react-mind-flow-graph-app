@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Collapse, Card } from 'react-bootstrap'
 import Select from 'react-select'
-import { nodeTypeOption, stepOption } from '../../../config/DataConfig'
-import { getNodeTypeObject, getStepObject } from '../../../Util/Util'
+import { nodeTypeOption } from '../../../../Config/DataConfig'
+import { getNodeTypeObject } from '../../../../Util/Util'
 import './NodeModal.css'
 
 function ModalNode(props) {
@@ -14,7 +14,7 @@ function ModalNode(props) {
     const [functionRef, setFunctionRef] = useState("")
     const [functionRefParam, setFunctionRefParam] = useState("")
     const [defaultParam, setDefaultParam] = useState("")
-    const [step, setStep] = useState("")
+    // const [step, setStep] = useState("")
 
     const [openCollapseFunction, setOpenCollapseFunction] = useState(false);
     const [openCollapseSubFlow, setOpenCollapseSubFlow] = useState(false);
@@ -32,7 +32,7 @@ function ModalNode(props) {
                 setFunctionRef(props.nodeModel["functionRef"])
                 setFunctionRefParam(props.nodeModel["functionRefParam"])
                 setDefaultParam(props.nodeModel["defaultParam"])
-                setStep(getStepObject(props.nodeModel["step"]))
+                // setStep(getStepObject(props.nodeModel["step"]))
             }
         }
     }, [props])
@@ -44,7 +44,7 @@ function ModalNode(props) {
         setFunctionRef("")
         setFunctionRefParam("")
         setDefaultParam("")
-        setStep("")
+        // setStep("")
         openCollapse("")
     }
 
@@ -76,7 +76,7 @@ function ModalNode(props) {
             functionRef: `${functionRef}`,
             functionRefParam: `${functionRefParam}`,
             defaultParam: `${defaultParam}`,
-            step: `${step.value}`,
+            // step: `${step.value}`,
         })
     }
 
@@ -181,7 +181,7 @@ function ModalNode(props) {
                                 </div>
                             </Collapse>
                         </Form.Group>
-                        <Form.Group className="mb-3">
+                        {/* <Form.Group className="mb-3">
                             <Form.Label>Step Node</Form.Label>
                             <Select
                                 options={stepOption}
@@ -190,7 +190,7 @@ function ModalNode(props) {
                                 value={step}
                                 onChange={e => setStep(e)}
                             />
-                        </Form.Group>
+                        </Form.Group> */}
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>

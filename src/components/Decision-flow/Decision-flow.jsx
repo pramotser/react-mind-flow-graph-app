@@ -17,10 +17,10 @@ import * as BiIcons from 'react-icons/bi'
 import 'reactflow/dist/style.css';
 import './Decision-flow.css'
 
-import { initialNodes, initialEdges } from '../config/DataConfig'
-import ButtonEdge from './ButtonEdge/ButtonEdge';
-import ExportModal from './Modal/Export/ExportModal'
-import ModalNode from './Modal/Node/NodeModal'
+import { initialNodes, initialEdges } from '../Config/DataConfig'
+import ButtonEdge from './Customize/ButtonEdge/ButtonEdge';
+import ExportModal from './Customize/Modal/Export/ExportModal'
+import ModalNode from './Customize/Modal/Node/NodeModal'
 
 const flow_id = 170;
 
@@ -68,15 +68,14 @@ const Decision = () => {
         const restoreFlow = async () => {
             const flow = JSON.parse(localStorage.getItem(FlowSessionKey));
             if (flow) {
-                const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-                // console.log(flow.edges)
+                // const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+                console.log(flow.edges)
                 setNodes(flow.nodes || []);
-                // setEdges(flow.edges || []);
                 setEdges(flow.edges.map((e) => {
-                    var edgeParam = (e.edgeParam) ? flow.edges.filter((edge) => edge.id === e.id).edgeParam : []
+                    // var edgeParam = (e.edgeParam) ? flow.edges.filter((edge) => edge.id === e.id).edgeParam : []
                     e.data = {
                         functionName: saveEdgeParam,
-                        edgeParam: edgeParam
+                        edgeParam: e.data.edgeParam || []
                     }
                     return e;
                 }));
@@ -110,6 +109,7 @@ const Decision = () => {
 
     const saveNode = (mode, node) => {
         if (mode === "Add") {
+            console.log(node)
             setNodes((e) =>
                 e.concat(node)
             );
@@ -190,7 +190,7 @@ const Decision = () => {
 
     }
 
-    
+
 
     return (
         <ReactFlow

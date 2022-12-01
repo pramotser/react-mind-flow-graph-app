@@ -4,7 +4,7 @@ import {
     edgeConditionOption,
     edgeTypeOption,
     edgeParamConditionOption
-} from '../config/DataConfig'
+} from '../Config/DataConfig'
 export const getNodeTypeObject = (nodeType) => (nodeTypeOption.filter((nto) => nto.value === nodeType))
 
 export const getStepObject = (step) => (stepOption.filter((so) => so.value === step))
