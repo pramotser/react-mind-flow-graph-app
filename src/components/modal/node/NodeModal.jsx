@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Collapse, Card } from 'react-bootstrap'
 import Select from 'react-select'
 import { nodeTypeOption } from '../../../config/DataConfig'
-import { getNodeTypeObject } from '../../../util/Util'
+import { getNodeTypeObject, getColorNodeType } from '../../../util/Util'
 import './NodeModal.css'
 
 function ModalNode(props) {
@@ -24,18 +24,28 @@ function ModalNode(props) {
     const [resultParam, setResultParam] = useState("")
     const [remark, setRemark] = useState("")
 
+    const [backgroundColor, setBackGroundColor] = useState("")
     useEffect(() => {
         setNodeData(JSON.parse(JSON.stringify(props.nodeData || {})))
+
         if (Object.keys(props.nodeData).length !== 0) {
-            let nodeType = getNodeTypeObject(props.nodeData["nodeType"])
             setModalNodeTypeEnd(props.nodeData["nodeType"] === 'END')
-            setNodeName(props.nodeData["nodeName"])
-            setNodeType(nodeType)
-            openCollapse(nodeType[0])
-            setSubFlow(props.nodeData["subFlowId"])
-            setFunctionRef(props.nodeData["functionRef"])
-            setFunctionRefParam(props.nodeData["functionRefParam"])
-            setDefaultParam(props.nodeData["defaultParam"])
+            if (props.nodeData["nodeType"] !== 'END') {
+                let nodeType = getNodeTypeObject(props.nodeData["nodeType"])
+                setNodeName(props.nodeData["nodeName"])
+                setNodeType(nodeType)
+                openCollapse(nodeType[0])
+                setSubFlow(props.nodeData["subFlowId"])
+                setFunctionRef(props.nodeData["functionRef"])
+                setFunctionRefParam(props.nodeData["functionRefParam"])
+                setDefaultParam(props.nodeData["defaultParam"])
+            } else {
+                console.log('NodeType End')
+                console.log(props.nodeData)
+                setResultParam(props.nodeData["result"])
+                setRemark(props.nodeData["remark"])
+            }
+            setBackGroundColor(getColorNodeType(props.nodeData["nodeType"]))
         }
     }, [props])
 
@@ -48,6 +58,7 @@ function ModalNode(props) {
             setOpenCollapseFunction((nodeType["value"] === 'FUNCTION'))
             setOpenCollapseSubFlow((nodeType["value"] === 'SUBFLOW'))
             setOpenCollapseDecision((nodeType["value"] === 'DECISION'))
+            setBackGroundColor(getColorNodeType(nodeType["value"]))
         }
     }
 
@@ -68,7 +79,6 @@ function ModalNode(props) {
     }
 
     const onDelete = () => {
-
         props.deleteNode(props.nodeData.id)
     }
 
@@ -82,7 +92,7 @@ function ModalNode(props) {
                 aria-labelledby="contained-modal-title-lg-vcenter"
                 centered
             >
-                <Modal.Header closeButton>
+                <Modal.Header style={{ backgroundColor: backgroundColor }} closeButton>
                     <Modal.Title>{(modalNodeTypeEnd) ? 'Set Result' : 'Edit Node'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

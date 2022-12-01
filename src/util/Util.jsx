@@ -14,3 +14,17 @@ export const getEdgeConditionOptionObject = (edgeCondition) => (edgeConditionOpt
 export const getEdgeTypeOptionObject = (edgeType) => (edgeTypeOption.filter((eto) => eto.value === edgeType))
 
 export const getEdgeParamConditionOptionObject = (edgeParamCondition) => (edgeParamConditionOption.filter((epco) => epco.value === edgeParamCondition))
+
+export const getColorNodeType = (nodeType) => {
+    if (nodeType === 'FUNCTION') {
+        return "#9fc5e8";
+    } else if (nodeType === 'DECISION') {
+        return "#b6d7a8";
+    } else if (nodeType === 'SUBFLOW') {
+        return "#ead1dc";
+    } else if (nodeType === 'END') {
+        return "#edf19f";
+    } else {
+        return "#fff";
+    }
+}
