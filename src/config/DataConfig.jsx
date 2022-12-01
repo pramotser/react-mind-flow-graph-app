@@ -1,25 +1,5 @@
 export const initialNodes = [
-    {
-        width: 150,
-        height: 40,
-        id: "170000",
-        data: {
-            label: "Start Flow"
-        },
-        position: {
-            x: 100,
-            y: 100
-        },
-        flowNodeId: 170000,
-        flowId: 170,
-        nodeType: "START",
-        nodeName: "Start Flow",
-        subFlowId: "",
-        functionRef: "",
-        functionRefParam: "",
-        defaultParam: "",
-        type:"input"
-    }
+   
 ];
 
 export const initialEdges = [

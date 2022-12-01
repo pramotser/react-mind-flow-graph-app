@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { getBezierPath } from 'reactflow';
-import ModalEdge from '../Modal/Edge/EdgeModal'
+import ModalEdge from '../../modal/edge/EdgeModal'
 
 import * as BiIcons from 'react-icons/bi'
 
@@ -32,21 +32,26 @@ export default function CustomEdge({
 	});
 
 
-	const [openModal, setOpenModal] = useState(false);
+	const [openModalEdge, setOpenModalEdge] = useState(false);
 	const [idEdge, setIdEdge] = useState('');
 	const onEdgeClick = (evt, id) => {
 		setIdEdge(id)
-		setOpenModal(true);
+		setOpenModalEdge(true);
 	};
 
 	const onCloseModalEdge = () => {
-		console.log(data)
-		setOpenModal(false);
+		setOpenModalEdge(false);
 	}
 
 	const onSaveEdgeParam = (edgeParam) =>{
-		data.functionName(id,edgeParam)
-		setOpenModal(false);
+		data.function.saveEdgeParam(id,edgeParam)
+		setOpenModalEdge(false);
+	}
+
+	const onDeleteEdge = (edgeId) => {
+		console.log(edgeId)
+		data.function.deleteEdge(edgeId)
+		setOpenModalEdge(false);
 	}
 
 	return (
@@ -74,7 +79,8 @@ export default function CustomEdge({
 				<ModalEdge
 					cModal={onCloseModalEdge}
 					onSaveEdgeParam={onSaveEdgeParam}
-					showModalEdge={openModal}
+					onDeleteEdge={onDeleteEdge}
+					showModalEdge={openModalEdge}
 					idEdge={idEdge}
 					edgeParam={data.edgeParam}
 					sourceNode={source}

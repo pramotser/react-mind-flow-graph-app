@@ -1,17 +1,16 @@
 import React from 'react';
+import 'reactflow/dist/style.css';
+import '../index.css';
+import DecisionFlow from './decision-flow/Decision-Flow';
+import Navbars from './layout/Navbar';
 
-import './App.css';
-import DecisionFlow from './Decision-flow/Decision-flow';
-import BrandExample from './Layout/NavBar';
-
-
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <BrandExample />
-      <DecisionFlow />
-    </div>
+    <>
+      <Navbars/>
+      <DecisionFlow/>
+    </>
   );
-}
+};
 
 export default App;

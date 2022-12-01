@@ -2,12 +2,12 @@ import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 import Logo from '../../assets/images/logo_login_page.png'
 
-function BrandExample() {
+function Navbars() {
   return (
     <>
       <Navbar bg="dark" variant="dark">
         <Container>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand>
             <img
               alt=""
               src={Logo}
@@ -24,4 +24,4 @@ function BrandExample() {
   );
 }
 
-export default BrandExample;
+export default Navbars;

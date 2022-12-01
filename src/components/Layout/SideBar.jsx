@@ -1,22 +1,23 @@
 import React from 'react';
 
-export default () => {
+export default (props) => {
   const onDragStart = (event, nodeType) => {
-    // event.dataTransfer.setData('application/reactflow', nodeType);
-    // event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('application/nodeId',props.generateFloeNodeID())
+    event.dataTransfer.setData('application/reactflow', nodeType);
+    event.dataTransfer.effectAllowed = 'move';
   };
 
   return (
     <aside>
       <div className="description">You can drag these nodes to the pane on the right.</div>
       <div className="dndnode input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
-        Input Node
+        Start
       </div>
       <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-        Default Node
+        New node
       </div>
       <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-        Output Node
+        End
       </div>
     </aside>
   );

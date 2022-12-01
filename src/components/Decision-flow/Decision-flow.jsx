@@ -1,133 +1,130 @@
-import React, { useState, useCallback } from 'react';
+
+import React, { useState, useRef, useCallback } from 'react';
 import ReactFlow, {
     ReactFlowProvider,
+    addEdge,
     useNodesState,
     useEdgesState,
-    addEdge,
-    useReactFlow,
-    MiniMap,
     Controls,
+    MiniMap,
     Background,
     MarkerType,
 } from 'reactflow';
-import { Button } from "react-bootstrap";
 import Swal from 'sweetalert2'
-import * as BiIcons from 'react-icons/bi'
-
 import 'reactflow/dist/style.css';
-import './Decision-flow.css'
+import './Decision-Flow.css'
+import * as BiIcons from 'react-icons/bi'
+import { Button } from "react-bootstrap";
 
-import { initialNodes, initialEdges } from '../Config/DataConfig'
-import ButtonEdge from './Customize/ButtonEdge/ButtonEdge';
-import ExportModal from './Customize/Modal/Export/ExportModal'
-import ModalNode from './Customize/Modal/Node/NodeModal'
+import ModalNode from '../modal/node/NodeModal';
+import ButtonEdge from '../customize/button/ButtonEdge';
+import ExportModal from '../modal/export/ExportModal'
+import Sidebar from '../layout/Sidebar';
 
-const flow_id = 170;
+import '../../index.css';
 
-const FlowSessionKey = `Session-${flow_id}`;
-
+let idRunning = 0;
 const edgeTypes = {
     buttonedge: ButtonEdge
 };
 
-const Decision = () => {
-    const generateFloeNodeID = () => `${flow_id.toString() + nodes.length.toString().padStart(3, '0')}`
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-    const [rfInstance, setRfInstance] = useState(null);
-    const { setViewport } = useReactFlow();
-    const onConnect =
-        (params) => setEdges((eds) => addEdge({
-            ...params, type: 'buttonedge', markerEnd: { type: MarkerType.ArrowClosed, }, style: { strokeWidth: 2 },
-            data: {
-                functionName: saveEdgeParam,
+const tbMFlow = {
+    flowId: 619,
+    flowName: 'Test Program PLNW_TENOR_72 MaxTenor',
+    resultParam: 'maxTenor'
+}
+
+const DecisionFlow = () => {
+    const reactFlowWrapper = useRef(null);
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [reactFlowInstance, setReactFlowInstance] = useState(null);
+    const onConnect = useCallback((params) => setEdges((eds) => addEdge({
+        ...params, type: 'buttonedge', markerEnd: { type: MarkerType.ArrowClosed, }, style: { strokeWidth: 2 },
+        data: {
+            function: {
+                saveEdgeParam: saveEdgeParam,
+                deleteEdge: deleteEdge,
             }
-        }, eds));
-
-    const onSave = useCallback(() => {
-        Swal.fire({
-            title: 'Do you want to save the changes?',
-            showConfirmButton: true,
-            confirmButtonText: 'Save',
-            confirmButtonColor: '#8CD4F5',
-            showCancelButton: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                if (rfInstance) {
-                    const flow = rfInstance.toObject();
-                    localStorage.setItem(FlowSessionKey, JSON.stringify(flow));
-                    Swal.fire('Saved!', '', 'success')
-                }
-            } else {
-                Swal.fire('Changes are not saved', '', 'info')
-            }
-        })
-    }, [rfInstance]);
-
-    const onRestore = useCallback(() => {
-        const restoreFlow = async () => {
-            const flow = JSON.parse(localStorage.getItem(FlowSessionKey));
-            if (flow) {
-                // const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-                console.log(flow.edges)
-                setNodes(flow.nodes || []);
-                setEdges(flow.edges.map((e) => {
-                    // var edgeParam = (e.edgeParam) ? flow.edges.filter((edge) => edge.id === e.id).edgeParam : []
-                    e.data = {
-                        functionName: saveEdgeParam,
-                        edgeParam: e.data.edgeParam || []
-                    }
-                    return e;
-                }));
-
-            }
-        };
-        restoreFlow();
-    }, [setNodes, setViewport]);
-
-    // Modal Node
-    const [modeNodeModal, setModeNodeModal] = useState("")
-    const [openModalNode, setOpenModalNode] = useState(false);
-    const [nodeModel, setNodeModel] = useState({})
-
-    const onAddNodeClick = () => {
-        setModeNodeModal("Add")
-        setOpenModalNode(true);
-    }
-
-    const onNodeClick = (event, node) => {
-        setModeNodeModal("Edit")
-        if (node) {
-            setNodeModel(node)
-            setOpenModalNode(true);
         }
-    };
+    }, eds)), []);
 
+    const onDragOver = useCallback((event) => {
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'move';
+    }, []);
+
+    const onDrop = useCallback(
+        (event) => {
+            event.preventDefault();
+            const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+            const type = event.dataTransfer.getData('application/reactflow');
+            const nodeId = event.dataTransfer.getData('application/nodeId');
+            // check if the dropped element is valid
+            if (typeof type === 'undefined' || !type) {
+                return;
+            }
+            const position = reactFlowInstance.project({
+                x: event.clientX - reactFlowBounds.left,
+                y: event.clientY - reactFlowBounds.top,
+                zoom: 0.5
+            });
+            let lable;
+            if (type === "input") {
+                lable = 'Start'
+            } else if (type === 'default') {
+                lable = 'New node'
+            } else {
+                lable = 'End'
+            }
+            const newNode = {
+                id: `${nodeId}`,
+                type,
+                position,
+                data: { label: `${lable}` },
+                nodeType: `${((type === "input") ? "START" : (type === "output") ? "END" : null)}`,
+                flowNodeId: `${tbMFlow.flowId}`,
+                flowId: `${nodeId}`,
+                nodeName: "",
+                subFlowId: "",
+                functionRef: "",
+                functionRefParam: "",
+                defaultParam: ""
+            };
+            setNodes((nds) => nds.concat(newNode));
+        },
+        [reactFlowInstance]
+    );
+
+    const generateFloeNodeID = () => `${tbMFlow.flowId.toString()}${(idRunning++).toString().padStart(3, '0')}`;
+    const [openModalNode, setOpenModalNode] = useState(false);
+    const [nodeData, setNodeData] = useState({})
     const onCloseModalNode = () => {
         setOpenModalNode(false);
     }
 
-    const saveNode = (mode, node) => {
-        if (mode === "Add") {
-            console.log(node)
-            setNodes((e) =>
-                e.concat(node)
-            );
-        } else {
-            setNodes((nds) =>
-                nds.map((n) => {
-                    if (n.id === node.id) {
-                        n = node
-                    }
-                    return n;
-                })
-            );
+    const onNodeClick = useCallback((event, node) => {
+        setNodeData(node)
+        if (node.nodeType !== "START") {
+            setOpenModalNode(true);
         }
+    }, [])
+
+    const saveNode = useCallback((node) => {
+        setNodes((nds) =>
+            nds.map((n) => {
+                if (n.id === node.id) {
+                    n = node
+                }
+                return n;
+            })
+        );
         setOpenModalNode(false);
-    }
+    }, [setNodes, reactFlowInstance])
 
     const deleteNode = (nodeId) => {
         setNodes((nds) => nds.filter((node) => node.id !== nodeId))
+        setEdges((edges) => edges.filter((edge) => (edge.source !== nodeId && edge.target !== nodeId)))
         setOpenModalNode(false);
     }
 
@@ -135,50 +132,16 @@ const Decision = () => {
     const [jsonData, setJsonData] = useState("")
     const [openModalExport, setOpenModalExport] = useState(false);
     const onExportModal = () => {
-        setJsonData(JSON.stringify(rfInstance.toObject()));
+        setJsonData(JSON.stringify(reactFlowInstance.toObject()));
         setOpenModalExport(true);
-
-        // const nodes = flow.nodes;
-        // const edges = flow.edges;
-        // const flowNodeList = []
-        // const flowEdgeList = []
-
-        // nodes.map((node) => {
-        //     // if (node.data.step !== "END" && node.data.step !== "OUT") {
-        //         var rowFlowNode = {
-        //             flowNodeId: node.data.flowNodeId,
-        //             flowId: node.data.flowId,
-        //             nodeType: node.data.nodeType,
-        //             nodeName: node.data.nodeName,
-        //             subFlowId: node.data.subFlowId,
-        //             functionRef: node.data.functionRef,
-        //             functionRefParam: node.data.functionRefParam,
-        //             defaultParam: node.data.defaultParam,
-        //         }
-        //         flowNodeList.push(rowFlowNode)
-        //     // }
-        // })
-
-        // edges.map((edge , index) => {
-        //     var stepNode = nodes.filter(
-        //         (node) => node.data.flowNodeId === Number.parseInt(edge.target)
-        //     )[0].data.step;
-        //     var rowFlowEdge = {
-        //         flowEdgeId: Number.parseInt(generateFloeEdgeID(index)),
-        //         step: stepNode,
-        //         flowNodeId: edge.source,
-        //         flowEdgeResult: edge.target
-        //     }
-        //     flowEdgeList.push(rowFlowEdge)
-        // })
     }
 
     const onCloseModalExport = () => {
         setOpenModalExport(false);
     }
 
-    // Modal Edge Custom
-    const saveEdgeParam = (edgeId, edgeParam) => {
+    // Modal Edge
+    const saveEdgeParam = useCallback((edgeId, edgeParam) => {
         setEdges((eds) =>
             eds.map((e) => {
                 if (e.id === edgeId) {
@@ -188,62 +151,99 @@ const Decision = () => {
             })
         );
 
+    }, [setEdges, reactFlowInstance])
+
+    const deleteEdge = (edgeId) => {
+        setEdges((edges) => edges.filter((edge) => edge.id !== edgeId))
     }
 
+    const SessionKey = `Session-${tbMFlow.flowId}`;
+    const onSaveSession = useCallback(() => {
+        if (reactFlowInstance) {
+            const flow = reactFlowInstance.toObject();
+            localStorage.setItem(SessionKey, JSON.stringify(flow));
+            Swal.fire('Saved!', '', 'success')
+        }
 
+    }, [reactFlowInstance]);
 
+    const onRestoreSession = useCallback(() => {
+        const restoreFlow = async () => {
+            const flow = JSON.parse(localStorage.getItem(SessionKey));
+            if (flow) {
+                // const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+                setNodes(flow.nodes || []);
+                setEdges(flow.edges.map((e) => {
+                    // var edgeParam = (e.edgeParam) ? flow.edges.filter((edge) => edge.id === e.id).edgeParam : []
+                    e.data = {
+                        function: {
+                            saveEdgeParam: saveEdgeParam,
+                            deleteEdge: deleteEdge,
+                        },
+                        edgeParam: e.data.edgeParam || []
+                    }
+                    return e;
+                }));
+
+            }
+        };
+        restoreFlow();
+    }, [setNodes]);
     return (
-        <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onConnect={onConnect}
-            onInit={setRfInstance}
-            edgeTypes={edgeTypes}
-            fitView
-            onNodeClick={onNodeClick}
-            attributionPosition="top-right"
-        >
-            <div className="save__controls">
-                <Button variant="primary" onClick={onAddNodeClick}>
-                    <BiIcons.BiPlusCircle /> Add Node
-                </Button>
-                <Button variant="primary" onClick={onExportModal}>
-                    <BiIcons.BiExport /> Export JSON
-                </Button>
-                <Button variant="primary" onClick={onSave}>
-                    Save Seesion
-                </Button>
-                <Button variant="primary" onClick={onRestore}>
-                    <BiIcons.BiHistory /> Restore
-                </Button>
+        <div className="dndflow">
+            <ReactFlowProvider>
+                <Sidebar generateFloeNodeID={generateFloeNodeID} />
+                <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+                    <ReactFlow
+                        nodes={nodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onNodeClick={onNodeClick}
+                        onEdgesChange={onEdgesChange}
+                        edgeTypes={edgeTypes}
+                        onConnect={onConnect}
+                        onInit={setReactFlowInstance}
+                        onDrop={onDrop}
+                        onDragOver={onDragOver}
+                        deleteKeyCode={null}
+                        fitView
+                    >
+                        <div className="save__controls">
+                            {/* <Button variant="primary" onClick={onAddNodeClick}>
+                                <BiIcons.BiPlusCircle /> Add Node
+                            </Button> */}
+                            <Button variant="primary" onClick={onExportModal}>
+                                <BiIcons.BiExport /> Export JSON
+                            </Button>
+                            <Button variant="primary" onClick={onSaveSession}>
+                                Save Session
+                            </Button>
+                            <Button variant="primary" onClick={onRestoreSession}>
+                                <BiIcons.BiHistory /> Restore Session
+                            </Button>
 
-            </div>
-            <MiniMap />
-            <Controls />
-            <Background color="#aaa" gap={16} />
-            <ModalNode
-                onCloseModalNode={onCloseModalNode}
-                generateFloeNodeID={generateFloeNodeID}
-                saveNode={saveNode}
-                deleteNode={deleteNode}
-                showModalNode={openModalNode}
-                flowId={flow_id}
-                nodeModel={nodeModel}
-                modeNodeModal={modeNodeModal}
-            />
-            <ExportModal
-                showModalExport={openModalExport}
-                onCloseModalExport={onCloseModalExport}
-                jsonData={jsonData}
-            />
-        </ReactFlow>
+                        </div>
+                        <MiniMap />
+                        <Controls />
+                        <Background color="#aaa" gap={16} />
+                        <ModalNode
+                            onCloseModalNode={onCloseModalNode}
+                            saveNode={saveNode}
+                            deleteNode={deleteNode}
+                            showModalNode={openModalNode}
+                            nodeData={nodeData}
+                        />
+
+                        <ExportModal
+                            showModalExport={openModalExport}
+                            onCloseModalExport={onCloseModalExport}
+                            jsonData={jsonData}
+                        />
+                    </ReactFlow>
+                </div>
+            </ReactFlowProvider>
+        </div>
     );
 };
 
-export default () => (
-    <ReactFlowProvider>
-        <Decision />
-    </ReactFlowProvider>
-);
+export default DecisionFlow;
