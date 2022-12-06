@@ -12,14 +12,14 @@ import ReactFlow, {
 } from 'reactflow';
 import Swal from 'sweetalert2'
 import 'reactflow/dist/style.css';
-import './Decision-Flow.css'
+import './Decision-flow.css'
 import * as BiIcons from 'react-icons/bi'
 import { Button } from "react-bootstrap";
 
 import ModalNode from '../modal/node/NodeModal';
 import ButtonEdge from '../customize/button/ButtonEdge';
 import ExportModal from '../modal/export/ExportModal'
-import Sidebar from '../layout/Sidebar';
+import Sidebar from '../layout/SideBar';
 
 import '../../index.css';
 import CustomNode from '../customize/node/CustomNode';
