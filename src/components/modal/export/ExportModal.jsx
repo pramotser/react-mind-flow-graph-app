@@ -16,6 +16,7 @@ function ModalExport(props) {
                 size="xl"
                 show={props.showModalExport}
                 onHide={props.onCloseModalExport}
+                backdrop="static"
                 aria-labelledby="contained-modal-title-lg-vcenter"
                 centered
             >

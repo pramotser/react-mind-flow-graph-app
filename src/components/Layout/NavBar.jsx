@@ -1,27 +1,23 @@
-import Container from 'react-bootstrap/Container';
+// import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
-import Logo from '../../assets/images/logo_login_page.png'
-
-function BrandExample() {
+import Logo from '../../assets/icons/Kaitnakin-Phatra-Bank-Logo.png'
+// import Logo from '../../assets/icons/kkp_logo.png'
+function Navbars() {
   return (
     <>
-      <Navbar bg="dark" variant="dark">
-        <Container>
-          <Navbar.Brand href="#home">
+      <Navbar bg="light" variant="light" style={{maxHeight: 50}} >
+          <Navbar.Brand>
             <img
               alt=""
               src={Logo}
-              width="30"
-              height="30"
+              height="60"
               className="d-inline-block align-top"
             />
             {' '}
-            Decision Config
           </Navbar.Brand>
-        </Container>
       </Navbar>
     </>
   );
 }
 
-export default BrandExample;
+export default Navbars;
