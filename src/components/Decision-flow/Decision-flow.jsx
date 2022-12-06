@@ -23,6 +23,7 @@ import Sidebar from '../layout/SideBar';
 
 import '../../index.css';
 import CustomNode from '../customize/node/CustomNode';
+import { initialNodes } from '../../config/DataConfig';
 
 let idRunning = 0;
 const edgeTypes = {
@@ -40,6 +41,7 @@ const tbMFlow = {
 
 const DecisionFlow = () => {
     const reactFlowWrapper = useRef(null);
+    // const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
@@ -49,8 +51,8 @@ const DecisionFlow = () => {
             function: {
                 saveEdgeParam: saveEdgeParam,
                 deleteEdge: deleteEdge,
-            }
-        }
+            },
+        },
     }, eds)), []);
 
     const onDragOver = useCallback((event) => {
@@ -71,7 +73,7 @@ const DecisionFlow = () => {
             const position = reactFlowInstance.project({
                 x: event.clientX - reactFlowBounds.left,
                 y: event.clientY - reactFlowBounds.top,
-                zoom: 0.5
+                zoom: 0.2
             });
             let lable;
             if (type === "input") {
@@ -79,7 +81,7 @@ const DecisionFlow = () => {
             } else if (type === 'default') {
                 lable = 'New Node'
             } else {
-                lable = 'End'
+                lable = 'Result Node'
             }
             const newNode = {
                 id: `${nodeId}`,
@@ -95,11 +97,24 @@ const DecisionFlow = () => {
                     functionRef: "",
                     functionRefParam: "",
                     defaultParam: "",
-                    result:'',
-                    remark:''
+                    result: '',
+                    remark: ''
                 },
             };
-            setNodes((nds) => nds.concat(newNode));
+            if ((newNode.data.nodeType === "START") && nodes.filter((node) => node.data.nodeType === 'START').length > 0) {
+                Swal.fire(
+                    'Node Start Duplicate?',
+                    'Unable to create duplicate startup node.',
+                    'warning'
+                )
+                idRunning--;
+            } else {
+                setNodes((nds) => nds.concat(newNode));
+                if (newNode.data.nodeType !== "START") {
+                    setNodeData(newNode)
+                    setOpenModalNode(true);
+                }
+            }
         },
     );
 
@@ -127,7 +142,7 @@ const DecisionFlow = () => {
             })
         );
         setOpenModalNode(false);
-    }, 
+    },
     )
 
     const deleteNode = (nodeId) => {
@@ -170,7 +185,7 @@ const DecisionFlow = () => {
         if (reactFlowInstance) {
             const flow = reactFlowInstance.toObject();
             localStorage.setItem(SessionKey, JSON.stringify(flow));
-            Swal.fire('Saved!', '', 'success')
+            Swal.fire('Saved Seesion', '', 'success')
         }
 
     }, [reactFlowInstance]);

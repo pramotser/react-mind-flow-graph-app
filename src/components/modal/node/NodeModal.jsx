@@ -31,8 +31,6 @@ function ModalNode(props) {
         setNodeData(JSON.parse(JSON.stringify(props.nodeData || {})))
         if (Object.keys(props.nodeData).length !== 0) {
             setModalNodeTypeEnd(props.nodeData["data"]["nodeType"] === 'END')
-            console.log(props.nodeData["data"])
-            console.log((props.nodeData["data"]["nodeType"] !== 'END'))
             if (props.nodeData["data"]["nodeType"] !== 'END') {
                 let nodeType = getNodeTypeObject(props.nodeData["data"]["nodeType"])
                 setNodeName(props.nodeData["data"]["nodeName"])
@@ -43,8 +41,6 @@ function ModalNode(props) {
                 setFunctionRefParam(props.nodeData["data"]["functionRefParam"])
                 setDefaultParam(props.nodeData["data"]["defaultParam"])
             } else {
-                console.log('NodeType End')
-                console.log(props.nodeData["data"])
                 setResultParam(props.nodeData["data"]["result"])
                 setRemark(props.nodeData["data"]["remark"])
             }
@@ -77,14 +73,12 @@ function ModalNode(props) {
     const onSubmit = () => {
         if (props.nodeData["data"]["nodeType"] !== 'END') {
             nodeData["data"]["label"] = `${nodeName}`;
-            nodeData["data"]["nodeType"] = (nodeType) ? `${nodeType.value}` : null;
+            nodeData["data"]["nodeType"] = (nodeType.value !== undefined) ? `${nodeType.value}` : '';
             nodeData["data"]["nodeName"] = `${nodeName}`;
             nodeData["data"]["subFlowId"] = `${subFlowId}`;
             nodeData["data"]["functionRef"] = `${functionRef}`;
             nodeData["data"]["functionRefParam"] = `${functionRefParam}`;
             nodeData["data"]["defaultParam"] = `${defaultParam}`;
-
-            nodeData["data"]["nodeType"] = (nodeType) ? `${nodeType.value}` : null;
         } else {
             nodeData["data"]["result"] = (resultParam) ? `${resultParam}` : ''
             nodeData["data"]["remark"] = (remark) ? `${remark}` : ''

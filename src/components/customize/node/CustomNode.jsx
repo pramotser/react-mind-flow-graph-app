@@ -12,13 +12,13 @@ function CustomNode({ id, data }) {
             <Handle type="target" hidden={(data.nodeType === 'START')} position={Position.Top} />
             <div className="custom-node__header" style={customNodeHeaderStyle}>
                 <strong>
-                    {(data.nodeType !== 'START' && data.nodeType !== 'END') ? 'New Node' : data.nodeType}
+                    {(data.nodeType !== '' ) ? data.nodeType : 'New Node'}
                 </strong>
             </div>
             <div className="custom-node__body" hidden={(data.nodeType !== 'END')}>
                 <strong>Result: </strong>{((data.result === '') ? '' : data.result)}
                 <br />
-                <strong>Remark:</strong>{((data.remark === '') ? '' : data.remark)}
+                <strong>Remark: </strong>{((data.remark === '') ? '' : data.remark)}
             </div>
             <div className="custom-node__body" hidden={(data.nodeType === 'START' || data.nodeType === 'END')}>
                 <strong>Node Name: </strong>{data.nodeName}

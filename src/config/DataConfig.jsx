@@ -1,5 +1,32 @@
 export const initialNodes = [
-   
+    {
+        width: 180,
+        height: 33,
+        id: "619000",
+        type: "custom",
+        position: {
+            x: 250,
+            y: 5
+        },
+        data: {
+            label: "Start",
+            nodeType: "START",
+            flowNodeId: "619",
+            flowId: "619000",
+            nodeName: "",
+            subFlowId: "",
+            functionRef: "",
+            functionRefParam: "",
+            defaultParam: "",
+            result: "",
+            remark: ""
+        },
+        positionAbsolute: {
+            x: 250,
+            y: 5
+
+        }
+    }
 ];
 
 export const initialEdges = [
@@ -27,16 +54,16 @@ export const edgeTypeOption = [
     { value: 'DOUBLE', label: 'Double' }
 ]
 export const edgeParamConditionOption =
-[
-    { value: 'EQUALS', label: 'EQUALS' },
-    { value: '<=', label: '<=' },
-    { value: '<', label: '<' },
-    { value: 'NOTEQUALS', label: 'NOTEQUALS' },
-    { value: '>=', label: '>=' },
-    { value: 'LIKE', label: 'LIKE' },
-    { value: '>', label: '>' },
-    { value: 'ISNULL', label: 'ISNULL' },
-    { value: '==', label: '==' },
-    { value: 'ISNOTNULL', label: 'ISNOTNULL' },
-    { value: 'CONTAIN', label: 'CONTAIN' },
-]
+    [
+        { value: 'EQUALS', label: 'EQUALS' },
+        { value: '<=', label: '<=' },
+        { value: '<', label: '<' },
+        { value: 'NOTEQUALS', label: 'NOTEQUALS' },
+        { value: '>=', label: '>=' },
+        { value: 'LIKE', label: 'LIKE' },
+        { value: '>', label: '>' },
+        { value: 'ISNULL', label: 'ISNULL' },
+        { value: '==', label: '==' },
+        { value: 'ISNOTNULL', label: 'ISNOTNULL' },
+        { value: 'CONTAIN', label: 'CONTAIN' },
+    ]

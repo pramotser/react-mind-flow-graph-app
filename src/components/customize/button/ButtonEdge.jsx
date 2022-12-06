@@ -31,7 +31,6 @@ export default function CustomEdge({
 		targetPosition,
 	});
 
-
 	const [openModalEdge, setOpenModalEdge] = useState(false);
 	const [idEdge, setIdEdge] = useState('');
 	const onEdgeClick = (evt, id) => {
@@ -43,13 +42,13 @@ export default function CustomEdge({
 		setOpenModalEdge(false);
 	}
 
-	const onSaveEdgeParam = (edgeParam) =>{
-		data.function.saveEdgeParam(id,edgeParam)
+	const onSaveEdgeParam = (edgeParam) => {
+		data.function.saveEdgeParam(id, edgeParam)
 		setOpenModalEdge(false);
 	}
 
 	const onDeleteEdge = (edgeId) => {
-		console.log(edgeId)
+		// console.log(edgeId)
 		data.function.deleteEdge(edgeId)
 		setOpenModalEdge(false);
 	}
@@ -71,7 +70,10 @@ export default function CustomEdge({
 				className="edgebutton-foreignobject"
 				requiredExtensions="http://www.w3.org/1999/xhtml"
 			>
-				<button className="edgebutton" onClick={(event) => onEdgeClick(event, id)}>
+				<button
+					className="edgebutton"
+					onClick={(event) => onEdgeClick(event, id)}
+				>
 					<BiIcons.BiEdit />
 				</button>
 			</foreignObject>

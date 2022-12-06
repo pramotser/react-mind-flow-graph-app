@@ -13,12 +13,11 @@ export default (props) => {
         <strong>Start</strong>
       </div>
       <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
-        <strong>New Node</strong>
+        <strong>Node</strong>
       </div>
       <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-        <strong>End</strong>
+        <strong>Result Node</strong>
       </div>
-      
     </aside>
   );
 };
