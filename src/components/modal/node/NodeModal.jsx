@@ -25,27 +25,30 @@ function ModalNode(props) {
     const [remark, setRemark] = useState("")
 
     const [backgroundColor, setBackGroundColor] = useState("")
+    const [textColor, setTextColor] = useState("")
+
     useEffect(() => {
         setNodeData(JSON.parse(JSON.stringify(props.nodeData || {})))
-
         if (Object.keys(props.nodeData).length !== 0) {
-            setModalNodeTypeEnd(props.nodeData["nodeType"] === 'END')
-            if (props.nodeData["nodeType"] !== 'END') {
-                let nodeType = getNodeTypeObject(props.nodeData["nodeType"])
-                setNodeName(props.nodeData["nodeName"])
+            setModalNodeTypeEnd(props.nodeData["data"]["nodeType"] === 'END')
+            console.log(props.nodeData["data"])
+            console.log((props.nodeData["data"]["nodeType"] !== 'END'))
+            if (props.nodeData["data"]["nodeType"] !== 'END') {
+                let nodeType = getNodeTypeObject(props.nodeData["data"]["nodeType"])
+                setNodeName(props.nodeData["data"]["nodeName"])
                 setNodeType(nodeType)
                 openCollapse(nodeType[0])
-                setSubFlow(props.nodeData["subFlowId"])
-                setFunctionRef(props.nodeData["functionRef"])
-                setFunctionRefParam(props.nodeData["functionRefParam"])
-                setDefaultParam(props.nodeData["defaultParam"])
+                setSubFlow(props.nodeData["data"]["subFlowId"])
+                setFunctionRef(props.nodeData["data"]["functionRef"])
+                setFunctionRefParam(props.nodeData["data"]["functionRefParam"])
+                setDefaultParam(props.nodeData["data"]["defaultParam"])
             } else {
                 console.log('NodeType End')
-                console.log(props.nodeData)
-                setResultParam(props.nodeData["result"])
-                setRemark(props.nodeData["remark"])
+                console.log(props.nodeData["data"])
+                setResultParam(props.nodeData["data"]["result"])
+                setRemark(props.nodeData["data"]["remark"])
             }
-            setBackGroundColor(getColorNodeType(props.nodeData["nodeType"]))
+            changeColorModalByNodeType(props.nodeData["data"]["nodeType"])
         }
     }, [props])
 
@@ -58,22 +61,33 @@ function ModalNode(props) {
             setOpenCollapseFunction((nodeType["value"] === 'FUNCTION'))
             setOpenCollapseSubFlow((nodeType["value"] === 'SUBFLOW'))
             setOpenCollapseDecision((nodeType["value"] === 'DECISION'))
-            setBackGroundColor(getColorNodeType(nodeType["value"]))
+            changeColorModalByNodeType(nodeType["value"])
+        } else {
+            setOpenCollapseFunction(false)
+            setOpenCollapseSubFlow(false)
+            setOpenCollapseDecision(false)
         }
     }
 
+    const changeColorModalByNodeType = (nodeType) => {
+        setTextColor(getColorNodeType(nodeType).color)
+        setBackGroundColor(getColorNodeType(nodeType).backgroundColor)
+    }
+
     const onSubmit = () => {
-        if (props.nodeData["nodeType"] !== 'END') {
+        if (props.nodeData["data"]["nodeType"] !== 'END') {
             nodeData["data"]["label"] = `${nodeName}`;
-            nodeData["nodeType"] = (nodeType) ? `${nodeType.value}` : null;
-            nodeData["nodeName"] = `${nodeName}`;
-            nodeData["subFlowId"] = `${subFlowId}`;
-            nodeData["functionRef"] = `${functionRef}`;
-            nodeData["functionRefParam"] = `${functionRefParam}`;
-            nodeData["defaultParam"] = `${defaultParam}`;
+            nodeData["data"]["nodeType"] = (nodeType) ? `${nodeType.value}` : null;
+            nodeData["data"]["nodeName"] = `${nodeName}`;
+            nodeData["data"]["subFlowId"] = `${subFlowId}`;
+            nodeData["data"]["functionRef"] = `${functionRef}`;
+            nodeData["data"]["functionRefParam"] = `${functionRefParam}`;
+            nodeData["data"]["defaultParam"] = `${defaultParam}`;
+
+            nodeData["data"]["nodeType"] = (nodeType) ? `${nodeType.value}` : null;
         } else {
-            nodeData["result"] = `${resultParam}`
-            nodeData["remark"] = `${remark}`
+            nodeData["data"]["result"] = (resultParam) ? `${resultParam}` : ''
+            nodeData["data"]["remark"] = (remark) ? `${remark}` : ''
         }
         props.saveNode(nodeData)
     }
@@ -93,7 +107,7 @@ function ModalNode(props) {
                 centered
             >
                 <Modal.Header style={{ backgroundColor: backgroundColor }} closeButton>
-                    <Modal.Title>{(modalNodeTypeEnd) ? 'Set Result' : 'Edit Node'}</Modal.Title>
+                    <Modal.Title style={{ color: textColor }}>{(modalNodeTypeEnd) ? 'Set Result' : 'Edit Node'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form hidden={(modalNodeTypeEnd)}>

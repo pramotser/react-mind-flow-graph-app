@@ -22,10 +22,14 @@ import ExportModal from '../modal/export/ExportModal'
 import Sidebar from '../layout/Sidebar';
 
 import '../../index.css';
+import CustomNode from '../customize/node/CustomNode';
 
 let idRunning = 0;
 const edgeTypes = {
     buttonedge: ButtonEdge
+};
+const nodeTypes = {
+    custom: CustomNode,
 };
 
 const tbMFlow = {
@@ -73,27 +77,30 @@ const DecisionFlow = () => {
             if (type === "input") {
                 lable = 'Start'
             } else if (type === 'default') {
-                lable = 'New node'
+                lable = 'New Node'
             } else {
                 lable = 'End'
             }
             const newNode = {
                 id: `${nodeId}`,
-                type,
+                type: "custom",
                 position,
-                data: { label: `${lable}` },
-                nodeType: `${((type === "input") ? "START" : (type === "output") ? "END" : null)}`,
-                flowNodeId: `${tbMFlow.flowId}`,
-                flowId: `${nodeId}`,
-                nodeName: "",
-                subFlowId: "",
-                functionRef: "",
-                functionRefParam: "",
-                defaultParam: ""
+                data: {
+                    label: `${lable}`,
+                    nodeType: `${((type === "input") ? "START" : (type === "output") ? "END" : "")}`,
+                    flowNodeId: `${tbMFlow.flowId}`,
+                    flowId: `${nodeId}`,
+                    nodeName: "",
+                    subFlowId: "",
+                    functionRef: "",
+                    functionRefParam: "",
+                    defaultParam: "",
+                    result:'',
+                    remark:''
+                },
             };
             setNodes((nds) => nds.concat(newNode));
         },
-        [reactFlowInstance]
     );
 
     const generateFloeNodeID = () => `${tbMFlow.flowId.toString()}${(idRunning++).toString().padStart(3, '0')}`;
@@ -104,8 +111,8 @@ const DecisionFlow = () => {
     }
 
     const onNodeClick = useCallback((event, node) => {
-        setNodeData(node)
-        if (node.nodeType !== "START") {
+        if (node.data.nodeType !== "START") {
+            setNodeData(node)
             setOpenModalNode(true);
         }
     }, [])
@@ -120,7 +127,8 @@ const DecisionFlow = () => {
             })
         );
         setOpenModalNode(false);
-    }, [setNodes, reactFlowInstance])
+    }, 
+    )
 
     const deleteNode = (nodeId) => {
         setNodes((nds) => nds.filter((node) => node.id !== nodeId))
@@ -171,10 +179,8 @@ const DecisionFlow = () => {
         const restoreFlow = async () => {
             const flow = JSON.parse(localStorage.getItem(SessionKey));
             if (flow) {
-                // const { x = 0, y = 0, zoom = 1 } = flow.viewport;
                 setNodes(flow.nodes || []);
                 setEdges(flow.edges.map((e) => {
-                    // var edgeParam = (e.edgeParam) ? flow.edges.filter((edge) => edge.id === e.id).edgeParam : []
                     e.data = {
                         function: {
                             saveEdgeParam: saveEdgeParam,
@@ -206,19 +212,17 @@ const DecisionFlow = () => {
                         onDrop={onDrop}
                         onDragOver={onDragOver}
                         deleteKeyCode={null}
+                        nodeTypes={nodeTypes}
                         fitView
                     >
                         <div className="save__controls">
-                            {/* <Button variant="primary" onClick={onAddNodeClick}>
-                                <BiIcons.BiPlusCircle /> Add Node
-                            </Button> */}
-                            <Button variant="primary" onClick={onExportModal}>
+                            <Button variant="success" onClick={onExportModal}>
                                 <BiIcons.BiExport /> Export JSON
                             </Button>
                             <Button variant="primary" onClick={onSaveSession}>
                                 Save Session
                             </Button>
-                            <Button variant="primary" onClick={onRestoreSession}>
+                            <Button variant="warning" onClick={onRestoreSession}>
                                 <BiIcons.BiHistory /> Restore Session
                             </Button>
 
