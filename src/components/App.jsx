@@ -3,11 +3,16 @@ import 'reactflow/dist/style.css';
 import '../index.css';
 import DecisionFlow from './decision-flow/Decision-flow';
 import Navbars from './layout/Navbar';
+import { Route, Routes } from 'react-router-dom'
+import Home from './pages/home/Home'
 const App = () => {
   return (
     <>
       <Navbars />
-      <DecisionFlow />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/decisionFlow" element={<DecisionFlow />} />
+      </Routes>
     </>
   );
 };
