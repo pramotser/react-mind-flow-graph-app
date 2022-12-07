@@ -14,7 +14,6 @@ function ModalEdge(props) {
 
     const generateEdgeParam = () => `${edgeParamData.length.toString().padStart(3, '0')}`
     useEffect(() => {
-        // console.log(props.edgeParam)
         setEdgeParamData(JSON.parse(JSON.stringify(props.edgeParam || [])))
     }, [props])
 
