@@ -16,13 +16,13 @@ import './Decision-flow.css'
 import * as BiIcons from 'react-icons/bi'
 import { Button } from "react-bootstrap";
 
-import ModalNode from '../modal/node/NodeModal';
-import ButtonEdge from '../customize/button/ButtonEdge';
-import ExportModal from '../modal/export/ExportModal'
-import Sidebar from '../layout/Sidebar';
+import ModalNode from '../../modal/node/NodeModal';
+import ButtonEdge from '../../customize/button/ButtonEdge';
+import ExportModal from '../../modal/export/ExportModal'
+import Sidebar from '../../layout/Sidebar';
 
-import '../../index.css';
-import CustomNode from '../customize/node/CustomNode';
+import '../../../index.css';
+import CustomNode from '../../customize/node/CustomNode';
 
 let idRunning = 0;
 const edgeTypes = {
