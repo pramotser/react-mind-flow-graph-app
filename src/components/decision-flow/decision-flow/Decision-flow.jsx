@@ -12,17 +12,19 @@ import ReactFlow, {
 } from 'reactflow';
 import Swal from 'sweetalert2'
 import 'reactflow/dist/style.css';
-import './Decision-flow.css'
+// import './Decision-flow.css'
+
+import './decision-flow.scss'
 import * as BiIcons from 'react-icons/bi'
 import { Button } from "react-bootstrap";
 
-import ModalNode from '../../modal/node/NodeModal';
-import ButtonEdge from '../../customize/button/ButtonEdge';
-import ExportModal from '../../modal/export/ExportModal'
-import Sidebar from '../../layout/Sidebar';
+import ModalNode from '../modal/node/NodeModal';
+import ButtonEdge from '../customize/button/ButtonEdge';
+import ExportModal from '../modal/export/ExportModal'
+import Sidebar from './Sidebar';
 
-import '../../../index.css';
-import CustomNode from '../../customize/node/CustomNode';
+// import './Decision-flow.css';
+import CustomNode from '../customize/node/CustomNode';
 
 let idRunning = 0;
 const edgeTypes = {
@@ -230,13 +232,13 @@ const DecisionFlow = () => {
                         fitView
                     >
                         <div className="save__controls">
-                            <Button variant="success" onClick={onExportModal}>
+                            <Button variant="outline-success" onClick={onExportModal}>
                                 <BiIcons.BiExport /> Export JSON
                             </Button>
-                            <Button variant="primary" onClick={onSaveSession}>
+                            <Button variant="outline-primary" onClick={onSaveSession}>
                                 Save Session
                             </Button>
-                            <Button variant="warning" onClick={onRestoreSession}>
+                            <Button variant="outline-warning" onClick={onRestoreSession}>
                                 <BiIcons.BiHistory /> Restore Session
                             </Button>
 

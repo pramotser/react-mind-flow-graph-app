@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Collapse, Card } from 'react-bootstrap'
 import Select from 'react-select'
-import { nodeTypeOption } from '../../../config/DataConfig'
-import { getNodeTypeObject, getColorNodeType } from '../../../util/Util'
+import { nodeTypeOption } from '../../config/DataConfig'
+import { getNodeTypeObject, getColorNodeType } from '../../util/Util'
 import './NodeModal.css'
 
 function ModalNode(props) {
@@ -214,13 +214,13 @@ function ModalNode(props) {
 
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="danger" onClick={onDelete}>
+                    <Button variant="outline-danger" onClick={onDelete}>
                         Delete
                     </Button>
-                    <Button variant="secondary" onClick={props.onCloseModalNode}>
+                    <Button variant="outline-secondary" onClick={props.onCloseModalNode}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={onSubmit}>
+                    <Button variant="outline-primary" onClick={onSubmit}>
                         Save
                     </Button>
                 </Modal.Footer>

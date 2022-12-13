@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Table, Row } from 'react-bootstrap'
 import Select from 'react-select'
 
-import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/DataConfig'
-import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../../util/Util'
+import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../config/DataConfig'
+import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../util/Util'
 import * as BsIcons from 'react-icons/bs'
 import * as BiIcons from 'react-icons/bi'
 
@@ -83,7 +83,7 @@ function ModalEdge(props) {
                                 <br></br>
                             </Form.Group>
                             <Form.Group style={{ textAlign: 'right' }}>
-                                <Button variant="info" onClick={onAddCondition}>
+                                <Button variant="outline-info" onClick={onAddCondition}>
                                     <BiIcons.BiPlusCircle /> Add
                                 </Button>
                             </Form.Group>
@@ -160,7 +160,7 @@ function ModalEdge(props) {
                                                     </td>
 
                                                     <td>
-                                                        <Button variant="danger"
+                                                        <Button variant="outline-danger"
                                                             onClick={e => onDeleteEdgeParam(item.edgeParamId)}
                                                         >
                                                             <BsIcons.BsTrash /> Delete
@@ -176,13 +176,13 @@ function ModalEdge(props) {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={props.cModal}>
+                    <Button variant="outline-secondary" onClick={props.cModal}>
                         Close
                     </Button>
-                    <Button variant="danger" onClick={onDelete}>
+                    <Button variant="outline-danger" onClick={onDelete}>
                         Delete
                     </Button>
-                    <Button variant="primary" onClick={onSave}>
+                    <Button variant="outline-primary" onClick={onSave}>
                         Save
                     </Button>
                 </Modal.Footer>

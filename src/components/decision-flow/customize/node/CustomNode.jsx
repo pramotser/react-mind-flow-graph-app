@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
-import { getStyleHeaderNode } from '../../../util/Util'
+import { getStyleHeaderNode } from '../../util/Util'
 
 import './CustomNode.css'
 

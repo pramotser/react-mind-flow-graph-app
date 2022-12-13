@@ -9,13 +9,13 @@ export default (props) => {
   return (
     <aside>
       <div className="description">You can drag these nodes to the pane on the right.</div>
-      <div className="dndnode input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
+      <div className="dndnode input node-start" onDragStart={(event) => onDragStart(event, 'input')} draggable>
         <strong>Start</strong>
       </div>
-      <div className="dndnode" onDragStart={(event) => onDragStart(event, 'default')} draggable>
+      <div className="dndnode node-new" onDragStart={(event) => onDragStart(event, 'default')} draggable>
         <strong>Node</strong>
       </div>
-      <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
+      <div className="dndnode output node-end" onDragStart={(event) => onDragStart(event, 'output')} draggable>
         <strong>Result Node</strong>
       </div>
     </aside>

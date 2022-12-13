@@ -34,7 +34,7 @@ function ModalExport(props) {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={props.onCloseModalExport}>
+                    <Button variant="outline-secondary" onClick={props.onCloseModalExport}>
                         Close
                     </Button>
                 </Modal.Footer>
