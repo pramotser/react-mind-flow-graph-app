@@ -1,16 +1,16 @@
-.flow-list {
+.pages-wrapper {
     display: flex;
 
-    .flow-list-container {
+    .content-wrapper {
         flex: 6;
 
-        .listContainer {
+        .content {
             -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
             box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
             padding: 20px;
             margin: 20px;
 
-            .title-pages h1 {
+            .title-content h1 {
                 font-size: 28px;
                 font-weight: 500;
                 letter-spacing: 0;
@@ -19,7 +19,7 @@
                 position: relative;
             }
 
-            .title-pages h1:before {
+            .title-content h1:before {
                 content: "";
                 position: absolute;
                 left: 0;
@@ -29,7 +29,7 @@
                 background-color: #594f74;
             }
 
-            .title-pages h1:after {
+            .title-content h1:after {
                 content: "";
                 position: absolute;
                 left: 0;
@@ -41,7 +41,7 @@
             }
 
 
-            .listTitle {
+            .sub-title-content {
                 font-weight: 500;
                 color: gray;
 

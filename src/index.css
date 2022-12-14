@@ -9,9 +9,13 @@
 }
 
 .btn-search {
-    margin: 15px;
+    margin-right: 15px;
+}
+
+.btn-save {
+    margin-right: 15px;
 }
 
 .btn-clear {
-    margin: 15px;
+    margin-right: 15px;
 }

@@ -4,7 +4,11 @@ import React from 'react';
 import { useState } from "react";
 
 import { Button, Form, Row, Col } from 'react-bootstrap'
+import { useNavigate } from "react-router-dom";
+import * as AiIcons from 'react-icons/ai'
+import { getFlowByCondition, getFlowList } from "../../services/decision-service";
 
+import { tempDataFlow } from '../../assets/data/datasource'
 
 const testSearch = [
     {
@@ -76,21 +80,43 @@ const testSearch = [
 ]
 
 const FormSearchFlow = (props) => {
+    const navigate = useNavigate()
     const [flowId, setFlowId] = useState('')
     const [flowName, setFlowName] = useState('')
 
+
+    const [dataSearch, setDataSearch] = useState([])
+
     const handleButtonSearchFlow = () => {
-        props.search(testSearch)
+        getFlowByCondition(flowName).then(flowList => {
+            if (flowList.length > 0) {
+                props.search(flowList);
+            } else {
+                props.search([])
+            }
+
+        })
     }
 
     const handleButtonClearFormSearchFlow = () => {
-        setFlowId('')
-        setFlowName('')
-    }
+        getFlowList()
+            .then(flowList => {
+                setFlowId('')
+                setFlowName('')
+                props.search(flowList);
+            });
 
+
+    }
+    const navigateToFlowCreate = () => {
+        navigate('create');
+    };
     return (
         <>
-            <div className="listTitle">Search Flow</div>
+            <div className="sub-title-content">Search Flow</div>
+            <div className="text-right">
+                <Button variant="outline-info" onClick={navigateToFlowCreate}><AiIcons.AiOutlinePlusCircle /> Add</Button>
+            </div>
             <Form >
                 <Form.Group as={Row} className="mb-4">
                     <Form.Label className="text-right" column md={4} >
@@ -126,14 +152,14 @@ const FormSearchFlow = (props) => {
                         variant="outline-warning"
                         onClick={handleButtonSearchFlow}
                     >
-                        Search
+                        <AiIcons.AiOutlineSearch /> Search
                     </Button>
                     <Button
                         className="btn-clear"
                         variant="outline-secondary"
                         onClick={handleButtonClearFormSearchFlow}
                     >
-                        Clear
+                        <AiIcons.AiOutlineClear /> Clear
                     </Button>
                 </div>
             </Form>

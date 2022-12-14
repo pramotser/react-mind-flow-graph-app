@@ -29,10 +29,10 @@ const Sidebar = () => {
           </Link>
           <p className="title">Flow</p>
 
-          <Link to="/flow-list" style={{ textDecoration: "none" }}>
+          <Link to="/flow-management" style={{ textDecoration: "none" }}>
             <li>
               <AiIcons.AiOutlineBars className="icon" />
-              <span>Flow List</span>
+              <span>Flow Management</span>
             </li>
           </Link>
           <Link to="/decision" style={{ textDecoration: "none" }}>

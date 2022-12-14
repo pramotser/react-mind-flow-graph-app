@@ -1,15 +1,15 @@
-import Sidebar from "../../components/layout/sidebar/Sidebar";
-import Navbar from "../../components/layout/navbar/Navbar";
-import "./flow-list.scss";
-import Datatable from "../../components/datatable/Datatable";
 import { useState } from "react";
-import { tempDataFlow } from '../../assets/data/datasource'
-
 import { Button } from 'react-bootstrap'
 import * as BsIcons from 'react-icons/bs'
 import * as AiIcons from "react-icons/ai";
 import Swal from "sweetalert2";
-import FormSearchFlow from "../../components/form-search-flow/Form-Search-Flow";
+
+import "./flow-management.scss";
+import Sidebar from "../../components/layout/sidebar/Sidebar";
+import Navbar from "../../components/layout/navbar/Navbar";
+import FormSearchFlow from "../../components/form-search-flow/Form-search-flow";
+import Datatable from "../../components/datatable/Datatable";
+import { tempDataFlow } from '../../assets/data/datasource'
 
 
 const handleButtonClick = (event, id) => {
@@ -78,7 +78,6 @@ export const headerColumnFlow = [
 ];
 
 const FlowList = () => {
-
     const [searchData, setSearchData] = useState(tempDataFlow)
 
     const search = (dataSearch) => {
@@ -86,12 +85,12 @@ const FlowList = () => {
     }
 
     return (
-        <div className="flow-list">
+        <div className="pages-wrapper">
             <Sidebar />
-            <div className="flow-list-container">
+            <div className="content-wrapper">
                 <Navbar />
-                <div className="listContainer">
-                    <div className="title-pages">
+                <div className="content">
+                    <div className="title-content">
                         <h1>Flow Management</h1>
                     </div>
                     <FormSearchFlow
@@ -103,6 +102,7 @@ const FlowList = () => {
                         columns={headerColumnFlow}
                         data={searchData}
                         defaultSortFieldId={1}
+                        noDataComponent={<p>Data Not Found!</p>}
                     />
                 </div>
             </div>
