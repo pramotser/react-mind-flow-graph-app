@@ -1,91 +1,16 @@
 import "./form-search-flow.scss";
-import React from 'react';
-
-import { useState } from "react";
-
+import React, { useState } from 'react';
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import { useNavigate } from "react-router-dom";
 import * as AiIcons from 'react-icons/ai'
+
 import { getFlowByCondition, getFlowList } from "../../services/decision-service";
 
-import { tempDataFlow } from '../../assets/data/datasource'
-
-const testSearch = [
-    {
-        flowId: 2,
-        flowName: "Product Program",
-        resultParam: "productProgram",
-        startFlowId: 200,
-        isActive: "Y",
-        createDate: "2020-08-17 15:44:55.000000",
-        createUser: "SYSTEM",
-        updateDate: "2020-08-17 15:44:55.000000",
-        updateUser: "SYSTEM"
-    },
-    {
-        flowId: 3,
-        flowName: "Line Assignment New Customer",
-        resultParam: "lineAssignment",
-        startFlowId: 300,
-        isActive: "Y",
-        createDate: "2020-08-17 15:44:55.000000",
-        createUser: "SYSTEM",
-        updateDate: "2020-08-17 15:44:55.000000",
-        updateUser: "SYSTEM"
-    },
-    {
-        flowId: 4,
-        flowName: "Contract Staff Checking",
-        resultParam: "contractStaff",
-        startFlowId: 400,
-        isActive: "Y",
-        createDate: "2020-08-17 15:44:55.000000",
-        createUser: "SYSTEM",
-        updateDate: "2020-08-17 15:44:55.000000",
-        updateUser: "SYSTEM"
-    },
-    {
-        flowId: 5,
-        flowName: "Max Tenor From RecommendLimit",
-        resultParam: "maxTenor",
-        startFlowId: 500,
-        isActive: "Y",
-        createDate: "2020-08-17 15:44:55.000000",
-        createUser: "SYSTEM",
-        updateDate: "2020-08-17 15:44:55.000000",
-        updateUser: "SYSTEM"
-    },
-    {
-        flowId: 6,
-        flowName: "Payment History Checking",
-        resultParam: "paymentHistoryChecking",
-        startFlowId: 600,
-        isActive: "Y",
-        createDate: "2020-08-17 15:44:55.000000",
-        createUser: "SYSTEM",
-        updateDate: "2020-08-17 15:44:55.000000",
-        updateUser: "SYSTEM"
-    },
-    {
-        flowId: 7,
-        flowName: "NCB Aging Result",
-        resultParam: "ncbAging",
-        startFlowId: 700,
-        isActive: "Y",
-        createDate: "2020-08-17 15:44:55.000000",
-        createUser: "SYSTEM",
-        updateDate: "2020-08-17 15:44:55.000000",
-        updateUser: "SYSTEM"
-    },
-]
 
 const FormSearchFlow = (props) => {
     const navigate = useNavigate()
     const [flowId, setFlowId] = useState('')
     const [flowName, setFlowName] = useState('')
-
-
-    const [dataSearch, setDataSearch] = useState([])
 
     const handleButtonSearchFlow = () => {
         getFlowByCondition(flowName).then(flowList => {
@@ -111,6 +36,8 @@ const FormSearchFlow = (props) => {
     const navigateToFlowCreate = () => {
         navigate('create');
     };
+
+    
     return (
         <>
             <div className="sub-title-content">Search Flow</div>

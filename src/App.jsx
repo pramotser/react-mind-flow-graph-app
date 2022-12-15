@@ -10,10 +10,13 @@ function App() {
         <Routes>
           <Route index element={<Home />} />
           <Route path="home" element={<Home />} />
-          <Route path="decision" element={<Decision />} />
+          {/* <Route path="decision" element={<Decision />} /> */}
           <Route path="flow-management">
             <Route index element={<FlowList />} />
-            <Route path="create" element={<FlowCreate />} />
+            <Route path="create">
+              <Route index element={<FlowCreate />} />
+              <Route path="decision" element={<Decision />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

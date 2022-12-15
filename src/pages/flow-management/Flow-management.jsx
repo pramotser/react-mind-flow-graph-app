@@ -1,10 +1,10 @@
+import "./flow-management.scss";
 import { useState } from "react";
 import { Button } from 'react-bootstrap'
 import * as BsIcons from 'react-icons/bs'
 import * as AiIcons from "react-icons/ai";
 import Swal from "sweetalert2";
 
-import "./flow-management.scss";
 import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
 import FormSearchFlow from "../../components/form-search-flow/Form-search-flow";
@@ -77,7 +77,7 @@ export const headerColumnFlow = [
     }
 ];
 
-const FlowList = () => {
+const FlowManagement = () => {
     const [searchData, setSearchData] = useState(tempDataFlow)
 
     const search = (dataSearch) => {
@@ -102,7 +102,7 @@ const FlowList = () => {
                         columns={headerColumnFlow}
                         data={searchData}
                         defaultSortFieldId={1}
-                        noDataComponent={<p>Data Not Found!</p>}
+                        // noDataComponent={<p>Data Not Found!</p>}
                     />
                 </div>
             </div>
@@ -110,4 +110,4 @@ const FlowList = () => {
     );
 };
 
-export default FlowList;
+export default FlowManagement;

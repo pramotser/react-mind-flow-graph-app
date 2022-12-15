@@ -35,12 +35,12 @@ const Sidebar = () => {
               <span>Flow Management</span>
             </li>
           </Link>
-          <Link to="/decision" style={{ textDecoration: "none" }}>
+          {/* <Link to="/decision" style={{ textDecoration: "none" }}>
             <li>
               <AiIcons.AiOutlinePartition className="icon" />
               <span>Decision</span>
             </li>
-          </Link>
+          </Link> */}
         </ul>
       </div>
     </div>
