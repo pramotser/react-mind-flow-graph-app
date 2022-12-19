@@ -1,38 +1,51 @@
 import "./form-create-flow.scss";
-import React, { useEffect } from 'react';
-import { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
 import { useNavigate } from "react-router-dom";
 import * as AiIcons from 'react-icons/ai'
+
+import { getDropdownResultParam } from "../../services/util-service";
+import { createFlow, updateFlow } from "../../services/decision-service";
+import { isEmpty } from "../../util/Util";
 import Swal from "sweetalert2";
 
-import { getResultParamList } from "../../services/decision-service";
-import { isEmpty } from "../../util/Util";
-
 const FormCreateFlow = (props) => {
+
+    const [mode] = useState(props.location.state.mode)
+
     const navigate = useNavigate()
-    const [validated, setValidated] = useState(false);
+    const [validated, setValidated] = useState(false)
     const [resultParamOption, setResultParamOption] = useState([])
     const [flowId, setFlowId] = useState('')
     const [flowName, setFlowName] = useState('')
     const [resultParam, setResultParam] = useState([])
-    const [isActive, setIsActive] = useState(null)
+    const [isActive, setIsActive] = useState(true)
     const [validateOptionResult, setValidateOptionResult] = useState(false)
 
     useEffect(() => {
-        getResultParamList()
-            .then(resultParamList => {
-                initialFormCreate(resultParamList)
+        getDropdownResultParam()
+            .then(responseObject => {
+                initialFormCreate(responseObject)
             });
-
     }, [])
 
     const initialFormCreate = (resultParamList) => {
-        setFlowId('')
-        setFlowName('')
-        setIsActive(true)
         setResultParamOption(resultParamList);
+        if (mode === 'edit') {
+            const filteredResultParamList = resultParamList.filter(
+                (resultParam) => resultParam.value.indexOf(props.location.state.data.resultParam) !== -1
+            );
+            setFlowId(props.location.state.data.flowId)
+            setFlowName(props.location.state.data.flowName)
+            setResultParam(filteredResultParamList[0])
+            setIsActive((props.location.state.data.isActive === 'Y'))
+        } else {
+            setFlowId('')
+            setFlowName('')
+            setResultParam([])
+            setIsActive(true)
+        }
     }
 
     const handleButtonSaveFlow = (event) => {
@@ -50,15 +63,42 @@ const FormCreateFlow = (props) => {
                 resultParam: `${resultParam.value}`,
                 isActive: `${(isActive === true) ? 'Y' : 'N '}`
             }
-            console.log('Flow : ', flow)
-            Swal.fire(
-                'coming soon..',
-                '',
-                'warning'
-            )
+            Swal.fire({
+                icon: 'info',
+                title: `${'Do you want to save' + ((mode === 'edit') ? ' the changes?' : '?')}`,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    if (mode === 'edit') {
+                        Swal.fire('Coming soon', '', 'info')
+                        updateFlow(flow).then(responseObject => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: `Saved!`,
+                                text: 'Data has been saved successfully',
+                                showCancelButton: false,
+                            }).then((result) => {
+                                navigateToFlowManagement()
+                            })
+                        });
+                    } else {
+                        createFlow(flow).then(responseObject => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: `Saved!`,
+                                text: 'Data has been saved successfully',
+                                showCancelButton: false,
+                            }).then((result) => {
+                                navigateToFlowManagement()
+                            })
+                        });
+                    }
+                } else if (result.isDenied) {
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+            })
         } else {
-            
-            console.log((resultParam.value === undefined))
             if (resultParam.value !== undefined) {
                 setValidateOptionResult(true)
             } else {
@@ -70,9 +110,7 @@ const FormCreateFlow = (props) => {
 
     const handleButtonClearFormCreateFlow = () => {
         setValidated(false)
-        setFlowId('')
-        setFlowName('')
-        setResultParam([])
+        initialFormCreate(resultParamOption)
     }
 
     const navigateToFlowManagement = () => {
@@ -93,7 +131,7 @@ const FormCreateFlow = (props) => {
                             type="switch"
                             id="custom-switch"
                             label="Active"
-                            defaultChecked={isActive}
+                            checked={isActive}
                             onChange={e => setIsActive(e.target.checked)}
                         />
                     </Col>
@@ -109,6 +147,7 @@ const FormCreateFlow = (props) => {
                             placeholder="Flow ID"
                             value={flowId}
                             onChange={e => setFlowId(e.target.value)}
+                            disabled={(mode === 'edit')}
                             required
                         />
                         <Form.Control.Feedback type="invalid">
@@ -151,7 +190,7 @@ const FormCreateFlow = (props) => {
                         </div>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-4">
+                <Form.Group as={Row} className="mb-4" hidden={!(mode === 'edit')}>
                     <Form.Label className="text-right" column md={4} >
                         Decision Flow:
                     </Form.Label>

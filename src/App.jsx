@@ -13,8 +13,9 @@ function App() {
           {/* <Route path="decision" element={<Decision />} /> */}
           <Route path="flow-management">
             <Route index element={<FlowList />} />
-            <Route path="create">
+            <Route path=":activn">
               <Route index element={<FlowCreate />} />
+              <Route path="decision" element={<Decision />} />
               <Route path="decision" element={<Decision />} />
             </Route>
           </Route>

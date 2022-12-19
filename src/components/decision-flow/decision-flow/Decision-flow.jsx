@@ -16,7 +16,11 @@ import 'reactflow/dist/style.css';
 
 import './decision-flow.scss'
 import * as BiIcons from 'react-icons/bi'
-import { Button, Tab , Tabs } from "react-bootstrap";
+import {
+    Button,
+    // Tab,
+    // Tabs
+} from "react-bootstrap";
 
 import ModalNode from '../modal/node/NodeModal';
 import ButtonEdge from '../customize/button/ButtonEdge';
@@ -211,57 +215,57 @@ const DecisionFlow = () => {
         restoreFlow();
     }, [setNodes]);
     return (
-                <div className="dndflow">
-                    <ReactFlowProvider>
-                        <Sidebar generateFloeNodeID={generateFloeNodeID} />
-                        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-                            <ReactFlow
-                                nodes={nodes}
-                                edges={edges}
-                                onNodesChange={onNodesChange}
-                                onNodeClick={onNodeClick}
-                                onEdgesChange={onEdgesChange}
-                                edgeTypes={edgeTypes}
-                                onConnect={onConnect}
-                                onInit={setReactFlowInstance}
-                                onDrop={onDrop}
-                                onDragOver={onDragOver}
-                                deleteKeyCode={null}
-                                nodeTypes={nodeTypes}
-                                fitView
-                            >
-                                <div className="save__controls">
-                                    <Button variant="outline-success" onClick={onExportModal}>
-                                        <BiIcons.BiExport /> Export JSON
-                                    </Button>
-                                    <Button variant="outline-primary" onClick={onSaveSession}>
-                                        Save Session
-                                    </Button>
-                                    <Button variant="outline-warning" onClick={onRestoreSession}>
-                                        <BiIcons.BiHistory /> Restore Session
-                                    </Button>
+        <div className="dndflow">
+            <ReactFlowProvider>
+                <Sidebar generateFloeNodeID={generateFloeNodeID} />
+                <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+                    <ReactFlow
+                        nodes={nodes}
+                        edges={edges}
+                        onNodesChange={onNodesChange}
+                        onNodeClick={onNodeClick}
+                        onEdgesChange={onEdgesChange}
+                        edgeTypes={edgeTypes}
+                        onConnect={onConnect}
+                        onInit={setReactFlowInstance}
+                        onDrop={onDrop}
+                        onDragOver={onDragOver}
+                        deleteKeyCode={null}
+                        nodeTypes={nodeTypes}
+                        fitView
+                    >
+                        <div className="save__controls">
+                            <Button variant="outline-success" onClick={onExportModal}>
+                                <BiIcons.BiExport /> Export JSON
+                            </Button>
+                            <Button variant="outline-primary" onClick={onSaveSession}>
+                                Save Session
+                            </Button>
+                            <Button variant="outline-warning" onClick={onRestoreSession}>
+                                <BiIcons.BiHistory /> Restore Session
+                            </Button>
 
-                                </div>
-                                <MiniMap />
-                                <Controls />
-                                <Background color="#aaa" gap={16} />
-                                <ModalNode
-                                    onCloseModalNode={onCloseModalNode}
-                                    saveNode={saveNode}
-                                    deleteNode={deleteNode}
-                                    showModalNode={openModalNode}
-                                    nodeData={nodeData}
-                                />
-
-                                <ExportModal
-                                    showModalExport={openModalExport}
-                                    onCloseModalExport={onCloseModalExport}
-                                    jsonData={jsonData}
-                                />
-                            </ReactFlow>
                         </div>
-                    </ReactFlowProvider>
+                        <MiniMap />
+                        <Controls />
+                        <Background color="#aaa" gap={16} />
+                        <ModalNode
+                            onCloseModalNode={onCloseModalNode}
+                            saveNode={saveNode}
+                            deleteNode={deleteNode}
+                            showModalNode={openModalNode}
+                            nodeData={nodeData}
+                        />
+
+                        <ExportModal
+                            showModalExport={openModalExport}
+                            onCloseModalExport={onCloseModalExport}
+                            jsonData={jsonData}
+                        />
+                    </ReactFlow>
                 </div>
+            </ReactFlowProvider>
+        </div>
     );
 };
 

@@ -1,26 +1,68 @@
-import { tempDataFlow, tempDataResultParam } from "../assets/data/datasource"
-
-export async function getResultParamList() {
+async function getFlowByCondition(flowName) {
     try {
-        return tempDataResultParam;
+        return fetch('/NAOS/FlowManagementService/flow/getFlowListByCondition',
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                    flowName: flowName,
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                return data
+            })
     } catch (error) {
         return []
     }
 }
 
-export async function getFlowList() {
+async function createFlow(createFlow) {
     try {
-        return tempDataFlow;
+        return fetch('/NAOS/FlowManagementService/flow/createFlow',
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(createFlow)
+            })
+            .then(res => res.json())
+            .then((data) => {
+                return data;
+            })
+    } catch (error) {
+        return []
+    }
+}
+
+async function updateFlow(flow) {
+    try {
+        return fetch('/NAOS/FlowManagementService/flow/updateFlow',
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify(flow)
+            })
+            .then(res => res.json())
+            .then((data) => {
+                return data;
+            })
     } catch (error) {
         return []
     }
 }
 
 
-export async function getFlowByCondition(flowName) {
-    try {
-        return (flowName === '') ? tempDataFlow : tempDataFlow.filter((flow) => flow.flowName.toLowerCase().includes(flowName.toLowerCase()));
-    } catch (error) {
-        return []
-    }
+export {
+    getFlowByCondition,
+    createFlow,
+    updateFlow
 }
