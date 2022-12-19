@@ -1,0 +1,47 @@
+.modal-body-edge{
+    height: 600px
+}
+
+.max-height {
+    height:100%
+}
+
+.body-table {
+  overflow: scroll;
+  max-height: 400px;
+  max-width: 100%;
+  text-align: center;
+}
+
+table {
+    /* overflow: scroll; */
+    max-height: 100%;
+    max-width: 100%;
+}
+
+td,th {
+  width: 1%;
+}
+
+.table-fixed thead {
+  width: 100%;
+  font-style: normal !important;
+  font-weight: bold !important;
+  padding: 10px 10px;
+  margin-bottom: 40px;
+  word-wrap: break-word !important;
+  background-color: #594f74;
+  color: #fff !important;
+  height: 50px;
+  font-size: 14px;
+  text-align: center;
+  padding: left 50px;;
+  /* overflow: scroll; */
+}
+
+.table-fixed tbody {
+  height: 100%;
+  width: 100%;
+  overflow-x: scroll;
+  text-align: center;
+}

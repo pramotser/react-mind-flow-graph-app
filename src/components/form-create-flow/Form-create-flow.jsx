@@ -118,7 +118,7 @@ const FormCreateFlow = (props) => {
     };
 
     const navigateToDecision = () => {
-        navigate('decision');
+        navigate('decision', { state: { flowId: flowId, flowName: flowName, resultParam: resultParam.value } });
     };
 
     return (
@@ -151,7 +151,7 @@ const FormCreateFlow = (props) => {
                             required
                         />
                         <Form.Control.Feedback type="invalid">
-                            Please provide a valid flow id.
+                            Please provide a valid Flow ID.
                         </Form.Control.Feedback>
                     </Col>
                 </Form.Group>
@@ -169,7 +169,7 @@ const FormCreateFlow = (props) => {
                             required
                         />
                         <Form.Control.Feedback type="invalid">
-                            Please provide a valid flow name.
+                            Please provide a valid Flow Name.
                         </Form.Control.Feedback>
                     </Col>
                 </Form.Group>
