@@ -46,7 +46,7 @@ const tbMFlow = {
     resultParam: 'maxTenor'
 }
 
-const DecisionFlow = () => {
+const Decision = () => {
     const reactFlowWrapper = useRef(null);
     const [nodes, setNodes, onNodesChange] = useNodesState([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -349,4 +349,4 @@ const DecisionFlow = () => {
     );
 };
 
-export default DecisionFlow;
+export default Decision;

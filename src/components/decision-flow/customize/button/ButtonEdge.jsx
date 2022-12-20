@@ -48,7 +48,6 @@ export default function CustomEdge({
 	}
 
 	const onDeleteEdge = (edgeId) => {
-		// console.log(edgeId)
 		data.function.deleteEdge(edgeId)
 		setOpenModalEdge(false);
 	}

@@ -4,6 +4,7 @@ import { Button } from 'react-bootstrap'
 import * as BsIcons from 'react-icons/bs'
 import * as AiIcons from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
@@ -16,9 +17,14 @@ const FlowManagement = () => {
     const [loading, setLoading] = useState(false);
     const [searchData, setSearchData] = useState([])
 
-    const handleButtonClick = (event, data) => {
+    const handleButtonEditClick = (event, data) => {
         navigate('edit', { state: { mode: 'edit', data: data } });
     }
+
+    const handleButtonDeleteClick = (event, data) => {
+        Swal.fire('Coming soon', '', 'info')
+    }
+
     const headerColumnFlow = [
         {
             name: 'Flow Id',
@@ -57,7 +63,7 @@ const FlowManagement = () => {
                 <>
                     <Button
                         variant="outline-warning"
-                        onClick={(e) => handleButtonClick(e, row)}
+                        onClick={(e) => handleButtonEditClick(e, row)}
                     >
                         <AiIcons.AiOutlineEdit />
                     </Button>
@@ -73,7 +79,7 @@ const FlowManagement = () => {
                 <>
                     <Button
                         variant="outline-danger"
-                        onClick={(e) => handleButtonClick(e, row.flowId)}
+                        onClick={(e) => handleButtonDeleteClick(e, row.flowId)}
                     >
                         <BsIcons.BsTrash />
                     </Button>
@@ -109,7 +115,9 @@ const FlowManagement = () => {
                         titleTable={'Flow Data List'}
                         columns={headerColumnFlow}
                         data={searchData}
+                        paginationPerPage={10}
                         defaultSortFieldId={1}
+                        paginationResetDefaultPage={false}
                     />
                 </div>
             </div>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap'
 
-import './ExportModal.css'
+import './export-modal.scss'
 
-function ModalExport(props) {
+function ExportModal(props) {
     const [jsonData, setJsonData] = useState("")
 
     useEffect(() => {
@@ -43,4 +43,4 @@ function ModalExport(props) {
     );
 }
 
-export default ModalExport;
+export default ExportModal;

@@ -15,6 +15,8 @@ const Datatable = (props) => {
                 noHeader
                 pagination
                 highlightOnHover
+                paginationPerPage={props.paginationPerPage}
+                paginationRowsPerPageOptions={props.paginationRowsPerPageOptions}
             />
         </>
     );

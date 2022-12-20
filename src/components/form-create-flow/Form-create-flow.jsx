@@ -71,7 +71,6 @@ const FormCreateFlow = (props) => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     if (mode === 'edit') {
-                        Swal.fire('Coming soon', '', 'info')
                         updateFlow(flow).then(responseObject => {
                             Swal.fire({
                                 icon: 'success',
@@ -118,7 +117,7 @@ const FormCreateFlow = (props) => {
     };
 
     const navigateToDecision = () => {
-        navigate('decision', { state: { flowId: flowId, flowName: flowName, resultParam: resultParam.value } });
+        navigate('decision', { state: props.location.state });
     };
 
     return (

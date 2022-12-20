@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { getBezierPath } from 'reactflow';
-import ModalEdge from '../../modal/edge/EdgeModal'
+// import ModalEdge from '../../modal/edge/Edge-modal'
+
+
+import EdgeModal from '../../modal/edge/Edge-modal'
 
 import * as BiIcons from 'react-icons/bi'
 
-import './ButtonEdge.css';
+import './edge-custom.scss';
 
 const foreignObjectSize = 40;
 
-export default function CustomEdge({
+export default function EdgeCustom({
 	id,
 	sourceX,
 	sourceY,
@@ -48,7 +51,6 @@ export default function CustomEdge({
 	}
 
 	const onDeleteEdge = (edgeId) => {
-		// console.log(edgeId)
 		data.function.deleteEdge(edgeId)
 		setOpenModalEdge(false);
 	}
@@ -78,7 +80,7 @@ export default function CustomEdge({
 				</button>
 			</foreignObject>
 			<div>
-				<ModalEdge
+				<EdgeModal
 					cModal={onCloseModalEdge}
 					onSaveEdgeParam={onSaveEdgeParam}
 					onDeleteEdge={onDeleteEdge}

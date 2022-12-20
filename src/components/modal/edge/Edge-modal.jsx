@@ -1,16 +1,141 @@
 import { useState, useEffect } from 'react';
-import { Modal, Button, Form, Table, Row } from 'react-bootstrap'
+import { Modal, Button, Form, Table, Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
 
-import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../config/DataConfig'
-import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../util/Util'
+import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/DataConfig';
+import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../../util/Util'
+
 import * as BsIcons from 'react-icons/bs'
 import * as BiIcons from 'react-icons/bi'
 
-import './EdgeModal.css'
+import './edge-modal.scss'
+import Datatable from '../../datatable/Datatable';
 
-function ModalEdge(props) {
+function EdgeModal(props) {
     const [edgeParamData, setEdgeParamData] = useState([])
+    const headerColumnEdgeParam = [
+        {
+            name: 'Edge Condition',
+            sortable: true,
+            reorder: true,
+            center: true,
+            width: "200px",
+            cell: (row) => (
+                <>
+                    <Select
+                        styles={{ position: 'relative' }}
+                        options={edgeConditionOption}
+                        placeholder="Edge Condition"
+                        isSearchable={false}
+                        defaultValue={getEdgeConditionOptionObject(row.edgeCondition)}
+                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeCondition", e.value)}
+                    />
+                </>
+            ),
+        },
+        {
+            name: 'Edge Type',
+            sortable: true,
+            reorder: true,
+            center: true,
+            width: "200px",
+            cell: (row) => (
+                <>
+                    <Select
+                        options={edgeTypeOption}
+                        placeholder="Edge Type"
+                        isSearchable={false}
+                        defaultValue={getEdgeTypeOptionObject(row.edgeType)}
+                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeType", e.value)}
+                    />
+                </>
+            ),
+        },
+        {
+            name: 'Edge Param',
+            sortable: true,
+            reorder: true,
+            center: true,
+            width: "200px",
+            cell: (row) => (
+                <>
+                    <Form.Control
+                        type="text"
+                        placeholder="Edge Param"
+                        defaultValue={row.edgeParam}
+                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeParam", e.target.value)}
+                    />
+                </>
+            ),
+        },
+        {
+            name: 'Edge Param Condition',
+            sortable: true,
+            reorder: true,
+            center: true,
+            width: "200px",
+            cell: (row) => (
+                <>
+                    <Select
+                        options={edgeParamConditionOption}
+                        placeholder="Edge Param Condition"
+                        isSearchable={false}
+                        defaultValue={getEdgeParamConditionOptionObject(row.edgeParamCondition)}
+                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeParamCondition", e.value)}
+                    />
+                </>
+            ),
+        },
+        {
+            name: 'Edge Param Compare',
+            sortable: true,
+            reorder: true,
+            center: true,
+            width: "200px",
+            cell: (row) => (
+                <>
+                    <Form.Control
+                        type="text"
+                        placeholder="Edge Param Compare"
+                        defaultValue={row.edgeParamCompare}
+                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeParamCompare", e.target.value)}
+                    />
+                </>
+            ),
+        },
+        {
+            name: 'Edge Value Compare',
+            sortable: true,
+            reorder: true,
+            center: true,
+            width: "200px",
+            cell: (row) => (
+                <>
+                    <Form.Control
+                        type="text"
+                        placeholder="Edge Value Compare"
+                        defaultValue={row.edgeValueCompare}
+                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeValueCompare", e.target.value)}
+                    />
+                </>
+            ),
+        },
+        {
+            name: 'Action',
+            sortable: true,
+            reorder: true,
+            cell: (row) => (
+                <>
+                    <Button
+                        variant="outline-danger"
+                        onClick={e => onDeleteEdgeParam(row.edgeParamId)}
+                    >
+                        <BsIcons.BsTrash />
+                    </Button>
+                </>
+            ),
+        },
+    ];
 
     const generateEdgeParam = () => `${edgeParamData.length.toString().padStart(3, '0')}`
     useEffect(() => {
@@ -39,6 +164,7 @@ function ModalEdge(props) {
             edgeParamCompare: "",
             edgeValueCompare: ""
         };
+        console.log(edgeParam)
         setEdgeParamData(
             (e) => e.concat(edgeParam)
         )
@@ -51,7 +177,7 @@ function ModalEdge(props) {
     const onSave = () => {
         props.onSaveEdgeParam(edgeParamData);
     }
-    
+
     const onDelete = () => {
         props.onDeleteEdge(props.idEdge)
     }
@@ -70,7 +196,39 @@ function ModalEdge(props) {
                     <Modal.Title>Condition Edge</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modal-body-edge'>
-                    <Form className='max-height'>
+
+                    <Form>
+                        <Form.Group as={Row} className="mb-4">
+                            <Form.Label className="text-right" column md={3} >
+                                Edge Id :
+                            </Form.Label>
+                            <Col md={6}>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Node Name"
+                                    value={props.idEdge}
+                                    disabled
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    Please provide a valid Node Name.
+                                </Form.Control.Feedback>
+                            </Col>
+                        </Form.Group>
+                        <Form.Group style={{ textAlign: 'right' }}>
+                            <Button variant="outline-info" onClick={onAddCondition}>
+                                <BiIcons.BiPlusCircle /> Add
+                            </Button>
+                        </Form.Group>
+                        <Datatable
+                            titleTable={'Edge Param List'}
+                            columns={headerColumnEdgeParam}
+                            data={edgeParamData}
+                            defaultSortFieldId={1}
+                            paginationPerPage={7}
+                            paginationRowsPerPageOptions={[]}
+                        />
+                    </Form>
+                    {/* <Form className='max-height'>
                         <Row>
                             <Form.Group>
                                 <Form.Label>Edge Id</Form.Label>
@@ -173,7 +331,7 @@ function ModalEdge(props) {
                                 </Table>
                             </div>
                         </Form.Group>
-                    </Form>
+                    </Form> */}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="outline-secondary" onClick={props.cModal}>
@@ -191,6 +349,6 @@ function ModalEdge(props) {
     );
 }
 
-export default ModalEdge;
+export default EdgeModal;
 
 

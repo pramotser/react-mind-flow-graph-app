@@ -1,18 +1,19 @@
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
-import { getStyleHeaderNode } from '../../util/Util'
+// import { getStyleHeaderNode } from '../../decision/util/Util'
+import { getStyleHeaderNode } from '../../../util/Util';
 
-import './CustomNode.css'
+import './node-custom.scss'
 
-function CustomNode({ id, data }) {
+function NodeCustom({ id, data }) {
+
     const customNodeHeaderStyle = getStyleHeaderNode(data.nodeType);
-    // let nodeType = getNodeTypeObject(data.nodeType);
     return (
         <>
             <Handle type="target" hidden={(data.nodeType === 'START')} position={Position.Top} />
             <div className="custom-node__header" style={customNodeHeaderStyle}>
                 <strong>
-                    {(data.nodeType !== '' ) ? data.nodeType : 'New Node'}
+                    {(data.nodeType !== '') ? data.nodeType : 'New Node'}
                 </strong>
             </div>
             <div className="custom-node__body" hidden={(data.nodeType !== 'END')}>
@@ -27,4 +28,4 @@ function CustomNode({ id, data }) {
         </>
     );
 }
-export default memo(CustomNode);
+export default memo(NodeCustom);
