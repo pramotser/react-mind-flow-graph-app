@@ -1,12 +1,13 @@
 import "./form-search-flow.scss";
 import React, { useState, useEffect } from 'react';
-import { Button, Form, Row, Col } from 'react-bootstrap'
 import { useNavigate } from "react-router-dom";
+import { Button, Form, Row, Col } from 'react-bootstrap'
 import * as AiIcons from 'react-icons/ai'
 import Select from 'react-select'
 
 import { getFlowByCondition } from "../../services/decision-service";
 import { getDropdownFlowName } from "../../services/util-service";
+import { mode } from "../../config/config";
 
 const FormSearchFlow = (props) => {
     const navigate = useNavigate()
@@ -61,7 +62,7 @@ const FormSearchFlow = (props) => {
 
     const navigateToFlowCreate = () => {
         props.setLoadingPages(true)
-        navigate('create', { state: { mode: 'add' } });
+        navigate('create', { state: { mode: mode.add.value } });
     };
 
     return (
@@ -71,6 +72,7 @@ const FormSearchFlow = (props) => {
                 <Button variant="outline-info" onClick={navigateToFlowCreate}><AiIcons.AiOutlinePlusCircle /> Add</Button>
             </div>
             <Form >
+
                 <Form.Group as={Row} className="mb-4">
                     <Form.Label className="text-right" column md={4} >
                         Flow ID :

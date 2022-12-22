@@ -1,125 +1,177 @@
 import "./form-create-flow.scss";
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
-import { useNavigate } from "react-router-dom";
 import * as AiIcons from 'react-icons/ai'
-
-import { getDropdownResultParam } from "../../services/util-service";
-import { createFlow, updateFlow } from "../../services/decision-service";
-import { isEmpty } from "../../util/Util";
 import Swal from "sweetalert2";
 
+import DatepickerCustom from "../datepicker/Datepicker";
+
+import { isEmpty } from "../../util/Util";
+import { formatDatetime, mode } from '../../config/config'
+import { getDropdownResultParam } from "../../services/util-service";
+import { createFlow, updateFlow } from "../../services/decision-service";
+
+
 const FormCreateFlow = (props) => {
-
-    const [mode] = useState(props.location.state.mode)
-
     const navigate = useNavigate()
+    const [modePage] = useState(props.location.state.mode)
+
     const [validated, setValidated] = useState(false)
+    const [validateOptionResult, setValidateOptionResult] = useState(false)
     const [resultParamOption, setResultParamOption] = useState([])
     const [flowId, setFlowId] = useState('')
     const [flowName, setFlowName] = useState('')
     const [resultParam, setResultParam] = useState([])
     const [isActive, setIsActive] = useState(true)
-    const [validateOptionResult, setValidateOptionResult] = useState(false)
+
+    const [effectiveDate, setEffectiveDate] = useState(false)
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     useEffect(() => {
+        props.setLoadingPages(true)
         getDropdownResultParam()
             .then(responseObject => {
-                initialFormCreate(responseObject)
+                setResultParamOption(responseObject);
+                initialForm()
+                if (modePage !== mode.add.value) {
+                    setDataToForm(props.location.state.data, responseObject)
+                }
+                props.setLoadingPages(false)
             });
     }, [])
 
-    const initialFormCreate = (resultParamList) => {
-        setResultParamOption(resultParamList);
-        if (mode === 'edit') {
-            const filteredResultParamList = resultParamList.filter(
-                (resultParam) => resultParam.value.indexOf(props.location.state.data.resultParam) !== -1
-            );
-            setFlowId(props.location.state.data.flowId)
-            setFlowName(props.location.state.data.flowName)
-            setResultParam(filteredResultParamList[0])
-            setIsActive((props.location.state.data.isActive === 'Y'))
-        } else {
-            setFlowId('')
-            setFlowName('')
-            setResultParam([])
-            setIsActive(true)
-        }
+    const initialForm = () => {
+        setFlowId('')
+        setFlowName('')
+        setResultParam([])
+        setIsActive(true)
+        setEffectiveDate(false)
+        setStartDate('')
+        setEndDate('')
     }
 
-    const handleButtonSaveFlow = (event) => {
+    const setDataToForm = (flow, rpOption) => {
+        const filteredResultParamList = rpOption.filter(
+            (resultParam) => resultParam.value.indexOf(flow.resultParam) !== -1
+        );
+        setFlowId(flow.flowId)
+        setFlowName(flow.flowName)
+        setResultParam(filteredResultParamList[0])
+        setIsActive((flow.isActive === 'Y'))
+    }
+
+    const onBtnClearForm = () => {
+        props.setLoadingPages(true)
+        initialForm();
+        setValidated(false)
+        setValidateOptionResult(false)
+        if (modePage !== mode.add.value) {
+            setDataToForm(props.location.state.data, resultParamOption)
+        }
+        props.setLoadingPages(false)
+    }
+
+    const onBtnCancel = () => {
+        navigate('/flow-management');
+    }
+    const onBtnDecision = () => {
+        navigate('decision', { state: props.location.state });
+    };
+
+    const validateForm = () => {
+        setValidated(true)
+        setValidateOptionResult((resultParam.value === undefined))
+        if (isEmpty(flowId) || isEmpty(flowName) || resultParam.value === undefined) {
+            return false
+        }
+        if (effectiveDate && isEmpty(startDate)) {
+            return false
+        }
+        return true
+
+
+    }
+
+    const onBtnSave = (event) => {
+        props.setLoadingPages(true)
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
         }
-        setValidated(true)
-        if (!isEmpty(flowId) && !isEmpty(flowName) && resultParam.value !== undefined) {
-            setValidateOptionResult(false)
+        if (validateForm()) {
             let flow = {
                 flowId: `${flowId}`,
                 flowName: `${flowName}`,
                 resultParam: `${resultParam.value}`,
                 isActive: `${(isActive === true) ? 'Y' : 'N '}`
             }
+            props.setLoadingPages(false)
             Swal.fire({
                 icon: 'info',
-                title: `${'Do you want to save' + ((mode === 'edit') ? ' the changes?' : '?')}`,
+                title: `${'Do you want to save' + ((modePage === mode.edit.value) ? ' the changes?' : '?')}`,
                 showCancelButton: true,
                 confirmButtonText: 'Save',
             }).then((result) => {
+                props.setLoadingPages(true)
                 if (result.isConfirmed) {
-                    if (mode === 'edit') {
-                        updateFlow(flow).then(responseObject => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: `Saved!`,
-                                text: 'Data has been saved successfully',
-                                showCancelButton: false,
-                            }).then((result) => {
-                                navigateToFlowManagement()
-                            })
+                    if (modePage !== mode.edit.value) {
+                        createFlow(flow).then(responseObject => {
+                            props.setLoadingPages(false)
+                            if (responseObject.responseCode === 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `Success!`,
+                                    text: 'Data has been saved successfully',
+                                    showCancelButton: false,
+                                }).then(() => {
+                                    navigate('/flow-management');
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: `Error!`,
+                                    text: `${responseObject.responseDecription}!`,
+                                    showCancelButton: false,
+                                });
+                            }
                         });
                     } else {
-                        createFlow(flow).then(responseObject => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: `Saved!`,
-                                text: 'Data has been saved successfully',
-                                showCancelButton: false,
-                            }).then((result) => {
-                                navigateToFlowManagement()
-                            })
+                        updateFlow(flow).then(responseObject => {
+                            props.setLoadingPages(false)
+                            if (responseObject.responseCode === 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `Success!`,
+                                    text: 'Data has been saved successfully',
+                                    showCancelButton: false,
+                                }).then(() => {
+                                    navigate('/flow-management');
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: `Error!`,
+                                    text: `${responseObject.responseDecription}!`,
+                                    showCancelButton: false,
+                                });
+                            }
                         });
                     }
-                } else if (result.isDenied) {
-                    Swal.fire('Changes are not saved', '', 'info')
                 }
-            })
+            });
         } else {
-            if (resultParam.value !== undefined) {
-                setValidateOptionResult(true)
-            } else {
-                setValidateOptionResult(false)
-            }
+            props.setLoadingPages(false)
         }
-
     }
-
-    const handleButtonClearFormCreateFlow = () => {
-        setValidated(false)
-        initialFormCreate(resultParamOption)
+    const onChangeEffective = (checkbox) => {
+        setEffectiveDate(checkbox);
+        setStartDate('')
+        setEndDate('')
     }
-
-    const navigateToFlowManagement = () => {
-        navigate('/flow-management');
-    };
-
-    const navigateToDecision = () => {
-        navigate('decision', { state: props.location.state });
-    };
-
     return (
         <>
             <div className="sub-title-content">Flow</div>
@@ -146,7 +198,7 @@ const FormCreateFlow = (props) => {
                             placeholder="Flow ID"
                             value={flowId}
                             onChange={e => setFlowId(e.target.value)}
-                            disabled={(mode === 'edit')}
+                            disabled={(modePage === mode.edit.value)}
                             required
                         />
                         <Form.Control.Feedback type="invalid">
@@ -184,12 +236,62 @@ const FormCreateFlow = (props) => {
                             value={resultParam || {}}
                             onChange={e => setResultParam(e)}
                         />
-                        <div className="invalid-customer">
+                        <div style={{
+                            width: '100%',
+                            marginTop: '0.25rem',
+                            fontSize: '.875em',
+                            color: '#dc3545'
+                        }}>
                             {validateOptionResult ? 'Please provide a valid result param.' : ""}
                         </div>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-4" hidden={!(mode === 'edit')}>
+                <Form.Group as={Row} className="mb-4">
+                    <Form.Label className="text-right" column md={4} >
+                        Effective Date :
+                    </Form.Label>
+                    <Col md={4}>
+                        <Form.Check
+                            type={'checkbox'}
+                            id={`default-checkbox`}
+                            label={`Active Date`}
+                            checked={effectiveDate}
+                            onChange={e => onChangeEffective(e.target.checked)}
+                        />
+                    </Col>
+                </Form.Group>
+                <Form.Group as={Row} className="mb-4" hidden={(effectiveDate !== true)}>
+                    <Form.Label className="text-right" column md={4} >
+                        Start Date :
+                    </Form.Label>
+                    <Col md={2} className='text-left'>
+                        <DatepickerCustom
+                            selected={startDate}
+                            dateFormat={formatDatetime}
+                            maxDate={endDate}
+                            placeholderText={'Start Date'}
+                            onChange={setStartDate}
+                            required={true}
+                            showTimeInput={true}
+                        />
+                    </Col>
+                    <Form.Label className="text-right" column md={1} >
+                        End Date :
+                    </Form.Label>
+                    <Col md={2}>
+                        <DatepickerCustom
+                            selected={endDate}
+                            dateFormat={formatDatetime}
+                            minDate={startDate}
+                            placeholderText={'End Date'}
+                            onChange={setEndDate}
+                            required={false}
+                            showTimeInput={true}
+                            disabled={(isEmpty(startDate))}
+                        />
+                    </Col>
+                </Form.Group>
+                <Form.Group as={Row} className="mb-4" hidden={(modePage !== mode.edit.value)}>
                     <Form.Label className="text-right" column md={4} >
                         Decision Flow:
                     </Form.Label>
@@ -197,7 +299,7 @@ const FormCreateFlow = (props) => {
                         <Button
                             className="btn-search"
                             variant="outline-success"
-                            onClick={navigateToDecision}
+                            onClick={onBtnDecision}
                         >
                             <AiIcons.AiOutlinePartition /> Deicison
                         </Button>
@@ -209,21 +311,21 @@ const FormCreateFlow = (props) => {
                         <Button
                             className="btn-search"
                             variant="outline-primary"
-                            onClick={handleButtonSaveFlow}
+                            onClick={onBtnSave}
                         >
                             <AiIcons.AiOutlineCheck /> Save
                         </Button>
                         <Button
                             className="btn-clear"
                             variant="outline-secondary"
-                            onClick={handleButtonClearFormCreateFlow}
+                            onClick={onBtnClearForm}
                         >
                             <AiIcons.AiOutlineClear /> Clear
                         </Button>
                         <Button
                             className="btn-clear"
                             variant="outline-danger"
-                            onClick={navigateToFlowManagement}
+                            onClick={onBtnCancel}
                         >
                             <AiIcons.AiOutlineClose /> Cancel
                         </Button>

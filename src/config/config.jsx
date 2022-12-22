@@ -67,3 +67,25 @@ export const edgeParamConditionOption =
         { value: 'ISNOTNULL', label: 'ISNOTNULL' },
         { value: 'CONTAIN', label: 'CONTAIN' },
     ]
+
+export const mode = {
+    add: {
+        value: "ADD",
+        label: "Add"
+    },
+    edit: {
+        value: "EDIT",
+        label: "Edit"
+    },
+    view: {
+        value: "VIEW",
+        label: "View"
+    },
+    delete: {
+        value: "DELETE",
+        label: "Eelete"
+    },
+}
+
+export const formatDate = 'dd/MM/yyyy'
+export const formatDatetime = 'dd/MM/yyyy HH:mm'

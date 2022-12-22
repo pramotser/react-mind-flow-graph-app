@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Modal, Button, Form, Table, Row, Col } from 'react-bootstrap'
+import { Modal, Button, Form, Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
 
-import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/DataConfig';
+import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/config';
 import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject } from '../../../util/Util'
 
 import * as BsIcons from 'react-icons/bs'
@@ -164,7 +164,6 @@ function EdgeModal(props) {
             edgeParamCompare: "",
             edgeValueCompare: ""
         };
-        console.log(edgeParam)
         setEdgeParamData(
             (e) => e.concat(edgeParam)
         )

@@ -15,7 +15,7 @@ import Swal from 'sweetalert2';
 // import { nodeTypeOption } from '../../config/DataConfig'
 // import { getNodeTypeObject, getColorNodeType } from '../../util/Util'
 
-import { nodeTypeOption } from '../../../config/DataConfig';
+import { nodeTypeOption } from '../../../config/config';
 import { getNodeTypeObject, getColorNodeType } from '../../../util/Util';
 
 function NodeModal(props) {

@@ -4,11 +4,18 @@ import {
     edgeConditionOption,
     edgeTypeOption,
     edgeParamConditionOption
-} from '../config/DataConfig'
+} from '../config/config'
+import { format } from 'date-fns'
+
 
 function isEmpty(val) {
     return (val === undefined || val == null || val.length <= 0) ? true : false;
 }
+
+export const setLoading = (loading) => loading; 
+
+export const convertFormatDate = (date , formatDate) => date !== null && date !== undefined ? format(new Date(date), formatDate) : undefined;
+
 function getColorNodeType(nodeType) {
     if (nodeType === 'START') {
         return {

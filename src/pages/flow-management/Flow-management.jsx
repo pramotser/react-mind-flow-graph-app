@@ -8,9 +8,10 @@ import Swal from "sweetalert2";
 
 import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
-import FormSearchFlow from "../../components/form-search-flow/Form-search-flow";
+import FormSearchFlow from '../../components/form-search-flow/Form-search-flow'
 import Datatable from "../../components/datatable/Datatable";
 import LoadingScreen from "../../components/layout/loading/LoadingScreen";
+import { mode } from "../../config/config";
 
 const FlowManagement = () => {
     const navigate = useNavigate()
@@ -18,7 +19,7 @@ const FlowManagement = () => {
     const [searchData, setSearchData] = useState([])
 
     const handleButtonEditClick = (event, data) => {
-        navigate('edit', { state: { mode: 'edit', data: data } });
+        navigate('edit', { state: { mode: mode.edit.value, data: data } });
     }
 
     const handleButtonDeleteClick = (event, data) => {
