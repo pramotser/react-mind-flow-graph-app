@@ -4,19 +4,18 @@ import {
     edgeConditionOption,
     edgeTypeOption,
     edgeParamConditionOption
-} from '../config/config'
-import { format } from 'date-fns'
+} from '../config/DataConfig'
+export const getNodeTypeObject = (nodeType) => (nodeTypeOption.filter((nto) => nto.value === nodeType))
 
+export const getStepObject = (step) => (stepOption.filter((so) => so.value === step))
 
-function isEmpty(val) {
-    return (val === undefined || val == null || val.length <= 0) ? true : false;
-}
+export const getEdgeConditionOptionObject = (edgeCondition) => (edgeConditionOption.filter((eco) => eco.value === edgeCondition))
 
-export const setLoading = (loading) => loading; 
+export const getEdgeTypeOptionObject = (edgeType) => (edgeTypeOption.filter((eto) => eto.value === edgeType))
 
-export const convertFormatDate = (date , formatDate) => date !== null && date !== undefined ? format(new Date(date), formatDate) : undefined;
+export const getEdgeParamConditionOptionObject = (edgeParamCondition) => (edgeParamConditionOption.filter((epco) => epco.value === edgeParamCondition))
 
-function getColorNodeType(nodeType) {
+export const getColorNodeType = (nodeType) => {
     if (nodeType === 'START') {
         return {
             color: "#664d03",
@@ -57,7 +56,7 @@ function getColorNodeType(nodeType) {
     }
 }
 
-function getStyleHeaderNode(nodeType) {
+export const getStyleHeaderNode = (nodeType) => {
     if (nodeType === 'START') {
         return {
             backgroundColor: '#fff3cd',
@@ -120,18 +119,3 @@ function getStyleHeaderNode(nodeType) {
         }
     }
 }
-////  migate
-export const getNodeTypeObject = (nodeType) => (nodeTypeOption.filter((nto) => nto.value === nodeType))
-
-
-export const getStepObject = (step) => (stepOption.filter((so) => so.value === step))
-
-export const getEdgeConditionOptionObject = (edgeCondition) => (edgeConditionOption.filter((eco) => eco.value === edgeCondition))
-
-export const getEdgeTypeOptionObject = (edgeType) => (edgeTypeOption.filter((eto) => eto.value === edgeType))
-
-export const getEdgeParamConditionOptionObject = (edgeParamCondition) => (edgeParamConditionOption.filter((epco) => epco.value === edgeParamCondition))
-
-
-
-export { isEmpty, getColorNodeType, getStyleHeaderNode }

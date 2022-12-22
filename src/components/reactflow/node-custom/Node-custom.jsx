@@ -1,0 +1,31 @@
+import React, { memo } from 'react';
+import { Handle, Position } from 'reactflow';
+// import { getStyleHeaderNode } from '../../decision/util/Util'
+import { getStyleHeaderNode } from '../../../util/Util';
+
+import './node-custom.scss'
+
+function NodeCustom({ id, data }) {
+
+    const customNodeHeaderStyle = getStyleHeaderNode(data.nodeType);
+    return (
+        <>
+            <Handle type="target" hidden={(data.nodeType === 'START')} position={Position.Top} />
+            <div className="custom-node__header" style={customNodeHeaderStyle}>
+                <strong>
+                    {(data.nodeType !== '') ? data.nodeType : 'New Node'}
+                </strong>
+            </div>
+            <div className="custom-node__body" hidden={(data.nodeType !== 'END')}>
+                <strong>Result: </strong>{((data.result === '') ? '' : data.result)}
+                <br />
+                <strong>Remark: </strong>{((data.remark === '') ? '' : data.remark)}
+            </div>
+            <div className="custom-node__body" hidden={(data.nodeType === 'START' || data.nodeType === 'END')}>
+                <strong>Node Name: </strong>{data.nodeName}
+            </div>
+            <Handle type="source" hidden={(data.nodeType === 'END')} position={Position.Bottom} />
+        </>
+    );
+}
+export default memo(NodeCustom);
