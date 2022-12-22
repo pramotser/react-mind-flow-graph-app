@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 
 import DatepickerCustom from "../datepicker/Datepicker";
 
-import { isEmpty } from "../../util/Util";
+import { isNullOrUndefined } from "../../util/Util";
 import { formatDatetime, mode } from '../../config/config'
 import { getDropdownResultParam } from "../../services/util-service";
 import { createFlow, updateFlow } from "../../services/decision-service";
@@ -84,10 +84,10 @@ const FormCreateFlow = (props) => {
     const validateForm = () => {
         setValidated(true)
         setValidateOptionResult((resultParam.value === undefined))
-        if (isEmpty(flowId) || isEmpty(flowName) || resultParam.value === undefined) {
+        if (isNullOrUndefined(flowId) || isNullOrUndefined(flowName) || resultParam.value === undefined) {
             return false
         }
-        if (effectiveDate && isEmpty(startDate)) {
+        if (effectiveDate && isNullOrUndefined(startDate)) {
             return false
         }
         return true
@@ -287,7 +287,7 @@ const FormCreateFlow = (props) => {
                             onChange={setEndDate}
                             required={false}
                             showTimeInput={true}
-                            disabled={(isEmpty(startDate))}
+                            disabled={(isNullOrUndefined(startDate))}
                         />
                     </Col>
                 </Form.Group>

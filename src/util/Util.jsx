@@ -7,10 +7,7 @@ import {
 } from '../config/config'
 import { format } from 'date-fns'
 
-
-function isEmpty(val) {
-    return (val === undefined || val == null || val.length <= 0) ? true : false;
-}
+export const isNullOrUndefined = (value) => value === undefined || value == null || value.length <= 0;
 
 export const setLoading = (loading) => loading; 
 
@@ -134,4 +131,4 @@ export const getEdgeParamConditionOptionObject = (edgeParamCondition) => (edgePa
 
 
 
-export { isEmpty, getColorNodeType, getStyleHeaderNode }
+export { getColorNodeType, getStyleHeaderNode }
