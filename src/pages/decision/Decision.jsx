@@ -22,10 +22,10 @@ const DecisionFlow = () => {
             <Sidebar />
             <div className="content-wrapper">
                 <Navbar />
-                {/* <Decision
+                <Decision
                     setLoadingPages={setLoadingPages}
                     location={location}
-                /> */}
+                />
             </div>
         </div>
     );
