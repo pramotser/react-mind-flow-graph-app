@@ -7,7 +7,7 @@ import * as AiIcons from 'react-icons/ai'
 import Swal from "sweetalert2";
 
 import DatepickerCustom from "../datepicker/Datepicker";
-
+import DatePicker from 'react-datepicker'
 import { isNullOrUndefined } from "../../util/Util";
 import { formatDatetime, mode } from '../../config/config'
 import { getDropdownResultParam } from "../../services/util-service";
@@ -26,7 +26,7 @@ const FormCreateFlow = (props) => {
     const [resultParam, setResultParam] = useState([])
     const [isActive, setIsActive] = useState(true)
 
-    const [effectiveDate, setEffectiveDate] = useState(false)
+    const [effectiveFlag, setEffectiveFlag] = useState(false)
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
@@ -48,7 +48,7 @@ const FormCreateFlow = (props) => {
         setFlowName('')
         setResultParam([])
         setIsActive(true)
-        setEffectiveDate(false)
+        setEffectiveFlag(false)
         setStartDate('')
         setEndDate('')
     }
@@ -87,7 +87,7 @@ const FormCreateFlow = (props) => {
         if (isNullOrUndefined(flowId) || isNullOrUndefined(flowName) || resultParam.value === undefined) {
             return false
         }
-        if (effectiveDate && isNullOrUndefined(startDate)) {
+        if (effectiveFlag && isNullOrUndefined(startDate)) {
             return false
         }
         return true
@@ -107,68 +107,72 @@ const FormCreateFlow = (props) => {
                 flowId: `${flowId}`,
                 flowName: `${flowName}`,
                 resultParam: `${resultParam.value}`,
-                isActive: `${(isActive === true) ? 'Y' : 'N '}`
+                isActive: `${(isActive === true) ? 'Y' : 'N '}`,
+                effectiveFlag: `${effectiveFlag}`,
+                startDate: `${startDate}`,
+                endDate: `${endDate}`,
             }
             props.setLoadingPages(false)
-            Swal.fire({
-                icon: 'info',
-                title: `${'Do you want to save' + ((modePage === mode.edit.value) ? ' the changes?' : '?')}`,
-                showCancelButton: true,
-                confirmButtonText: 'Save',
-            }).then((result) => {
-                props.setLoadingPages(true)
-                if (result.isConfirmed) {
-                    if (modePage !== mode.edit.value) {
-                        createFlow(flow).then(responseObject => {
-                            props.setLoadingPages(false)
-                            if (responseObject.responseCode === 200) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: `Success!`,
-                                    text: 'Data has been saved successfully',
-                                    showCancelButton: false,
-                                }).then(() => {
-                                    navigate('/flow-management');
-                                })
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: `Error!`,
-                                    text: `${responseObject.responseDecription}!`,
-                                    showCancelButton: false,
-                                });
-                            }
-                        });
-                    } else {
-                        updateFlow(flow).then(responseObject => {
-                            props.setLoadingPages(false)
-                            if (responseObject.responseCode === 200) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: `Success!`,
-                                    text: 'Data has been saved successfully',
-                                    showCancelButton: false,
-                                }).then(() => {
-                                    navigate('/flow-management');
-                                })
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: `Error!`,
-                                    text: `${responseObject.responseDecription}!`,
-                                    showCancelButton: false,
-                                });
-                            }
-                        });
-                    }
-                }
-            });
+            console.log(flow)
+            // Swal.fire({
+            //     icon: 'info',
+            //     title: `${'Do you want to save' + ((modePage === mode.edit.value) ? ' the changes?' : '?')}`,
+            //     showCancelButton: true,
+            //     confirmButtonText: 'Save',
+            // }).then((result) => {
+            //     props.setLoadingPages(true)
+            //     if (result.isConfirmed) {
+            //         if (modePage !== mode.edit.value) {
+            //             createFlow(flow).then(responseObject => {
+            //                 props.setLoadingPages(false)
+            //                 if (responseObject.responseCode === 200) {
+            //                     Swal.fire({
+            //                         icon: 'success',
+            //                         title: `Success!`,
+            //                         text: 'Data has been saved successfully',
+            //                         showCancelButton: false,
+            //                     }).then(() => {
+            //                         navigate('/flow-management');
+            //                     })
+            //                 } else {
+            //                     Swal.fire({
+            //                         icon: 'error',
+            //                         title: `Error!`,
+            //                         text: `${responseObject.responseDecription}!`,
+            //                         showCancelButton: false,
+            //                     });
+            //                 }
+            //             });
+            //         } else {
+            //             updateFlow(flow).then(responseObject => {
+            //                 props.setLoadingPages(false)
+            //                 if (responseObject.responseCode === 200) {
+            //                     Swal.fire({
+            //                         icon: 'success',
+            //                         title: `Success!`,
+            //                         text: 'Data has been saved successfully',
+            //                         showCancelButton: false,
+            //                     }).then(() => {
+            //                         navigate('/flow-management');
+            //                     })
+            //                 } else {
+            //                     Swal.fire({
+            //                         icon: 'error',
+            //                         title: `Error!`,
+            //                         text: `${responseObject.responseDecription}!`,
+            //                         showCancelButton: false,
+            //                     });
+            //                 }
+            //             });
+            //         }
+            //     }
+            // });
         } else {
             props.setLoadingPages(false)
         }
     }
     const onChangeEffective = (checkbox) => {
-        setEffectiveDate(checkbox);
+        setEffectiveFlag(checkbox);
         setStartDate('')
         setEndDate('')
     }
@@ -255,12 +259,12 @@ const FormCreateFlow = (props) => {
                             type={'checkbox'}
                             id={`default-checkbox`}
                             label={`Active Date`}
-                            checked={effectiveDate}
+                            checked={effectiveFlag}
                             onChange={e => onChangeEffective(e.target.checked)}
                         />
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-4" hidden={(effectiveDate !== true)}>
+                <Form.Group as={Row} className="mb-4" hidden={(effectiveFlag !== true)}>
                     <Form.Label className="text-right" column md={4} >
                         Start Date :
                     </Form.Label>
@@ -272,7 +276,6 @@ const FormCreateFlow = (props) => {
                             placeholderText={'Start Date'}
                             onChange={setStartDate}
                             required={true}
-                            showTimeInput={true}
                         />
                     </Col>
                     <Form.Label className="text-right" column md={1} >
@@ -286,7 +289,6 @@ const FormCreateFlow = (props) => {
                             placeholderText={'End Date'}
                             onChange={setEndDate}
                             required={false}
-                            showTimeInput={true}
                             disabled={(isNullOrUndefined(startDate))}
                         />
                     </Col>
