@@ -22,4 +22,5 @@ const Datatable = (props) => {
     );
 };
 
+
 export default Datatable;
