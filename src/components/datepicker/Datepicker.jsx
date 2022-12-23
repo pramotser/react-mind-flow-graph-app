@@ -21,11 +21,9 @@ const DatepickerCustom = (props) => {
         <>
             <DatePicker
                 selected={props.selected}
-                dateFormat={props.dateFormat}
-                maxDate={props.maxDate}
-                minDate={props.minDate}
-                onChange={(date) => props.onChange(date)}
                 placeholderText={props.placeholderText}
+                onChange={(date) => props.onChange(date)}
+                dateFormat={props.dateFormat}
                 customInput={(<Form.Control
                     type="text"
                     name='datepicker'
@@ -33,6 +31,16 @@ const DatepickerCustom = (props) => {
                 />)}
                 required={props.required}
                 disabled={props.disabled}
+
+                maxDate={props.maxDate}
+                minDate={props.minDate}
+                showDisabledMonthNavigation
+                // selectsStart={props.selectsStart || false}
+                // selectsEnd={props.selectsEnd || false}
+                // startDate={props.startDate}
+                // endDate={props.endDate}
+
+                
                 // maxTime={new Date().setHours(23, 59, 59)}
                 // minTime={new Date().setHours(0, 0)}
                 // showTimeInput={props.showTimeInput}
