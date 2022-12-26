@@ -49,8 +49,9 @@ function NodeModal(props) {
                 setNodeType([])
                 openCollapse([])
                 if (props.nodeData["data"]["nodeType"] !== '') {
+                    console.log('Find')
                     let nodeType = getNodeTypeObject(props.nodeData["data"]["nodeType"]);
-                    setNodeType(nodeType)
+                    setNodeType(nodeType[0])
                     openCollapse(nodeType[0])
                 }
                 setNodeName(props.nodeData["data"]["nodeName"])
