@@ -6,6 +6,7 @@
 	box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
 	border-radius: 10px;
 }
+
 .react-flow__node.circle {
 	border-radius: 50%;
 	width: 60px;
@@ -15,6 +16,7 @@
 	align-items: center;
 	fontweight: 700;
 }
+
 .react-flow__node.annotation {
 	border-radius: 0;
 	text-align: left;
@@ -23,11 +25,18 @@
 	line-height: 1.4;
 	width: 225px;
 	box-shadow: 0 4px 6px -1px rgb(0 0 0 / 15%), 0 2px 4px -1px rgb(0 0 0 / 8%);
+
 	.react-flow__handle {
 		display: none;
 	}
 }
+
 .custom-node__body {
 	padding: 10px;
 	text-align: left;
+}
+
+.react-flow__handle {
+	min-width: 8px;
+	min-height: 8px;
 }

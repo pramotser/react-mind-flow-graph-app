@@ -119,6 +119,15 @@ const FormDecisionControl = (props) => {
                             </Button>
                         </Form.Group>
                         <br />
+
+                        <Form.Group controlId="validationCustom01">
+                            <Button
+                                variant="outline-primary"
+                                onClick={props.function.onSaveDecision}>
+                                <AiIcons.AiOutlineCheck /> Save Decision
+                            </Button>
+                        </Form.Group>
+                        <br />
                         <Form.Group controlId="validationCustom01">
                             <Button
                                 variant="outline-danger"

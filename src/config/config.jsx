@@ -2,17 +2,17 @@ export const initialNodes = [
     {
         width: 180,
         height: 33,
-        id: "619000",
+        id: '',
         type: "custom",
         position: {
-            x: 250,
-            y: 5
+            x: 1000,
+            y: 1000
         },
         data: {
             label: "Start",
             nodeType: "START",
-            flowNodeId: "619",
-            flowId: "619000",
+            flowNodeId: '',
+            flowId: "",
             nodeName: "",
             subFlowId: "",
             functionRef: "",
@@ -22,9 +22,8 @@ export const initialNodes = [
             remark: ""
         },
         positionAbsolute: {
-            x: 250,
-            y: 5
-
+            x: 1000,
+            y: 1000
         }
     }
 ];

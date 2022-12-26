@@ -7,7 +7,6 @@ import * as AiIcons from 'react-icons/ai'
 import Swal from "sweetalert2";
 
 import DatepickerCustom from "../datepicker/Datepicker";
-import DatePicker from 'react-datepicker'
 import { isNullOrUndefined } from "../../util/Util";
 import { formatDatetime, mode } from '../../config/config'
 import { getDropdownResultParam } from "../../services/util-service";
@@ -30,6 +29,8 @@ const FormCreateFlow = (props) => {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
 
+    const [decisionFlow, setDecisionFlow] = useState('')
+
     useEffect(() => {
         props.setLoadingPages(true)
         getDropdownResultParam()
@@ -37,11 +38,11 @@ const FormCreateFlow = (props) => {
                 setResultParamOption(responseObject);
                 initialForm()
                 if (modePage !== mode.add.value) {
-                    setDataToForm(props.location.state.data, responseObject)
+                    setDataToForm(props.location.state, responseObject)
                 }
                 props.setLoadingPages(false)
             });
-    }, [])
+    }, [props])
 
     const initialForm = () => {
         setFlowId('')
@@ -51,16 +52,20 @@ const FormCreateFlow = (props) => {
         setEffectiveFlag(false)
         setStartDate('')
         setEndDate('')
+        setDecisionFlow('')
     }
 
-    const setDataToForm = (flow, rpOption) => {
+    const setDataToForm = (state, rpOption) => {
         const filteredResultParamList = rpOption.filter(
-            (resultParam) => resultParam.value.indexOf(flow.resultParam) !== -1
+            (resultParam) => resultParam.value.indexOf(state.data.resultParam) !== -1
         );
-        setFlowId(flow.flowId)
-        setFlowName(flow.flowName)
+        setFlowId(state.data.flowId)
+        setFlowName(state.data.flowName)
         setResultParam(filteredResultParamList[0])
-        setIsActive((flow.isActive === 'Y'))
+        setIsActive((state.data.isActive === 'Y'))
+        if(!isNullOrUndefined(state.data.decisionFlow)){
+            setDecisionFlow(state.data.decisionFlow)
+        }
     }
 
     const onBtnClearForm = () => {
@@ -69,7 +74,7 @@ const FormCreateFlow = (props) => {
         setValidated(false)
         setValidateOptionResult(false)
         if (modePage !== mode.add.value) {
-            setDataToForm(props.location.state.data, resultParamOption)
+            setDataToForm(props.location.state, resultParamOption)
         }
         props.setLoadingPages(false)
     }
@@ -77,6 +82,7 @@ const FormCreateFlow = (props) => {
     const onBtnCancel = () => {
         navigate('/flow-management');
     }
+
     const onBtnDecision = () => {
         navigate('decision', { state: props.location.state });
     };
@@ -108,65 +114,65 @@ const FormCreateFlow = (props) => {
                 flowName: `${flowName}`,
                 resultParam: `${resultParam.value}`,
                 isActive: `${(isActive === true) ? 'Y' : 'N '}`,
-                effectiveFlag: `${effectiveFlag}`,
-                startDate: `${startDate}`,
-                endDate: `${endDate}`,
+                // effectiveFlag: `${effectiveFlag}`,
+                // startDate: `${startDate}`,
+                // endDate: `${endDate}`,
+                decisionFlow: `${decisionFlow}`
             }
             props.setLoadingPages(false)
-            console.log(flow)
-            // Swal.fire({
-            //     icon: 'info',
-            //     title: `${'Do you want to save' + ((modePage === mode.edit.value) ? ' the changes?' : '?')}`,
-            //     showCancelButton: true,
-            //     confirmButtonText: 'Save',
-            // }).then((result) => {
-            //     props.setLoadingPages(true)
-            //     if (result.isConfirmed) {
-            //         if (modePage !== mode.edit.value) {
-            //             createFlow(flow).then(responseObject => {
-            //                 props.setLoadingPages(false)
-            //                 if (responseObject.responseCode === 200) {
-            //                     Swal.fire({
-            //                         icon: 'success',
-            //                         title: `Success!`,
-            //                         text: 'Data has been saved successfully',
-            //                         showCancelButton: false,
-            //                     }).then(() => {
-            //                         navigate('/flow-management');
-            //                     })
-            //                 } else {
-            //                     Swal.fire({
-            //                         icon: 'error',
-            //                         title: `Error!`,
-            //                         text: `${responseObject.responseDecription}!`,
-            //                         showCancelButton: false,
-            //                     });
-            //                 }
-            //             });
-            //         } else {
-            //             updateFlow(flow).then(responseObject => {
-            //                 props.setLoadingPages(false)
-            //                 if (responseObject.responseCode === 200) {
-            //                     Swal.fire({
-            //                         icon: 'success',
-            //                         title: `Success!`,
-            //                         text: 'Data has been saved successfully',
-            //                         showCancelButton: false,
-            //                     }).then(() => {
-            //                         navigate('/flow-management');
-            //                     })
-            //                 } else {
-            //                     Swal.fire({
-            //                         icon: 'error',
-            //                         title: `Error!`,
-            //                         text: `${responseObject.responseDecription}!`,
-            //                         showCancelButton: false,
-            //                     });
-            //                 }
-            //             });
-            //         }
-            //     }
-            // });
+            Swal.fire({
+                icon: 'info',
+                title: `${'Do you want to save' + ((modePage === mode.edit.value) ? ' the changes?' : '?')}`,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+            }).then((result) => {
+                props.setLoadingPages(true)
+                if (result.isConfirmed) {
+                    if (modePage !== mode.edit.value) {
+                        createFlow(flow).then(responseObject => {
+                            props.setLoadingPages(false)
+                            if (responseObject.responseCode === 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `Success!`,
+                                    text: 'Data has been saved successfully',
+                                    showCancelButton: false,
+                                }).then(() => {
+                                    navigate('/flow-management');
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: `Error!`,
+                                    text: `${responseObject.responseDecription}!`,
+                                    showCancelButton: false,
+                                });
+                            }
+                        });
+                    } else {
+                        updateFlow(flow).then(responseObject => {
+                            props.setLoadingPages(false)
+                            if (responseObject.responseCode === 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `Success!`,
+                                    text: 'Data has been saved successfully',
+                                    showCancelButton: false,
+                                }).then(() => {
+                                    navigate('/flow-management');
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: `Error!`,
+                                    text: `${responseObject.responseDecription}!`,
+                                    showCancelButton: false,
+                                });
+                            }
+                        });
+                    }
+                }
+            });
         } else {
             props.setLoadingPages(false)
         }

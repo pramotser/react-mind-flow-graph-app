@@ -1,9 +1,10 @@
 .rdt_Table{
 	overflow: inherit !important;
+	min-height: 500px;
 }
-// .modal-body-edge {
-// 	height: 600px;
-// }
+.modal-body-edge {
+	min-height: 500px;
+}
 // .max-height {
 // 	height: 100%;
 // }

@@ -6,6 +6,7 @@ import { getBezierPath } from 'reactflow';
 import EdgeModal from '../../modal/edge/Edge-modal'
 
 import * as BiIcons from 'react-icons/bi'
+import * as AiIcons from 'react-icons/ai'
 
 import './edge-custom.scss';
 
@@ -37,6 +38,9 @@ export default function EdgeCustom({
 	const [openModalEdge, setOpenModalEdge] = useState(false);
 	const [idEdge, setIdEdge] = useState('');
 	const onEdgeClick = (evt, id) => {
+		// console.log('data.nodeStart : ',data.nodeStart)
+		// console.log('source : ',source)
+		// console.log('Number.parseInt(source) === Number.parseInt(data.nodeStart) :' ,Number.parseInt(source) === Number.parseInt(data.nodeStart))
 		setIdEdge(id)
 		setOpenModalEdge(true);
 	};
@@ -72,12 +76,22 @@ export default function EdgeCustom({
 				className="edgebutton-foreignobject"
 				requiredExtensions="http://www.w3.org/1999/xhtml"
 			>
-				<button
-					className="edgebutton"
-					onClick={(event) => onEdgeClick(event, id)}
-				>
-					<BiIcons.BiEdit />
-				</button>
+				{
+					(Number.parseInt(source) === Number.parseInt(data.nodeStart)) ?
+						<button
+							className='edgebutton'
+							onClick={(event) => onDeleteEdge(id)}
+						>
+							<AiIcons.AiOutlineClose />
+						</button>
+						:
+						<button
+							className="edgebutton"
+							onClick={(event) => onEdgeClick(event, id)}
+						>
+							<BiIcons.BiEdit />
+						</button>
+				}
 			</foreignObject>
 			<div>
 				<EdgeModal

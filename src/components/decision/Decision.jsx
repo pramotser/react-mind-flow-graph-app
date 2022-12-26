@@ -11,35 +11,37 @@ import ReactFlow, {
     Background,
     MarkerType,
 } from 'reactflow';
+import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
 
-// import ButtonEdge from './customize/button/ButtonEdge';
-
+import { isNullOrUndefined } from '../../util/Util';
 import NodeCustom from '../reactflow/node-custom/Node-custom';
 import EdgeCustom from '../reactflow/edge-custom/Edge-custom'
-
+import FormDecisionControl from '../form-decision-control/Form-decision-control';
 import NodeModal from '../modal/node/Node-modal';
 import ExportModal from '../modal/export/Export-modal';
-import FormDecisionControl from '../form-decision-control/Form-decision-control';
-import { useNavigate } from 'react-router-dom';
 
-let idRunning = 0;
+let nodeIdRunning = 0;
 const edgeTypes = {
     buttonedge: EdgeCustom
 };
 const nodeTypes = {
     custom: NodeCustom,
 };
+let nodeStart = null;
 
 const Decision = (props) => {
     const navigate = useNavigate()
+    const SessionKey = `Session-${props.location.state.data.flowId}`
+
+
     const [flowMain, setFlowMain] = useState({})
     const reactFlowWrapper = useRef(null);
-    const [nodes, setNodes, onNodesChange] = useNodesState([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-    const SessionKey = `Session-${props.location.state.data.flowId}`
+    const [nodes, setNodes, onNodesChange] = useNodesState([]);
+    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+
     const onConnect = useCallback((params) => setEdges((eds) => addEdge({
         ...params, type: 'buttonedge', markerEnd: { type: MarkerType.ArrowClosed, }, style: { strokeWidth: 2 },
         data: {
@@ -47,15 +49,44 @@ const Decision = (props) => {
                 saveEdgeParam: saveEdgeParam,
                 deleteEdge: deleteEdge,
             },
+            nodeStart: nodeStart,
         },
     }, eds)), []);
 
     useEffect(() => {
         setFlowMain(props.location.state.data)
         localStorage.removeItem(SessionKey)
+        if (!isNullOrUndefined(props.location.state.data.decisionFlow)) {
+            const flow = JSON.parse(props.location.state.data.decisionFlow);
+            if (flow) {
+                let filterNodeStart = flow.nodes.filter(
+                    (node) => node.data.nodeType.indexOf("START") !== -1
+                );
+                nodeStart = filterNodeStart[0].id;
+
+                setNodes(flow.nodes || []);
+                setEdges(flow.edges.map((e) => {
+                    e.data = {
+                        function: {
+                            saveEdgeParam: saveEdgeParam,
+                            deleteEdge: deleteEdge,
+                        },
+
+                        nodeStart: nodeStart,
+                        edgeParam: e.data.edgeParam || []
+                    }
+                    return e;
+                }));
+                let arrayNodeID = flow.nodes.map((n) => { return Number.parseInt(n.id) });
+                nodeIdRunning = Math.max(...arrayNodeID)
+                nodeIdRunning++
+                localStorage.setItem(SessionKey, props.location.state.data.decisionFlow);
+            }
+        }
     }, [])
 
-    const generateFloeNodeID = () => `${flowMain.flowId.toString()}${(idRunning++).toString().padStart(3, '0')}`;
+    // const generateFloeNodeID = () => `${flowMain.flowId.toString()}${(idRunning++).toString().padStart(3, '0')}`;
+    const generateFloeNodeID = () => `${(nodeIdRunning++).toString()}`;
 
     const onDragOver = useCallback((event) => {
         event.preventDefault();
@@ -96,10 +127,9 @@ const Decision = (props) => {
                 position,
                 data: {
                     label: `${lable}`,
-                    // nodeType: `${((type === "input") ? "START" : (type === "output") ? "END" : "")}`,
                     nodeType: `${nodeType}`,
-                    flowNodeId: `${flowMain.flowId}`,
-                    flowId: `${nodeId}`,
+                    flowNodeId: `${nodeId}`,
+                    flowId: `${flowMain.flowId}`,
                     nodeName: '',
                     subFlowId: '',
                     functionRef: '',
@@ -115,13 +145,12 @@ const Decision = (props) => {
                     'Unable to create duplicate startup node.',
                     'warning'
                 )
-                idRunning--;
+                nodeIdRunning--;
             } else {
+                if ((newNode.data.nodeType === "START")) {
+                    nodeStart = nodeId
+                }
                 setNodes((nds) => nds.concat(newNode));
-                // if (newNode.data.nodeType !== "START") {
-                //     setNodeData(newNode)
-                //     setOpenModalNode(true);
-                // }
             }
         },
     );
@@ -174,7 +203,7 @@ const Decision = (props) => {
     const deleteEdge = (edgeId) => {
         setEdges((edges) => edges.filter((edge) => edge.id !== edgeId))
     }
-
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // Modal Export
     const [jsonData, setJsonData] = useState("")
     const [openModalExport, setOpenModalExport] = useState(false);
@@ -186,8 +215,7 @@ const Decision = (props) => {
     const onCloseModalExport = () => {
         setOpenModalExport(false);
     }
-
-
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     const onSaveSession = () => {
         if (reactFlowInstance) {
             const flow = reactFlowInstance.toObject();
@@ -197,14 +225,13 @@ const Decision = (props) => {
 
     }
 
-    // const onSaveSession = useCallback(() => {
-    //     setSessionKey(SessionKey)
-    //     if (reactFlowInstance) {
-    //         const flow = reactFlowInstance.toObject();
-    //         localStorage.setItem(sessionKey, JSON.stringify(flow));
-    //         Swal.fire('Saved Seesion', '', 'success')
-    //     }
-    // }, [reactFlowInstance]);
+    const onSaveDecision = () => {
+        if (reactFlowInstance) {
+            const flow = reactFlowInstance.toObject();
+            props.location.state.data.decisionFlow = JSON.stringify(flow);
+            navigate('/flow-management/edit', { state: props.location.state });
+        }
+    }
 
     const onRestoreSession = () => {
         const restoreFlow = async () => {
@@ -226,31 +253,11 @@ const Decision = (props) => {
         };
         restoreFlow();
     }
-    // const onRestoreSession = useCallback(() => {
-    //     const restoreFlow = async () => {
-    //         const flow = JSON.parse(localStorage.getItem(SessionKey));
-    //         if (flow) {
-    //             setNodes(flow.nodes || []);
-    //             setEdges(flow.edges.map((e) => {
-    //                 e.data = {
-    //                     function: {
-    //                         saveEdgeParam: saveEdgeParam,
-    //                         deleteEdge: deleteEdge,
-    //                     },
-    //                     edgeParam: e.data.edgeParam || []
-    //                 }
-    //                 return e;
-    //             }));
-
-    //         }
-    //     };
-    //     restoreFlow();
-    // }, [setNodes]);
 
     const navigateToCreateFlow = () => {
         navigate('/flow-management/edit', { state: props.location.state });
     }
-    
+
 
     return (
         <div className="dndflow">
@@ -261,8 +268,6 @@ const Decision = (props) => {
                         nodes={nodes}
                         nodeTypes={nodeTypes}
                         edges={edges}
-
-
                         edgeTypes={edgeTypes}
                         onConnect={onConnect}
                         onNodesChange={onNodesChange}
@@ -279,7 +284,8 @@ const Decision = (props) => {
                                 onExportModal: onExportModal,
                                 onSaveSession: onSaveSession,
                                 onRestoreSession: onRestoreSession,
-                                navigateToCreateFlow:navigateToCreateFlow
+                                navigateToCreateFlow: navigateToCreateFlow,
+                                onSaveDecision: onSaveDecision
                             }}
                             flow={props.location.state.data} />
                         <MiniMap />

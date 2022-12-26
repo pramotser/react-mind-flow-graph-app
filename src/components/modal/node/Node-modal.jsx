@@ -11,9 +11,6 @@ import {
 } from 'react-bootstrap'
 import Select from 'react-select'
 import Swal from 'sweetalert2';
-// import Select from 'react-select'
-// import { nodeTypeOption } from '../../config/DataConfig'
-// import { getNodeTypeObject, getColorNodeType } from '../../util/Util'
 
 import { nodeTypeOption } from '../../../config/config';
 import { getNodeTypeObject, getColorNodeType } from '../../../util/Util';
@@ -117,7 +114,7 @@ function NodeModal(props) {
             nodeData["data"]["result"] = (resultParam) ? `${resultParam}` : ''
             nodeData["data"]["remark"] = (remark) ? `${remark}` : ''
         }
-        // props.function.saveNode(nodeData)
+        props.function.saveNode(nodeData)
     }
 
     const validatedField = () => {
