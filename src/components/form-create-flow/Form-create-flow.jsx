@@ -30,7 +30,6 @@ const FormCreateFlow = (props) => {
     const [endDate, setEndDate] = useState('');
 
     const [decisionFlow, setDecisionFlow] = useState('')
-
     useEffect(() => {
         props.setLoadingPages(true)
         getDropdownResultParam()
@@ -42,7 +41,7 @@ const FormCreateFlow = (props) => {
                 }
                 props.setLoadingPages(false)
             });
-    }, [props])
+    }, [])
 
     const initialForm = () => {
         setFlowId('')

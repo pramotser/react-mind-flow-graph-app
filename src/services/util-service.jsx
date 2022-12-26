@@ -29,6 +29,7 @@ async function getDropdownResultParam() {
             })
             .then(res => res.json())
             .then(response => {
+                console.log(response)
                 return response.responseObject
             })
     } catch (error) {
