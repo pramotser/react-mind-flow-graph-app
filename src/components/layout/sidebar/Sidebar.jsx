@@ -28,11 +28,18 @@ const Sidebar = () => {
             </li>
           </Link>
           <p className="title">Flow</p>
-
           <Link to="/flow-management" style={{ textDecoration: "none" }}>
             <li>
               <AiIcons.AiOutlineBars className="icon" />
               <span>Flow Management</span>
+            </li>
+          </Link>
+
+          <p className="title">Master</p>
+          <Link to="/result-param-management" style={{ textDecoration: "none" }}>
+            <li>
+              <AiIcons.AiOutlineFileDone className="icon" />
+              <span>Result Param Management</span>
             </li>
           </Link>
         </ul>

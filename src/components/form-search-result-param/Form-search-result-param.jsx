@@ -48,7 +48,7 @@ const FormSearchResultParam = (props) => {
 
     const handleButtonSearch = () => {
         props.setLoadingPages(true)
-        getResultParamListByCondition((resultParamName.value !== undefined) ? resultParamName.value : '').then(response => {
+        getResultParamListByCondition((resultParamName.value !== undefined) ? resultParamName.data.resultParamName : '').then(response => {
             if (response.responseObject.length > 0) {
                 props.search(response.responseObject);
             } else {
@@ -72,7 +72,7 @@ const FormSearchResultParam = (props) => {
         })
     }
 
-    const navigateToFlowCreate = () => {
+    const navigateToResultParamCreate = () => {
         props.setLoadingPages(true)
         navigate('create', { state: { mode: mode.add.value } });
     };
@@ -81,7 +81,7 @@ const FormSearchResultParam = (props) => {
         <>
             <div className="sub-title-content">Search Result Param</div>
             <div className="text-right" >
-                <Button variant="outline-info" onClick={navigateToFlowCreate}><AiIcons.AiOutlinePlusCircle /> Add</Button>
+                <Button variant="outline-info" onClick={navigateToResultParamCreate}><AiIcons.AiOutlinePlusCircle /> Add</Button>
             </div>
             <Form >
                 <Form.Group as={Row} className="mb-4">

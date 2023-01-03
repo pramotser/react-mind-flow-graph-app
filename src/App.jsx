@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FlowList from "./pages/flow-management/Flow-management";
 import FlowCreate from "./pages/flow-create/Flow-create";
 import ResultParamManagement from "./pages/result-param-management/Result-param-management";
+import ResultParamCreate from "./pages/result-param-create/Result-param-create";
 // import TestDecision from "./pages/test-decision/test-decision";
 function App() {
 
@@ -23,6 +24,9 @@ function App() {
                     </Route>
                     <Route path="result-param-management">
                         <Route index element={<ResultParamManagement />} />
+                        <Route path=":activn">
+                            <Route index element={<ResultParamCreate />} />
+                        </Route>
                     </Route>
                 </Routes>
             </BrowserRouter>
