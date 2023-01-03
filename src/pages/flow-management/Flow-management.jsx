@@ -11,6 +11,8 @@ import Navbar from "../../components/layout/navbar/Navbar";
 import FormSearchFlow from '../../components/form-search-flow/Form-search-flow'
 import Datatable from "../../components/datatable/Datatable";
 import LoadingScreen from "../../components/layout/loading/LoadingScreen";
+import { getFlowByCondition } from "../../services/decision-service";
+import { deleteFlow } from "../../services/decision-service";
 import { mode } from "../../config/config";
 
 const FlowManagement = () => {
@@ -23,7 +25,49 @@ const FlowManagement = () => {
     }
 
     const handleButtonDeleteClick = (event, data) => {
-        Swal.fire('Coming soon', '', 'info')
+        // Swal.fire('Coming soon', '', 'info')
+        console.log(data)
+        Swal.fire({
+            title: `Are you sure delete Flow ${data.flowId} ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Delete!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setLoadingPages(true)
+                deleteFlow(data).then(responseObject => {
+                    setLoadingPages(false)
+                    if (responseObject.responseCode === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: `Success!`,
+                            text: 'Data has been delete successfully',
+                            showCancelButton: false,
+                        }).then(() => {
+                            setLoadingPages(true)
+                            getFlowByCondition('').then(response => {
+                                if (response.responseObject.length > 0) {
+                                    search(response.responseObject);
+                                } else {
+                                    search([])
+                                }
+                                setLoadingPages(false)
+                            })
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: `Error!`,
+                            text: `${responseObject.responseDecription}!`,
+                            showCancelButton: false,
+                        });
+                    }
+                });
+            }
+        })
+
+
     }
 
     const headerColumnFlow = [
@@ -80,7 +124,7 @@ const FlowManagement = () => {
                 <>
                     <Button
                         variant="outline-danger"
-                        onClick={(e) => handleButtonDeleteClick(e, row.flowId)}
+                        onClick={(e) => handleButtonDeleteClick(e, row)}
                     >
                         <BsIcons.BsTrash />
                     </Button>

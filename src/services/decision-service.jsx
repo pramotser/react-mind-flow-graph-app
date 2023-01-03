@@ -59,10 +59,29 @@ async function updateFlow(flow) {
         return []
     }
 }
-
+async function deleteFlow(flow) {
+    try {
+        return fetch('/NAOS/FlowManagementService/flow/deleteFlow',
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                method: 'DELETE',
+                body: JSON.stringify(flow)
+            })
+            .then(res => res.json())
+            .then((data) => {
+                return data;
+            })
+    } catch (error) {
+        return []
+    }
+}
 
 export {
     getFlowByCondition,
     createFlow,
-    updateFlow
+    updateFlow,
+    deleteFlow
 }
