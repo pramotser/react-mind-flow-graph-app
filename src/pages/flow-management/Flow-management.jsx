@@ -118,7 +118,7 @@ const FlowManagement = () => {
             button: true,
             center: true,
             width: "100px",
-            cell: (row) => (
+            cell: (row) => ((row.isActive === 'Y') ? '' : (
                 <>
                     <Button
                         variant="outline-danger"
@@ -127,7 +127,7 @@ const FlowManagement = () => {
                         <BsIcons.BsTrash />
                     </Button>
                 </>
-            ),
+            )),
         }
     ];
 

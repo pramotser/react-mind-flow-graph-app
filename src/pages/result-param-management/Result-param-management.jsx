@@ -3,76 +3,72 @@ import { useState } from "react";
 import { Button } from 'react-bootstrap'
 import * as BsIcons from 'react-icons/bs'
 import * as AiIcons from "react-icons/ai";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
 import Datatable from "../../components/datatable/Datatable";
 import LoadingScreen from "../../components/layout/loading/LoadingScreen";
-// import { mode } from "../../config/config";
+import { mode } from "../../config/config";
 import FormSearchResultParam from "../../components/form-search-result-param/Form-search-result-param";
+import { deleteResultParam, getResultParamListByCondition } from "../../services/result-param-service";
 
 
 const ResultParamManagement = () => {
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
     const [loading, setLoading] = useState(false);
     const [searchData, setSearchData] = useState([])
 
     const handleButtonEditClick = (event, data) => {
-        Swal.fire({
-            icon: 'info',
-            title: `Coming soon!`,
-            showCancelButton: false,
-        });
-        // navigate('edit', { state: { mode: mode.edit.value, data: data } });
+        // Swal.fire({
+        //     icon: 'info',
+        //     title: `Coming soon!`,
+        //     showCancelButton: false,
+        // });
+        navigate('edit', { state: { mode: mode.edit.value, data: data } });
     }
 
     const handleButtonDeleteClick = (event, data) => {
         Swal.fire({
-            icon: 'info',
-            title: `Coming soon!`,
-            showCancelButton: false,
-        });
-        // Swal.fire({
-        //     title: `Are you sure delete Flow ${data.flowId} ?`,
-        //     icon: 'warning',
-        //     showCancelButton: true,
-        //     confirmButtonColor: '#d33',
-        //     confirmButtonText: 'Delete!'
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         setLoadingPages(true)
-        //         deleteFlow(data).then(responseObject => {
-        //             setLoadingPages(false)
-        //             if (responseObject.responseCode === 200) {
-        //                 Swal.fire({
-        //                     icon: 'success',
-        //                     title: `Success!`,
-        //                     text: 'Data has been delete successfully',
-        //                     showCancelButton: false,
-        //                 }).then(() => {
-        //                     setLoadingPages(true)
-        //                     getFlowByCondition('').then(response => {
-        //                         if (response.responseObject.length > 0) {
-        //                             search(response.responseObject);
-        //                         } else {
-        //                             search([])
-        //                         }
-        //                         setLoadingPages(false)
-        //                     })
-        //                 })
-        //             } else {
-        //                 Swal.fire({
-        //                     icon: 'error',
-        //                     title: `Error!`,
-        //                     text: `${responseObject.responseDecription}!`,
-        //                     showCancelButton: false,
-        //                 });
-        //             }
-        //         });
-        //     }
-        // })
+            title: `Are you sure delete Result Param Code : ${data.resultParamCode} ?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Delete!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setLoadingPages(true)
+                deleteResultParam(data.resultParamCode).then(res => {
+                    setLoadingPages(false)
+                    if (res.responseCode === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: `Success!`,
+                            text: `${res.responseDecription}`,
+                            showCancelButton: false,
+                        }).then(() => {
+                            setLoadingPages(true)
+                            getResultParamListByCondition(null).then(res => {
+                                if (res.responseObject.length > 0) {
+                                    search(res.responseObject);
+                                } else {
+                                    search([])
+                                }
+                                setLoadingPages(false)
+                            })
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: `Error!`,
+                            text: `${res.responseDecription}`,
+                            showCancelButton: false,
+                        });
+                    }
+                })
+            }
+        })
 
 
     }
@@ -107,6 +103,7 @@ const ResultParamManagement = () => {
             width: "100px",
             cell: (row) => (
                 <>
+
                     <Button
                         variant="outline-warning"
                         onClick={(e) => handleButtonEditClick(e, row)}
@@ -121,7 +118,7 @@ const ResultParamManagement = () => {
             button: true,
             center: true,
             width: "100px",
-            cell: (row) => (
+            cell: (row) => ((row.isActive === 'Y') ? '' : (
                 <>
                     <Button
                         variant="outline-danger"
@@ -130,7 +127,7 @@ const ResultParamManagement = () => {
                         <BsIcons.BsTrash />
                     </Button>
                 </>
-            ),
+            )),
         }
     ];
 

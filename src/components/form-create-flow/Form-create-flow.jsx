@@ -36,7 +36,7 @@ const FormCreateFlow = (props) => {
     const [decisionFlow, setDecisionFlow] = useState('')
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.RESULT_PARAM_LIST).then(res => {
+        getDropdownByType(DropdownType.RESULT_PARAM_LIST,'false').then(res => {
             setResultParamOption(res.responseObject);
             initialForm()
             if (modePage !== mode.add.value) {

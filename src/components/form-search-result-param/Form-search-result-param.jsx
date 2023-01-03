@@ -18,7 +18,7 @@ const FormSearchResultParam = (props) => {
 
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.RESULT_PARAM_LIST).then(res => {
+        getDropdownByType(DropdownType.RESULT_PARAM_LIST,'true').then(res => {
             console.log(res)
             if (res.responseCode === 200) {
                 setOptionResultParam(res.responseObject)
@@ -26,7 +26,7 @@ const FormSearchResultParam = (props) => {
                 Swal.fire({
                     icon: 'error',
                     title: `Error!`,
-                    text: `${res.responseDecription}!`,
+                    text: `${res.responseDecription}`,
                     showCancelButton: false,
                 })
             }

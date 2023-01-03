@@ -18,7 +18,7 @@ const FormSearchFlow = (props) => {
 
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.FLOW_LIST).then(res => {
+        getDropdownByType(DropdownType.FLOW_LIST,'false').then(res => {
             if (res.responseCode === 200) {
                 setOptionFlowName(res.responseObject)
             } else {

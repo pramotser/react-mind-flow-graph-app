@@ -10,7 +10,7 @@ import { isNullOrUndefined } from "../../util/Util";
 import {
     mode
 } from '../../config/config'
-import { createResultParam } from "../../services/result-param-service";
+import { createResultParam, updateResultParam } from "../../services/result-param-service";
 
 
 
@@ -25,14 +25,15 @@ const FormCreateResultParam = (props) => {
 
 
     useEffect(() => {
-        // props.setLoadingPages(true)
+        props.setLoadingPages(true)
         // getDropdownByType(DropdownType.RESULT_PARAM_LIST).then(res => {
         //     setResultParamOption(res.responseObject);
         initialForm()
-        //     if (modePage !== mode.add.value) {
-        //         setDataToForm(props.location.state, res.responseObject)
-        //     }
-        //     props.setLoadingPages(false)
+        if (modePage !== mode.add.value) {
+            console.log(props)
+            setDataToForm(props.location.state)
+        }
+        props.setLoadingPages(false)
         // });
     }, [])
 
@@ -43,24 +44,17 @@ const FormCreateResultParam = (props) => {
         setValidated(false)
     }
 
-    const setDataToForm = (state, rpOption) => {
-        // const filteredResultParamList = rpOption.filter(
-        //     (resultParam) => resultParam.value.indexOf(state.data.resultParam) !== -1
-        // );
-        // setFlowId(state.data.flowId)
-        // setFlowName(state.data.flowName)
-        // setResultParam(filteredResultParamList[0])
-        // setIsActive((state.data.isActive === 'Y'))
-        // if (!isNullOrUndefined(state.data.decisionFlow)) {
-        //     setDecisionFlow(state.data.decisionFlow)
-        // }
+    const setDataToForm = (state) => {
+        setResultParamCode(state.data.resultParamCode)
+        setResultParamName(state.data.resultParamName)
+        setIsActive((state.data.isActive === 'Y'))
     }
 
     const onBtnClearForm = () => {
         props.setLoadingPages(true)
         initialForm();
         if (modePage !== mode.add.value) {
-            //     setDataToForm(props.location.state, resultParamOption)
+            setDataToForm(props.location.state)
         }
         props.setLoadingPages(false)
     }
@@ -101,7 +95,6 @@ const FormCreateResultParam = (props) => {
                 if (result.isConfirmed) {
                     props.setLoadingPages(true)
                     if (modePage !== mode.edit.value) {
-
                         createResultParam(resultParam).then(res => {
                             props.setLoadingPages(false)
                             if (res.responseCode === 200) {
@@ -117,52 +110,32 @@ const FormCreateResultParam = (props) => {
                                 Swal.fire({
                                     icon: 'error',
                                     title: `Error!`,
-                                    text: `${res.responseDecription}!`,
+                                    text: `${res.responseDecription}`,
                                     showCancelButton: false,
                                 });
                             }
                         })
-                        //                 createFlow(flow).then(responseObject => {
-                        //                     props.setLoadingPages(false)
-                        //                     if (responseObject.responseCode === 200) {
-                        //                         Swal.fire({
-                        //                             icon: 'success',
-                        //                             title: `Success!`,
-                        //                             text: 'Data has been saved successfully',
-                        //                             showCancelButton: false,
-                        //                         }).then(() => {
-                        //                             navigate('/flow-management');
-                        //                         })
-                        //                     } else {
-                        //                         Swal.fire({
-                        //                             icon: 'error',
-                        //                             title: `Error!`,
-                        //                             text: `${responseObject.responseDecription}!`,
-                        //                             showCancelButton: false,
-                        //                         });
-                        //                     }
-                        //                 });
                     } else {
-                        //                 updateFlow(flow).then(responseObject => {
-                        //                     props.setLoadingPages(false)
-                        //                     if (responseObject.responseCode === 200) {
-                        //                         Swal.fire({
-                        //                             icon: 'success',
-                        //                             title: `Success!`,
-                        //                             text: 'Data has been saved successfully',
-                        //                             showCancelButton: false,
-                        //                         }).then(() => {
-                        //                             navigate('/flow-management');
-                        //                         })
-                        //                     } else {
-                        //                         Swal.fire({
-                        //                             icon: 'error',
-                        //                             title: `Error!`,
-                        //                             text: `${responseObject.responseDecription}!`,
-                        //                             showCancelButton: false,
-                        //                         });
-                        //                     }
-                        //                 });
+                        updateResultParam(resultParam).then(res => {
+                            props.setLoadingPages(false)
+                            if (res.responseCode === 200) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `Success`,
+                                    text: `${res.responseDecription}`,
+                                    showCancelButton: false,
+                                }).then(() => {
+                                    navigate('/result-param-management');
+                                })
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: `Error!`,
+                                    text: `${res.responseDecription}`,
+                                    showCancelButton: false,
+                                });
+                            }
+                        });
                     }
                 }
             });
