@@ -3,6 +3,7 @@ import DecisionFlow from "./pages/decision/Decision";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FlowList from "./pages/flow-management/Flow-management";
 import FlowCreate from "./pages/flow-create/Flow-create";
+import ResultParamManagement from "./pages/result-param-management/Result-param-management";
 // import TestDecision from "./pages/test-decision/test-decision";
 function App() {
 
@@ -19,6 +20,9 @@ function App() {
                             <Route index element={<FlowCreate />} />
                             <Route path="decision" element={<DecisionFlow />} />
                         </Route>
+                    </Route>
+                    <Route path="result-param-management">
+                        <Route index element={<ResultParamManagement />} />
                     </Route>
                 </Routes>
             </BrowserRouter>

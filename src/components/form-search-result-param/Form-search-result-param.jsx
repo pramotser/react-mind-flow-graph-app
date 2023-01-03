@@ -1,26 +1,27 @@
-import "./form-search-flow.scss";
+import "./form-search-result-param.scss";
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import * as AiIcons from 'react-icons/ai'
 import Select from 'react-select'
 
-import { getFlowByCondition } from "../../services/decision-service";
+import { getResultParamListByCondition } from "../../services/result-param-service";
 import { getDropdownByType } from "../../services/util-service";
 import { DropdownType, mode } from "../../config/config";
 import Swal from "sweetalert2";
 
-const FormSearchFlow = (props) => {
+const FormSearchResultParam = (props) => {
     const navigate = useNavigate()
-    const [optionFlowName, setOptionFlowName] = useState([])
-    const [flowId, setFlowId] = useState('')
-    const [flowName, setFlowName] = useState([])
+    const [optionResultParam, setOptionResultParam] = useState([])
+    const [resultParamCode, setResultParamCode] = useState('')
+    const [resultParamName, setResultParamName] = useState([])
 
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.FLOW_LIST).then(res => {
+        getDropdownByType(DropdownType.RESULT_PARAM_LIST).then(res => {
+            console.log(res)
             if (res.responseCode === 200) {
-                setOptionFlowName(res.responseObject)
+                setOptionResultParam(res.responseObject)
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -30,7 +31,8 @@ const FormSearchFlow = (props) => {
                 })
             }
         })
-        getFlowByCondition(null).then(res => {
+        getResultParamListByCondition(null).then(res => {
+            console.log(res)
             if (res.responseObject.length > 0) {
                 props.search(res.responseObject);
             } else {
@@ -40,13 +42,13 @@ const FormSearchFlow = (props) => {
         })
     }, [])
 
-    const handleOnChangeSelectFlowName = (object) => {
-        setFlowId(object.data.flowId)
+    const handleOnChangeSelectResultParamName = (object) => {
+        setResultParamCode(object.data.resultParamCode)
     }
 
-    const handleButtonSearchFlow = () => {
+    const handleButtonSearch = () => {
         props.setLoadingPages(true)
-        getFlowByCondition((flowName.value !== undefined) ? flowName.value : '').then(response => {
+        getResultParamListByCondition((resultParamName.value !== undefined) ? resultParamName.value : '').then(response => {
             if (response.responseObject.length > 0) {
                 props.search(response.responseObject);
             } else {
@@ -56,11 +58,11 @@ const FormSearchFlow = (props) => {
         })
     }
 
-    const handleButtonClearFormSearchFlow = () => {
+    const handleButtonClearFormSearch = () => {
         props.setLoadingPages(true)
-        setFlowId('')
-        setFlowName([])
-        getFlowByCondition("").then(response => {
+        setResultParamCode('')
+        setResultParamName([])
+        getResultParamListByCondition(null).then(response => {
             if (response.responseObject.length > 0) {
                 props.search(response.responseObject);
             } else {
@@ -77,38 +79,37 @@ const FormSearchFlow = (props) => {
 
     return (
         <>
-            <div className="sub-title-content">Search Flow</div>
+            <div className="sub-title-content">Search Result Param</div>
             <div className="text-right" >
                 <Button variant="outline-info" onClick={navigateToFlowCreate}><AiIcons.AiOutlinePlusCircle /> Add</Button>
             </div>
             <Form >
-
                 <Form.Group as={Row} className="mb-4">
                     <Form.Label className="text-right" column md={4} >
-                        Flow ID :
+                        Result Code :
                     </Form.Label>
                     <Col md={4}>
                         <Form.Control
                             type="text"
-                            name="flowId"
-                            placeholder="Flow ID"
-                            value={flowId}
-                            onChange={e => setFlowId(e.target.value)}
+                            name="resultParamCode"
+                            placeholder="Result Param Code"
+                            value={resultParamCode}
+                            onChange={e => setResultParamCode(e.target.value)}
                             disabled
                         />
                     </Col>
                 </Form.Group>
                 <Form.Group as={Row} className="mb-4">
                     <Form.Label className="text-right" column md={4} >
-                        Flow Name :
+                        Result Param Name :
                     </Form.Label>
                     <Col md={4}>
                         <Select
-                            options={optionFlowName}
-                            placeholder="Select Flow Name"
+                            options={optionResultParam}
+                            placeholder="Select Result Param Name"
                             isSearchable={true}
-                            value={flowName || {}}
-                            onChange={e => { setFlowName(e); handleOnChangeSelectFlowName(e); }}
+                            value={resultParamName || {}}
+                            onChange={e => { setResultParamName(e); handleOnChangeSelectResultParamName(e); }}
                         />
                     </Col>
                 </Form.Group>
@@ -116,14 +117,14 @@ const FormSearchFlow = (props) => {
                     <Button
                         className="btn-search"
                         variant="outline-warning"
-                        onClick={handleButtonSearchFlow}
+                        onClick={handleButtonSearch}
                     >
                         <AiIcons.AiOutlineSearch /> Search
                     </Button>
                     <Button
                         className="btn-clear"
                         variant="outline-secondary"
-                        onClick={handleButtonClearFormSearchFlow}
+                        onClick={handleButtonClearFormSearch}
                     >
                         <AiIcons.AiOutlineClear /> Clear
                     </Button>
@@ -133,4 +134,4 @@ const FormSearchFlow = (props) => {
     );
 };
 
-export default FormSearchFlow;
+export default FormSearchResultParam;

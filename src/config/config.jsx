@@ -88,3 +88,8 @@ export const mode = {
 
 export const formatDate = 'dd/MM/yyyy'
 export const formatDatetime = 'dd/MM/yyyy HH:mm'
+
+export const DropdownType = {
+    FLOW_LIST: "FLOW_LIST",
+    RESULT_PARAM_LIST: "RESULT_PARAM_LIST",
+}

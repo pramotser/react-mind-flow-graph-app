@@ -6,10 +6,14 @@ import Select from 'react-select'
 import * as AiIcons from 'react-icons/ai'
 import Swal from "sweetalert2";
 
-import DatepickerCustom from "../datepicker/Datepicker";
+// import DatepickerCustom from "../datepicker/Datepicker";
 import { isNullOrUndefined } from "../../util/Util";
-import { formatDatetime, mode } from '../../config/config'
-import { getDropdownResultParam } from "../../services/util-service";
+import {
+    DropdownType,
+    // formatDatetime,
+    mode
+} from '../../config/config'
+import { getDropdownByType } from "../../services/util-service";
 import { createFlow, updateFlow } from "../../services/decision-service";
 
 
@@ -25,22 +29,21 @@ const FormCreateFlow = (props) => {
     const [resultParam, setResultParam] = useState([])
     const [isActive, setIsActive] = useState(true)
 
-    const [effectiveFlag, setEffectiveFlag] = useState(false)
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    // const [effectiveFlag, setEffectiveFlag] = useState(false)
+    // const [startDate, setStartDate] = useState('');
+    // const [endDate, setEndDate] = useState('');
 
     const [decisionFlow, setDecisionFlow] = useState('')
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownResultParam()
-            .then(responseObject => {
-                setResultParamOption(responseObject);
-                initialForm()
-                if (modePage !== mode.add.value) {
-                    setDataToForm(props.location.state, responseObject)
-                }
-                props.setLoadingPages(false)
-            });
+        getDropdownByType(DropdownType.RESULT_PARAM_LIST).then(res => {
+            setResultParamOption(res.responseObject);
+            initialForm()
+            if (modePage !== mode.add.value) {
+                setDataToForm(props.location.state, res.responseObject)
+            }
+            props.setLoadingPages(false)
+        });
     }, [])
 
     const initialForm = () => {
@@ -48,9 +51,9 @@ const FormCreateFlow = (props) => {
         setFlowName('')
         setResultParam([])
         setIsActive(true)
-        setEffectiveFlag(false)
-        setStartDate('')
-        setEndDate('')
+        // setEffectiveFlag(false)
+        // setStartDate('')
+        // setEndDate('')
         setDecisionFlow('')
     }
 
@@ -62,7 +65,7 @@ const FormCreateFlow = (props) => {
         setFlowName(state.data.flowName)
         setResultParam(filteredResultParamList[0])
         setIsActive((state.data.isActive === 'Y'))
-        if(!isNullOrUndefined(state.data.decisionFlow)){
+        if (!isNullOrUndefined(state.data.decisionFlow)) {
             setDecisionFlow(state.data.decisionFlow)
         }
     }
@@ -92,12 +95,10 @@ const FormCreateFlow = (props) => {
         if (isNullOrUndefined(flowId) || isNullOrUndefined(flowName) || resultParam.value === undefined) {
             return false
         }
-        if (effectiveFlag && isNullOrUndefined(startDate)) {
-            return false
-        }
+        // if (effectiveFlag && isNullOrUndefined(startDate)) {
+        //     return false
+        // }
         return true
-
-
     }
 
     const onBtnSave = (event) => {
@@ -113,9 +114,6 @@ const FormCreateFlow = (props) => {
                 flowName: `${flowName}`,
                 resultParam: `${resultParam.value}`,
                 isActive: `${(isActive === true) ? 'Y' : 'N '}`,
-                // effectiveFlag: `${effectiveFlag}`,
-                // startDate: `${startDate}`,
-                // endDate: `${endDate}`,
                 decisionFlow: `${decisionFlow}`
             }
             props.setLoadingPages(false)
@@ -176,11 +174,11 @@ const FormCreateFlow = (props) => {
             props.setLoadingPages(false)
         }
     }
-    const onChangeEffective = (checkbox) => {
-        setEffectiveFlag(checkbox);
-        setStartDate('')
-        setEndDate('')
-    }
+    // const onChangeEffective = (checkbox) => {
+    //     setEffectiveFlag(checkbox);
+    //     setStartDate('')
+    //     setEndDate('')
+    // }
     return (
         <>
             <div className="sub-title-content">Flow</div>
@@ -255,7 +253,7 @@ const FormCreateFlow = (props) => {
                         </div>
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-4">
+                {/* <Form.Group as={Row} className="mb-4">
                     <Form.Label className="text-right" column md={4} >
                         Effective Date :
                     </Form.Label>
@@ -268,8 +266,8 @@ const FormCreateFlow = (props) => {
                             onChange={e => onChangeEffective(e.target.checked)}
                         />
                     </Col>
-                </Form.Group>
-                <Form.Group as={Row} className="mb-4" hidden={(effectiveFlag !== true)}>
+                </Form.Group> */}
+                {/* <Form.Group as={Row} className="mb-4" hidden={(effectiveFlag !== true)}>
                     <Form.Label className="text-right" column md={4} >
                         Start Date :
                     </Form.Label>
@@ -297,7 +295,7 @@ const FormCreateFlow = (props) => {
                             disabled={(isNullOrUndefined(startDate))}
                         />
                     </Col>
-                </Form.Group>
+                </Form.Group> */}
                 <Form.Group as={Row} className="mb-4" hidden={(modePage !== mode.edit.value)}>
                     <Form.Label className="text-right" column md={4} >
                         Decision Flow:
