@@ -25,8 +25,6 @@ const FlowManagement = () => {
     }
 
     const handleButtonDeleteClick = (event, data) => {
-        // Swal.fire('Coming soon', '', 'info')
-        console.log(data)
         Swal.fire({
             title: `Are you sure delete Flow ${data.flowId} ?`,
             icon: 'warning',

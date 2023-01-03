@@ -38,9 +38,6 @@ export default function EdgeCustom({
 	const [openModalEdge, setOpenModalEdge] = useState(false);
 	const [idEdge, setIdEdge] = useState('');
 	const onEdgeClick = (evt, id) => {
-		// console.log('data.nodeStart : ',data.nodeStart)
-		// console.log('source : ',source)
-		// console.log('Number.parseInt(source) === Number.parseInt(data.nodeStart) :' ,Number.parseInt(source) === Number.parseInt(data.nodeStart))
 		setIdEdge(id)
 		setOpenModalEdge(true);
 	};
