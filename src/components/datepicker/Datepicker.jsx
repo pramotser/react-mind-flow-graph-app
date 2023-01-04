@@ -46,7 +46,7 @@ const DatepickerCustom = (props) => {
                 // showTimeInput={props.showTimeInput}
                 // timeInputLabel="Time : "
                 // customTimeInput={<CustomInputTime />}
-                showTimeSelect={true}
+                showTimeSelect={props.showTimeSelect}
                 timeFormat="HH:mm"
                 injectTimes={[
                     setHours(setMinutes(new Date(), 1), 0),

@@ -40,7 +40,7 @@ const FlowManagement = () => {
                         Swal.fire({
                             icon: 'success',
                             title: `Success!`,
-                            text: 'Data has been delete successfully',
+                            text: `${responseObject.responseDecription}`,
                             showCancelButton: false,
                         }).then(() => {
                             setLoadingPages(true)

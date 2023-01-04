@@ -6,11 +6,11 @@ import Select from 'react-select'
 import * as AiIcons from 'react-icons/ai'
 import Swal from "sweetalert2";
 
-// import DatepickerCustom from "../datepicker/Datepicker";
+import DatepickerCustom from "../datepicker/Datepicker";
 import { isNullOrUndefined } from "../../util/Util";
 import {
     DropdownType,
-    // formatDatetime,
+    formatDatetime,
     mode
 } from '../../config/config'
 import { getDropdownByType } from "../../services/util-service";
@@ -29,9 +29,9 @@ const FormCreateFlow = (props) => {
     const [resultParam, setResultParam] = useState([])
     const [isActive, setIsActive] = useState(true)
 
-    // const [effectiveFlag, setEffectiveFlag] = useState(false)
-    // const [startDate, setStartDate] = useState('');
-    // const [endDate, setEndDate] = useState('');
+    const [effectiveFlag, setEffectiveFlag] = useState(false)
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     const [decisionFlow, setDecisionFlow] = useState('')
     useEffect(() => {
@@ -51,9 +51,9 @@ const FormCreateFlow = (props) => {
         setFlowName('')
         setResultParam([])
         setIsActive(true)
-        // setEffectiveFlag(false)
-        // setStartDate('')
-        // setEndDate('')
+        setEffectiveFlag(false)
+        setStartDate('')
+        setEndDate('')
         setDecisionFlow('')
     }
 
@@ -95,9 +95,9 @@ const FormCreateFlow = (props) => {
         if (isNullOrUndefined(flowId) || isNullOrUndefined(flowName) || resultParam.value === undefined) {
             return false
         }
-        // if (effectiveFlag && isNullOrUndefined(startDate)) {
-        //     return false
-        // }
+        if (effectiveFlag && isNullOrUndefined(startDate)) {
+            return false
+        }
         return true
     }
 
@@ -132,7 +132,7 @@ const FormCreateFlow = (props) => {
                                 Swal.fire({
                                     icon: 'success',
                                     title: `Success!`,
-                                    text: 'Data has been saved successfully',
+                                    text: `${responseObject.responseDecription}`,
                                     showCancelButton: false,
                                 }).then(() => {
                                     navigate('/flow-management');
@@ -141,7 +141,7 @@ const FormCreateFlow = (props) => {
                                 Swal.fire({
                                     icon: 'error',
                                     title: `Error!`,
-                                    text: `${responseObject.responseDecription}!`,
+                                    text: `${responseObject.responseDecription}`,
                                     showCancelButton: false,
                                 });
                             }
@@ -153,7 +153,7 @@ const FormCreateFlow = (props) => {
                                 Swal.fire({
                                     icon: 'success',
                                     title: `Success!`,
-                                    text: 'Data has been saved successfully',
+                                    text: `${responseObject.responseDecription}`,
                                     showCancelButton: false,
                                 }).then(() => {
                                     navigate('/flow-management');
@@ -174,11 +174,11 @@ const FormCreateFlow = (props) => {
             props.setLoadingPages(false)
         }
     }
-    // const onChangeEffective = (checkbox) => {
-    //     setEffectiveFlag(checkbox);
-    //     setStartDate('')
-    //     setEndDate('')
-    // }
+    const onChangeEffective = (checkbox) => {
+        setEffectiveFlag(checkbox);
+        setStartDate('')
+        setEndDate('')
+    }
     return (
         <>
             <div className="sub-title-content">Flow</div>
@@ -253,7 +253,7 @@ const FormCreateFlow = (props) => {
                         </div>
                     </Col>
                 </Form.Group>
-                {/* <Form.Group as={Row} className="mb-4">
+                <Form.Group as={Row} className="mb-4">
                     <Form.Label className="text-right" column md={4} >
                         Effective Date :
                     </Form.Label>
@@ -266,8 +266,8 @@ const FormCreateFlow = (props) => {
                             onChange={e => onChangeEffective(e.target.checked)}
                         />
                     </Col>
-                </Form.Group> */}
-                {/* <Form.Group as={Row} className="mb-4" hidden={(effectiveFlag !== true)}>
+                </Form.Group>
+                <Form.Group as={Row} className="mb-4" hidden={(effectiveFlag !== true)}>
                     <Form.Label className="text-right" column md={4} >
                         Start Date :
                     </Form.Label>
@@ -279,6 +279,7 @@ const FormCreateFlow = (props) => {
                             placeholderText={'Start Date'}
                             onChange={setStartDate}
                             required={true}
+                            showTimeSelect={false}
                         />
                     </Col>
                     <Form.Label className="text-right" column md={1} >
@@ -292,10 +293,11 @@ const FormCreateFlow = (props) => {
                             placeholderText={'End Date'}
                             onChange={setEndDate}
                             required={false}
+                            showTimeSelect={true}
                             disabled={(isNullOrUndefined(startDate))}
                         />
                     </Col>
-                </Form.Group> */}
+                </Form.Group>
                 <Form.Group as={Row} className="mb-4" hidden={(modePage !== mode.edit.value)}>
                     <Form.Label className="text-right" column md={4} >
                         Decision Flow:
