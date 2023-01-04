@@ -1,4 +1,4 @@
-async function getFlowByCondition(flowName) {
+export async function getFlowByCondition(flowName) {
     try {
         return fetch('/NAOS/FlowManagementService/flow/getFlowListByCondition',
             {
@@ -20,7 +20,7 @@ async function getFlowByCondition(flowName) {
     }
 }
 
-async function createFlow(createFlow) {
+export async function createFlow(createFlow) {
     try {
         return fetch('/NAOS/FlowManagementService/flow/createFlow',
             {
@@ -40,7 +40,7 @@ async function createFlow(createFlow) {
     }
 }
 
-async function updateFlow(flow) {
+export async function updateFlow(flow) {
     try {
         return fetch('/NAOS/FlowManagementService/flow/updateFlow',
             {
@@ -59,7 +59,7 @@ async function updateFlow(flow) {
         return []
     }
 }
-async function deleteFlow(flow) {
+export async function deleteFlow(flow) {
     try {
         return fetch('/NAOS/FlowManagementService/flow/deleteFlow',
             {
@@ -79,9 +79,22 @@ async function deleteFlow(flow) {
     }
 }
 
-export {
-    getFlowByCondition,
-    createFlow,
-    updateFlow,
-    deleteFlow
+export async function testGet() {
+    try {
+        return fetch('http://10.202.104.25/NAOS/DecisionFunctionService/Param/naosNCBChecking',
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': "*"
+                },
+                method: 'POST',
+            })
+            .then(res => res.json())
+            .then((response) => {
+                return response
+            })
+    } catch (error) {
+        return []
+    }
 }

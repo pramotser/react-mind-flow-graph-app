@@ -14,12 +14,12 @@ import ReactFlow, {
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
 
-import { isNullOrUndefined } from '../../util/Util';
-import NodeCustom from '../reactflow/node-custom/Node-custom';
-import EdgeCustom from '../reactflow/edge-custom/Edge-custom'
+import { isNullOrUndefined } from '../../../util/Util';
+import NodeCustom from '../../reactflow/node-custom/Node-custom';
+import EdgeCustom from '../../reactflow/edge-custom/Edge-custom'
 import FormDecisionControl from '../form-decision-control/Form-decision-control';
-import NodeModal from '../modal/node/Node-modal';
-import ExportModal from '../modal/export/Export-modal';
+import NodeModal from '../../modal/node/Node-modal';
+import ExportModal from '../../modal/export/Export-modal';
 
 let nodeIdRunning = 0;
 const edgeTypes = {
@@ -151,6 +151,10 @@ const Decision = (props) => {
                     nodeStart = nodeId
                 }
                 setNodes((nds) => nds.concat(newNode));
+                if (newNode.data.nodeType !== "START") {
+                    setNodeData(newNode)
+                    setOpenModalNode(true);
+                }
             }
         },
     );
@@ -168,7 +172,7 @@ const Decision = (props) => {
         }
     }, [])
 
-    const saveNode = useCallback((node) => {
+    const saveNode = useCallback((node,deleteEdge) => {
         setNodes((nds) =>
             nds.map((n) => {
                 if (n.id === node.id) {
@@ -178,6 +182,8 @@ const Decision = (props) => {
             })
         );
         setOpenModalNode(false);
+        if(deleteEdge)
+            setEdges((edges) => edges.filter((edge) => edge.source !== node.id))
     },
     )
 

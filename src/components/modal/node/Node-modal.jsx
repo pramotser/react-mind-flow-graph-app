@@ -13,7 +13,7 @@ import Select from 'react-select'
 import Swal from 'sweetalert2';
 
 import { nodeTypeOption } from '../../../config/config';
-import { getNodeTypeObject, getColorNodeType } from '../../../util/Util';
+import { getNodeTypeObject, getColorNodeType, isNullOrUndefined } from '../../../util/Util';
 
 function NodeModal(props) {
     const [nodeData, setNodeData] = useState({})
@@ -90,14 +90,31 @@ function NodeModal(props) {
 
     const handleButtonSaveNode = (event) => {
         const form = event.currentTarget;
-                if (form.checkValidity() === false) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        let checkDeleteEdge = false;
         if (props.nodeData["data"]["nodeType"] !== 'END') {
             if (!validatedField) {
                 setValidatedNodeAB(true)
                 return false;
+            }
+            if (nodeData["data"]["nodeType"] !== ((nodeType.value !== undefined) ? `${nodeType.value}` : '')) {
+                checkDeleteEdge = true;
+            } else {
+                if (nodeType.value === 'FUNCTION') {
+                    console.log((`nodeData["data"]["functionRef"] : ` + nodeData["data"]["functionRef"] + " !==functionRef : " + functionRef))
+                    console.log((nodeData["data"]["functionRef"] !== functionRef))
+                    if (nodeData["data"]["functionRef"] !== functionRef) {
+                        checkDeleteEdge = true;
+                    }
+                }
+                if (nodeType.value === 'SUBFLOW') {
+                    if (nodeData["data"]["subFlowId"] !== subFlowId) {
+                        checkDeleteEdge = true;
+                    }
+                }
             }
             nodeData["data"]["label"] = `${nodeName}`;
             nodeData["data"]["nodeType"] = (nodeType.value !== undefined) ? `${nodeType.value}` : '';
@@ -114,7 +131,8 @@ function NodeModal(props) {
             nodeData["data"]["result"] = (resultParam) ? `${resultParam}` : ''
             nodeData["data"]["remark"] = (remark) ? `${remark}` : ''
         }
-        props.function.saveNode(nodeData)
+
+        props.function.saveNode(nodeData, checkDeleteEdge)
     }
 
     const validatedField = () => {
@@ -150,6 +168,20 @@ function NodeModal(props) {
                 props.function.deleteNode(props.nodeData.id)
             }
         })
+    }
+
+    const onCloseModal = () => {
+        console.log(nodeData)
+        if (props.nodeData["data"]["nodeType"] !== 'END') {
+            if (isNullOrUndefined(nodeData["data"]["nodeType"]) || isNullOrUndefined(nodeData["data"]["nodeName"])) {
+                props.function.deleteNode(props.nodeData.id)
+            }else{
+                props.function.onCloseModalNode()
+            }
+        }else {
+            props.function.onCloseModalNode()
+        }
+
     }
 
 
@@ -323,7 +355,7 @@ function NodeModal(props) {
                     <Button variant="outline-primary" onClick={handleButtonSaveNode}>
                         Save
                     </Button>
-                    <Button variant="outline-secondary" onClick={props.function.onCloseModalNode}>
+                    <Button variant="outline-secondary" onClick={onCloseModal}>
                         Close
                     </Button>
                     <Button variant="outline-danger" onClick={onDelete}>

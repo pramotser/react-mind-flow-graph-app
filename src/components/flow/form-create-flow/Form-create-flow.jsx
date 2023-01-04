@@ -6,15 +6,15 @@ import Select from 'react-select'
 import * as AiIcons from 'react-icons/ai'
 import Swal from "sweetalert2";
 
-import DatepickerCustom from "../datepicker/Datepicker";
-import { isNullOrUndefined } from "../../util/Util";
+import DatepickerCustom from "../../datepicker/Datepicker";
+import { isNullOrUndefined } from "../../../util/Util";
 import {
     DropdownType,
     formatDatetime,
     mode
-} from '../../config/config'
-import { getDropdownByType } from "../../services/util-service";
-import { createFlow, updateFlow } from "../../services/decision-service";
+} from '../../../config/config'
+import { getDropdownByType } from "../../../services/util-service";
+import { createFlow, updateFlow } from "../../../services/decision-service";
 
 
 const FormCreateFlow = (props) => {

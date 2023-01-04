@@ -5,9 +5,9 @@ import { Button, Form, Row, Col } from 'react-bootstrap'
 import * as AiIcons from 'react-icons/ai'
 import Select from 'react-select'
 
-import { getFlowByCondition } from "../../services/decision-service";
-import { getDropdownByType } from "../../services/util-service";
-import { DropdownType, mode } from "../../config/config";
+import { getFlowByCondition } from "../../../services/decision-service";
+import { getDropdownByType } from "../../../services/util-service";
+import { DropdownType, mode } from "../../../config/config";
 import Swal from "sweetalert2";
 
 const FormSearchFlow = (props) => {

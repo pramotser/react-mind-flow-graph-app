@@ -6,7 +6,7 @@ import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
 import LoadingScreen from "../../components/layout/loading/LoadingScreen";
 
-import FormCreateFlow from "../../components/form-create-flow/Form-create-flow";
+import FormCreateFlow from "../../components/flow/form-create-flow/Form-create-flow";
 const FlowCreate = () => {
     const location = useLocation();
     const [loading, setLoading] = useState(false);

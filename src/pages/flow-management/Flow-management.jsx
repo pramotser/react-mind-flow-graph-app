@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 
 import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
-import FormSearchFlow from '../../components/form-search-flow/Form-search-flow'
+import FormSearchFlow from '../../components/flow/form-search-flow/Form-search-flow'
 import Datatable from "../../components/datatable/Datatable";
 import LoadingScreen from "../../components/layout/loading/LoadingScreen";
 import { getFlowByCondition } from "../../services/decision-service";

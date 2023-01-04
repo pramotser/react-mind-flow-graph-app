@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap'
 import Select from 'react-select'
 
-import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption } from '../../../config/config';
+import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption, edgeParamConditionOptionNew } from '../../../config/config';
 import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject, isNullOrUndefined } from '../../../util/Util'
 
 import * as BsIcons from 'react-icons/bs'
@@ -26,6 +26,8 @@ function EdgeModal(props) {
             cell: (row) => (
                 <>
                     <Select
+                        className='select-in-table'
+                        style={{ minWidth: "200px" }}
                         styles={{ position: 'relative' }}
                         options={edgeConditionOption}
                         placeholder="Edge Condition"
@@ -45,6 +47,7 @@ function EdgeModal(props) {
             cell: (row) => (
                 <>
                     <Select
+                        className='select-in-table'
                         options={edgeTypeOption}
                         placeholder="Edge Type"
                         isSearchable={false}
@@ -80,9 +83,11 @@ function EdgeModal(props) {
             cell: (row) => (
                 <>
                     <Select
-                        options={edgeParamConditionOption}
+                        className='select-in-table'
+                        options={(!isNullOrUndefined(row.edgeType)) ? edgeParamConditionOptionNew.filter((option) => option.data.type === row.edgeType) : edgeParamConditionOptionNew}
                         placeholder="Edge Param Condition"
                         isSearchable={false}
+                        isDisabled={isNullOrUndefined(row.edgeType)}
                         defaultValue={getEdgeParamConditionOptionObject(row.edgeParamCondition)}
                         onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeParamCondition", e.value)}
                     />
@@ -140,6 +145,16 @@ function EdgeModal(props) {
         },
     ];
 
+
+    const test =(e) =>{
+        console.log(e)
+        console.log((isNullOrUndefined(e.edgeType)))
+        console.log((!isNullOrUndefined(e.edgeType)) ? 'ss' : 'xx')
+        console.log(e.edgeType)
+        // console.log((!isNullOrUndefined(e.edgeType)) ? edgeParamConditionOptionNew.filter((option) => option.data.type === e.edgeType) : edgeParamConditionOptionNew)
+        // console.log()
+    }
+
     // const generateEdgeParam = () => `${edgeParamData.length.toString().padStart(3, '0')}`
     const generateEdgeParam = () => `${(edgeParamIdRunning++).toString()}`
     useEffect(() => {
@@ -148,7 +163,7 @@ function EdgeModal(props) {
             let edgeParamId = props.edgeParam.map((ep) => { return Number.parseInt(ep.edgeParamId) });
             edgeParamIdRunning = Math.max(...edgeParamId)
             edgeParamIdRunning++
-        }else{
+        } else {
             edgeParamIdRunning = 0;
         }
     }, [props])

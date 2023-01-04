@@ -55,7 +55,7 @@ export const edgeTypeOption = [
 export const edgeParamConditionOption =
     [
         { value: 'EQUALS', label: 'EQUALS' },
-        { value: '<=', label: '<=' },
+        { value: '<=', label: 'Double :<=' },
         { value: '<', label: '<' },
         { value: 'NOTEQUALS', label: 'NOTEQUALS' },
         { value: '>=', label: '>=' },
@@ -66,6 +66,22 @@ export const edgeParamConditionOption =
         { value: 'ISNOTNULL', label: 'ISNOTNULL' },
         { value: 'CONTAIN', label: 'CONTAIN' },
     ]
+export const edgeParamConditionOptionNew = [
+    { value: "ISNOTNULL", label: "ISNOTNULL", data: { type: "STRING" } },
+    { value: "ISNULL", label: "ISNULL", data: { type: "STRING" } },
+    { value: "EQUALS", label: "EQUALS", data: { type: "STRING" } },
+    { value: "NOTEQUALS", label: "NOTEQUALS", data: { type: "STRING" } },
+    { value: "CONTAIN", label: "CONTAIN", data: { type: "STRING" } },
+    { value: "LIKE", label: "LIKE", data: { type: "STRING" } },
+    { value: "==", label: "==", data: { type: "DOUBLE" } },
+    { value: ">", label: ">", data: { type: "DOUBLE" } },
+    { value: ">=", label: ">=", data: { type: "DOUBLE" } },
+    { value: "<", label: "<", data: { type: "DOUBLE" } },
+    { value: "<=", label: "<=", data: { type: "DOUBLE" } },
+    { value: "between", label: "between", data: { type: "DOUBLE" } },
+    { value: "notbetween", label: "notbetween", data: { type: "DOUBLE" } }
+]
+
 
 export const mode = {
     add: {

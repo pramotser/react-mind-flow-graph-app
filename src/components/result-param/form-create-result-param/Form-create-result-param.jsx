@@ -6,11 +6,11 @@ import { Button, Form, Row, Col } from 'react-bootstrap'
 import * as AiIcons from 'react-icons/ai'
 import Swal from "sweetalert2";
 
-import { isNullOrUndefined } from "../../util/Util";
+import { isNullOrUndefined } from "../../../util/Util";
 import {
     mode
-} from '../../config/config'
-import { createResultParam, updateResultParam } from "../../services/result-param-service";
+} from '../../../config/config'
+import { createResultParam, updateResultParam } from "../../../services/result-param-service";
 
 
 

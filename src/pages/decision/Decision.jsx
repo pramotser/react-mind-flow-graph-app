@@ -7,7 +7,7 @@ import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
 import LoadingScreen from "../../components/layout/loading/LoadingScreen";
 
-import Decision from '../../components/decision/Decision'
+import Decision from '../../components/flow/decision/Decision'
 
 const DecisionFlow = () => {
     const location = useLocation();
