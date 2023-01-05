@@ -1,6 +1,8 @@
+import ApiConfig from "../config/api-config.json";
+
 export async function getFlowByCondition(flowName) {
     try {
-        return fetch('/NAOS/FlowManagementService/flow/getFlowListByCondition',
+        return fetch(ApiConfig.Service.FlowManagementService.MainPath + '/flow/getFlowListByCondition',
             {
                 headers: {
                     'Accept': 'application/json',
@@ -22,7 +24,7 @@ export async function getFlowByCondition(flowName) {
 
 export async function createFlow(createFlow) {
     try {
-        return fetch('/NAOS/FlowManagementService/flow/createFlow',
+        return fetch(ApiConfig.Service.FlowManagementService.MainPath + '/flow/createFlow',
             {
                 headers: {
                     'Accept': 'application/json',
@@ -42,7 +44,7 @@ export async function createFlow(createFlow) {
 
 export async function updateFlow(flow) {
     try {
-        return fetch('/NAOS/FlowManagementService/flow/updateFlow',
+        return fetch(ApiConfig.Service.FlowManagementService.MainPath + '/flow/updateFlow',
             {
                 headers: {
                     'Accept': 'application/json',
@@ -61,7 +63,7 @@ export async function updateFlow(flow) {
 }
 export async function deleteFlow(flow) {
     try {
-        return fetch('/NAOS/FlowManagementService/flow/deleteFlow',
+        return fetch(ApiConfig.Service.FlowManagementService.MainPath + '/flow/deleteFlow',
             {
                 headers: {
                     'Accept': 'application/json',
@@ -73,26 +75,6 @@ export async function deleteFlow(flow) {
             .then(res => res.json())
             .then((data) => {
                 return data;
-            })
-    } catch (error) {
-        return []
-    }
-}
-
-export async function testGet() {
-    try {
-        return fetch('http://10.202.104.25/NAOS/DecisionFunctionService/Param/naosNCBChecking',
-            {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*"
-                },
-                method: 'POST',
-            })
-            .then(res => res.json())
-            .then((response) => {
-                return response
             })
     } catch (error) {
         return []

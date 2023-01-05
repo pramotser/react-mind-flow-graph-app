@@ -3,22 +3,24 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import * as AiIcons from 'react-icons/ai'
-import Select from 'react-select'
+// import Select from 'react-select'
 
 import { getFlowByCondition } from "../../../services/decision-service";
 import { getDropdownByType } from "../../../services/util-service";
-import { DropdownType, mode } from "../../../config/config";
+import { ActiveFlag, DropdownType, mode } from "../../../config/config";
 import Swal from "sweetalert2";
+import SelectSingle from "../../tools/select-options/single/Single";
+import SelectCreatable from "../../tools/select-options/creatable/Creatable";
 
 const FormSearchFlow = (props) => {
     const navigate = useNavigate()
     const [optionFlowName, setOptionFlowName] = useState([])
-    const [flowId, setFlowId] = useState('')
+    // const [flowId, setFlowId] = useState('')
     const [flowName, setFlowName] = useState([])
 
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.FLOW_LIST,'false').then(res => {
+        getDropdownByType(DropdownType.FLOW_LIST, ActiveFlag.Y).then(res => {
             if (res.responseCode === 200) {
                 setOptionFlowName(res.responseObject)
             } else {
@@ -41,7 +43,8 @@ const FormSearchFlow = (props) => {
     }, [])
 
     const handleOnChangeSelectFlowName = (object) => {
-        setFlowId(object.data.flowId)
+        setFlowName(object);
+        // setFlowId(object.data.flowId)
     }
 
     const handleButtonSearchFlow = () => {
@@ -58,7 +61,7 @@ const FormSearchFlow = (props) => {
 
     const handleButtonClearFormSearchFlow = () => {
         props.setLoadingPages(true)
-        setFlowId('')
+        // setFlowId('')
         setFlowName([])
         getFlowByCondition("").then(response => {
             if (response.responseObject.length > 0) {
@@ -83,7 +86,7 @@ const FormSearchFlow = (props) => {
             </div>
             <Form >
 
-                <Form.Group as={Row} className="mb-4">
+                {/* <Form.Group as={Row} className="mb-4">
                     <Form.Label className="text-right" column md={4} >
                         Flow ID :
                     </Form.Label>
@@ -97,19 +100,34 @@ const FormSearchFlow = (props) => {
                             disabled
                         />
                     </Col>
-                </Form.Group>
+                </Form.Group> */}
                 <Form.Group as={Row} className="mb-4">
                     <Form.Label className="text-right" column md={4} >
                         Flow Name :
                     </Form.Label>
                     <Col md={4}>
-                        <Select
+                        {/* <Select
                             options={optionFlowName}
                             placeholder="Select Flow Name"
                             isSearchable={true}
                             value={flowName || {}}
                             onChange={e => { setFlowName(e); handleOnChangeSelectFlowName(e); }}
+                        /> */}
+                        < SelectCreatable
+                            options={optionFlowName}
+                            placeholder="Select Flow Name"
+                            isSearchable={true}
+                            isClearable={false}
+                            value={flowName || {}}
+                            onChange={handleOnChangeSelectFlowName}
                         />
+                        {/* <SelectSingle
+                            options={optionFlowName}
+                            placeholder="Select Flow Name"
+                            isSearchable={true}
+                            value={flowName || {}}
+                            onChange={handleOnChangeSelectFlowName}
+                        /> */}
                     </Col>
                 </Form.Group>
                 <div className="text-center">

@@ -1,0 +1,22 @@
+{
+    "MethodType": {
+        "GET": "GET",
+        "POST": "POST",
+        "PUT": "PUT",
+        "DELETE": "DELETE"
+    },
+    "Service": {
+        "FlowManagementService": {
+            "MainPath": "/NAOS/FlowManagementService"
+        },
+        "DecisionFunctionService": {
+            "MainPath": "/NAOS/DecisionFunctionService"
+        }
+    },
+    "HeaderCallAPI": {
+        "FlowManagementService": {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    }
+}

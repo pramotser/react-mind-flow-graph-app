@@ -2,8 +2,17 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap'
 import Select from 'react-select'
 
-import { edgeTypeOption, edgeConditionOption, edgeParamConditionOption, edgeParamConditionOptionNew } from '../../../config/config';
-import { getEdgeConditionOptionObject, getEdgeTypeOptionObject, getEdgeParamConditionOptionObject, isNullOrUndefined } from '../../../util/Util'
+import {
+    edgeConditionOption,
+    edgeParamConditionOption,
+    DropdownType,
+    ActiveFlag
+} from '../../../config/config';
+import {
+    getEdgeConditionOptionObject,
+    getEdgeParamConditionOptionObject,
+    isNullOrUndefined
+} from '../../../util/Util'
 
 import * as BsIcons from 'react-icons/bs'
 import * as BiIcons from 'react-icons/bi'
@@ -11,7 +20,8 @@ import * as BiIcons from 'react-icons/bi'
 
 
 import './edge-modal.scss'
-import Datatable from '../../datatable/Datatable';
+import Datatable from '../../tools/datatable/Datatable';
+import { getDropdownByType } from '../../../services/util-service';
 
 let edgeParamIdRunning = 0;
 function EdgeModal(props) {
@@ -38,8 +48,27 @@ function EdgeModal(props) {
                 </>
             ),
         },
+        // {
+        //     name: 'Edge Type',
+        //     sortable: true,
+        //     reorder: true,
+        //     center: true,
+        //     width: "200px",
+        //     cell: (row) => (
+        //         <>
+        //             <Select
+        //                 className='select-in-table'
+        //                 options={edgeTypeOption}
+        //                 placeholder="Edge Type"
+        //                 isSearchable={false}
+        //                 defaultValue={getEdgeTypeOptionObject(row.edgeType)}
+        //                 onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeType", e.value)}
+        //             />
+        //         </>
+        //     ),
+        // },
         {
-            name: 'Edge Type',
+            name: 'Edge Paramss',
             sortable: true,
             reorder: true,
             center: true,
@@ -48,28 +77,11 @@ function EdgeModal(props) {
                 <>
                     <Select
                         className='select-in-table'
-                        options={edgeTypeOption}
-                        placeholder="Edge Type"
-                        isSearchable={false}
-                        defaultValue={getEdgeTypeOptionObject(row.edgeType)}
-                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeType", e.value)}
-                    />
-                </>
-            ),
-        },
-        {
-            name: 'Edge Param',
-            sortable: true,
-            reorder: true,
-            center: true,
-            width: "200px",
-            cell: (row) => (
-                <>
-                    <Form.Control
-                        type="text"
+                        options={edgeParamOption}
                         placeholder="Edge Param"
-                        defaultValue={row.edgeParam}
-                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeParam", e.target.value)}
+                        isSearchable={true}
+                        defaultValue={edgeParamOption.filter((eto) => eto.value === row.edgeParam)}
+                        onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeParam", e)}
                     />
                 </>
             ),
@@ -84,11 +96,11 @@ function EdgeModal(props) {
                 <>
                     <Select
                         className='select-in-table'
-                        options={(!isNullOrUndefined(row.edgeType)) ? edgeParamConditionOptionNew.filter((option) => option.data.type === row.edgeType) : edgeParamConditionOptionNew}
+                        options={(!isNullOrUndefined(row.edgeType)) ? edgeParamConditionOption.filter((option) => option.data.type === row.edgeType) : edgeParamConditionOption}
                         placeholder="Edge Param Condition"
                         isSearchable={false}
-                        isDisabled={isNullOrUndefined(row.edgeType)}
-                        defaultValue={getEdgeParamConditionOptionObject(row.edgeParamCondition)}
+                        isDisabled={isNullOrUndefined(row.edgeParam)}
+                        value={((isNullOrUndefined(row.edgeParamCondition)) ? [] : getEdgeParamConditionOptionObject(row.edgeParamCondition))}
                         onChange={e => onChangeEdgeParam(row.edgeParamId, "edgeParamCondition", e.value)}
                     />
                 </>
@@ -144,35 +156,40 @@ function EdgeModal(props) {
             ),
         },
     ];
-
-
-    const test =(e) =>{
-        console.log(e)
-        console.log((isNullOrUndefined(e.edgeType)))
-        console.log((!isNullOrUndefined(e.edgeType)) ? 'ss' : 'xx')
-        console.log(e.edgeType)
-        // console.log((!isNullOrUndefined(e.edgeType)) ? edgeParamConditionOptionNew.filter((option) => option.data.type === e.edgeType) : edgeParamConditionOptionNew)
-        // console.log()
-    }
+    const [edgeParamOption, setEdgeParamOption] = useState([])
 
     // const generateEdgeParam = () => `${edgeParamData.length.toString().padStart(3, '0')}`
     const generateEdgeParam = () => `${(edgeParamIdRunning++).toString()}`
     useEffect(() => {
-        setEdgeParamData(JSON.parse(JSON.stringify(props.edgeParam || [])))
-        if (!isNullOrUndefined(props.edgeParam)) {
-            let edgeParamId = props.edgeParam.map((ep) => { return Number.parseInt(ep.edgeParamId) });
-            edgeParamIdRunning = Math.max(...edgeParamId)
-            edgeParamIdRunning++
-        } else {
-            edgeParamIdRunning = 0;
-        }
+        getDropdownByType(DropdownType.UNIVERSAL_FIELD_LIST, ActiveFlag.N).then(res => {
+            setEdgeParamOption(res.responseObject);
+            setEdgeParamData(JSON.parse(JSON.stringify(props.edgeParam || [])))
+            if (!isNullOrUndefined(props.edgeParam)) {
+                let edgeParamId = props.edgeParam.map((ep) => { return Number.parseInt(ep.edgeParamId) });
+                edgeParamIdRunning = Math.max(...edgeParamId)
+                edgeParamIdRunning++
+            } else {
+                edgeParamIdRunning = 0;
+            }
+
+
+        })
+
     }, [props])
 
     const onChangeEdgeParam = (edgeParamId, field, value) => {
         setEdgeParamData((nds) =>
             nds.map((n) => {
-                if (n.edgeParamId === edgeParamId) {
-                    n[field] = value
+                if (field === 'edgeParam') {
+                    if (n.edgeParamId === edgeParamId) {
+                        n[field] = value['value']
+                        n['edgeType'] = value['data']['universalFieldType']
+                        n['edgeParamCondition'] = []
+                    }
+                } else {
+                    if (n.edgeParamId === edgeParamId) {
+                        n[field] = value
+                    }
                 }
                 return n;
             })
@@ -185,7 +202,7 @@ function EdgeModal(props) {
             edgeParamId: generateEdgeParam(),
             edgeCondition: [],
             edgeType: [],
-            edgeParam: "",
+            edgeParam: [],
             edgeParamCondition: [],
             edgeParamCompare: "",
             edgeValueCompare: ""
@@ -221,24 +238,7 @@ function EdgeModal(props) {
                     <Modal.Title>Condition Edge</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='modal-body-edge'>
-
                     <Form>
-                        {/* <Form.Group as={Row} className="mb-4">
-                            <Form.Label className="text-right" column md={3} >
-                                Edge Id :
-                            </Form.Label>
-                            <Col md={6}>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Node Name"
-                                    value={props.idEdge}
-                                    disabled
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    Please provide a valid Node Name.
-                                </Form.Control.Feedback>
-                            </Col>
-                        </Form.Group> */}
                         <Form.Group style={{ textAlign: 'right' }}>
                             <Button variant="outline-info" onClick={onAddCondition}>
                                 <BiIcons.BiPlusCircle /> Add

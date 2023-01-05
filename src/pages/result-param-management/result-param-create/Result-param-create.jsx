@@ -2,10 +2,10 @@ import "./result-param-create.scss";
 import { useState } from 'react'
 import { useLocation } from 'react-router-dom';
 
-import Sidebar from "../../components/layout/sidebar/Sidebar";
-import Navbar from "../../components/layout/navbar/Navbar";
-import LoadingScreen from "../../components/layout/loading/LoadingScreen";
-import FormCreateResultParam from "../../components/result-param/form-create-result-param/Form-create-result-param";
+import Sidebar from "../../../components/layout/sidebar/Sidebar";
+import Navbar from "../../../components/layout/navbar/Navbar";
+import LoadingScreen from "../../../components/tools/loading/LoadingScreen";
+import FormCreateResultParam from "../../../components/result-param/form-create-result-param/Form-create-result-param";
 
 // import FormCreateFlow from "../../components/form-create-flow/Form-create-flow";
 const ResultParamCreate = () => {

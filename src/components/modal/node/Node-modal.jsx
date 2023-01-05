@@ -9,11 +9,12 @@ import {
     Row,
     Col,
 } from 'react-bootstrap'
-import Select from 'react-select'
+// import Select from 'react-select'
 import Swal from 'sweetalert2';
 
 import { nodeTypeOption } from '../../../config/config';
 import { getNodeTypeObject, getColorNodeType, isNullOrUndefined } from '../../../util/Util';
+import SelectSingle from '../../tools/select-options/single/Single';
 
 function NodeModal(props) {
     const [nodeData, setNodeData] = useState({})
@@ -67,6 +68,7 @@ function NodeModal(props) {
     }, [props])
 
     const openCollapse = (nodeType) => {
+        setNodeType(nodeType)
         if (nodeType !== undefined) {
             setSubFlow("")
             setFunctionRef("")
@@ -223,12 +225,19 @@ function NodeModal(props) {
                                 Node Type :
                             </Form.Label>
                             <Col md={6}>
-                                <Select
+                                {/* <Select
                                     options={nodeTypeOption}
                                     placeholder="Select Node type"
                                     isSearchable={false}
                                     value={nodeType || {}}
                                     onChange={e => { setNodeType(e); openCollapse(e); }}
+                                /> */}
+                                <SelectSingle
+                                    options={nodeTypeOption}
+                                    placeholder="Select Node type"
+                                    isSearchable={false}
+                                    value={nodeType || {}}
+                                    onChange={openCollapse}
                                 />
                             </Col>
                         </Form.Group>

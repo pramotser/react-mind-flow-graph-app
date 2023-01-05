@@ -1,10 +1,10 @@
 import Home from "./pages/home/Home";
-import DecisionFlow from "./pages/decision/Decision";
+import DecisionFlow from "./pages/flow-management/decision/Decision";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import FlowList from "./pages/flow-management/Flow-management";
-import FlowCreate from "./pages/flow-create/Flow-create";
+import FlowCreate from "./pages/flow-management/flow-create/Flow-create";
 import ResultParamManagement from "./pages/result-param-management/Result-param-management";
-import ResultParamCreate from "./pages/result-param-create/Result-param-create";
+import ResultParamCreate from "./pages/result-param-management/result-param-create/Result-param-create";
 // import TestDecision from "./pages/test-decision/test-decision";
 function App() {
 

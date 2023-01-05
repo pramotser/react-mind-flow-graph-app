@@ -1,36 +1,36 @@
-export const initialNodes = [
-    {
-        width: 180,
-        height: 33,
-        id: '',
-        type: "custom",
-        position: {
-            x: 1000,
-            y: 1000
-        },
-        data: {
-            label: "Start",
-            nodeType: "START",
-            flowNodeId: '',
-            flowId: "",
-            nodeName: "",
-            subFlowId: "",
-            functionRef: "",
-            functionRefParam: "",
-            defaultParam: "",
-            result: "",
-            remark: ""
-        },
-        positionAbsolute: {
-            x: 1000,
-            y: 1000
-        }
-    }
-];
+// export const initialNodes = [
+//     {
+//         width: 180,
+//         height: 33,
+//         id: '',
+//         type: "custom",
+//         position: {
+//             x: 1000,
+//             y: 1000
+//         },
+//         data: {
+//             label: "Start",
+//             nodeType: "START",
+//             flowNodeId: '',
+//             flowId: "",
+//             nodeName: "",
+//             subFlowId: "",
+//             functionRef: "",
+//             functionRefParam: "",
+//             defaultParam: "",
+//             result: "",
+//             remark: ""
+//         },
+//         positionAbsolute: {
+//             x: 1000,
+//             y: 1000
+//         }
+//     }
+// ];
 
-export const initialEdges = [
+// export const initialEdges = [
 
-];
+// ];
 
 
 export const nodeTypeOption = [
@@ -38,35 +38,35 @@ export const nodeTypeOption = [
     { value: 'FUNCTION', label: 'Function' },
     { value: 'SUBFLOW', label: 'Subflow' }
 ]
-export const stepOption = [
-    { value: 'NEXT', label: 'Next' },
-    { value: 'OUT', label: 'Out' },
-    { value: 'END', label: 'End' }
-]
+// export const stepOption = [
+//     { value: 'NEXT', label: 'Next' },
+//     { value: 'OUT', label: 'Out' },
+//     { value: 'END', label: 'End' }
+// ]
 
 export const edgeConditionOption = [
     { value: 'OR', label: 'Or' },
     { value: 'AND', label: 'And' }
 ]
-export const edgeTypeOption = [
-    { value: 'STRING', label: 'String' },
-    { value: 'DOUBLE', label: 'Double' }
-]
-export const edgeParamConditionOption =
-    [
-        { value: 'EQUALS', label: 'EQUALS' },
-        { value: '<=', label: 'Double :<=' },
-        { value: '<', label: '<' },
-        { value: 'NOTEQUALS', label: 'NOTEQUALS' },
-        { value: '>=', label: '>=' },
-        { value: 'LIKE', label: 'LIKE' },
-        { value: '>', label: '>' },
-        { value: 'ISNULL', label: 'ISNULL' },
-        { value: '==', label: '==' },
-        { value: 'ISNOTNULL', label: 'ISNOTNULL' },
-        { value: 'CONTAIN', label: 'CONTAIN' },
-    ]
-export const edgeParamConditionOptionNew = [
+// export const edgeTypeOption = [
+//     { value: 'STRING', label: 'String' },
+//     { value: 'DOUBLE', label: 'Double' }
+// ]
+// export const edgeParamConditionOption =
+//     [
+//         { value: 'EQUALS', label: 'EQUALS' },
+//         { value: '<=', label: 'Double :<=' },
+//         { value: '<', label: '<' },
+//         { value: 'NOTEQUALS', label: 'NOTEQUALS' },
+//         { value: '>=', label: '>=' },
+//         { value: 'LIKE', label: 'LIKE' },
+//         { value: '>', label: '>' },
+//         { value: 'ISNULL', label: 'ISNULL' },
+//         { value: '==', label: '==' },
+//         { value: 'ISNOTNULL', label: 'ISNOTNULL' },
+//         { value: 'CONTAIN', label: 'CONTAIN' },
+//     ]
+export const edgeParamConditionOption = [
     { value: "ISNOTNULL", label: "ISNOTNULL", data: { type: "STRING" } },
     { value: "ISNULL", label: "ISNULL", data: { type: "STRING" } },
     { value: "EQUALS", label: "EQUALS", data: { type: "STRING" } },
@@ -108,4 +108,24 @@ export const formatDatetime = 'dd/MM/yyyy HH:mm'
 export const DropdownType = {
     FLOW_LIST: "FLOW_LIST",
     RESULT_PARAM_LIST: "RESULT_PARAM_LIST",
+    UNIVERSAL_FIELD_LIST: "UNIVERSAL_FIELD_LIST",
+}
+
+export const ActiveFlag = {
+    Y: 'Y',
+    N: 'N'
+}
+
+export const HeaderCallAPI = {
+    FlowManagementService: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    }
+}
+
+export const MethodType = {
+    GET: 'GET',
+    POST: 'POST',
+    PUT: 'PUT',
+    DELETE: 'DELETE'
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import './LoadingScreen.css';
+import './loadingScreen.scss';
 import { ColorRing } from "react-loader-spinner";
 const DarkBackground = styled.div`
   display: none;

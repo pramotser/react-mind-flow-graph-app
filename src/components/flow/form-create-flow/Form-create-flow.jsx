@@ -2,19 +2,21 @@ import "./form-create-flow.scss";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from 'react-bootstrap'
-import Select from 'react-select'
+// import Select from 'react-select'
 import * as AiIcons from 'react-icons/ai'
 import Swal from "sweetalert2";
 
-import DatepickerCustom from "../../datepicker/Datepicker";
+import DatepickerCustom from "../../tools/datepicker/Datepicker";
 import { isNullOrUndefined } from "../../../util/Util";
 import {
+    ActiveFlag,
     DropdownType,
     formatDatetime,
     mode
 } from '../../../config/config'
 import { getDropdownByType } from "../../../services/util-service";
 import { createFlow, updateFlow } from "../../../services/decision-service";
+import SelectSingle from "../../tools/select-options/single/Single";
 
 
 const FormCreateFlow = (props) => {
@@ -36,7 +38,7 @@ const FormCreateFlow = (props) => {
     const [decisionFlow, setDecisionFlow] = useState('')
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.RESULT_PARAM_LIST,'false').then(res => {
+        getDropdownByType(DropdownType.RESULT_PARAM_LIST, ActiveFlag.N).then(res => {
             setResultParamOption(res.responseObject);
             initialForm()
             if (modePage !== mode.add.value) {
@@ -236,12 +238,19 @@ const FormCreateFlow = (props) => {
                         Result Param :
                     </Form.Label>
                     <Col md={4}>
-                        <Select
+                        {/* <Select
                             options={resultParamOption}
                             placeholder="Select Result Param"
                             isSearchable={true}
                             value={resultParam || {}}
                             onChange={e => setResultParam(e)}
+                        /> */}
+                        < SelectSingle
+                            options={resultParamOption}
+                            placeholder="Select Result Param"
+                            isSearchable={true}
+                            value={resultParam || {}}
+                            onChange={setResultParam}
                         />
                         <div style={{
                             width: '100%',

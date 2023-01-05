@@ -8,8 +8,8 @@ import Swal from "sweetalert2";
 
 import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
-import Datatable from "../../components/datatable/Datatable";
-import LoadingScreen from "../../components/layout/loading/LoadingScreen";
+import Datatable from "../../components/tools/datatable/Datatable";
+import LoadingScreen from "../../components/tools/loading/LoadingScreen";
 import { mode } from "../../config/config";
 import FormSearchResultParam from "../../components/result-param/form-search-result-param/Form-search-result-param";
 import { deleteResultParam, getResultParamListByCondition } from "../../services/result-param-service";

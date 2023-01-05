@@ -2,10 +2,9 @@ import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
 import "./home.scss";
 import { Button } from "react-bootstrap";
-import LoadingScreen from "../../components/layout/loading/LoadingScreen";
+import LoadingScreen from "../../components/tools/loading/LoadingScreen";
 import { useState } from "react";
-import { testGet } from "../../services/decision-service";
-
+import { testGet } from "../../services/util-service";
 const Home = () => {
 
     const [loading, setLoading] = useState(false);

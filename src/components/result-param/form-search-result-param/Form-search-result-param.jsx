@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import * as AiIcons from 'react-icons/ai'
-import Select from 'react-select'
+// import Select from 'react-select'
 
 import { getResultParamListByCondition } from "../../../services/result-param-service";
 import { getDropdownByType } from "../../../services/util-service";
-import { DropdownType, mode } from "../../../config/config";
+import { ActiveFlag, DropdownType, mode } from "../../../config/config";
 import Swal from "sweetalert2";
+import SelectSingle from "../../tools/select-options/single/Single";
 
 const FormSearchResultParam = (props) => {
     const navigate = useNavigate()
@@ -18,8 +19,7 @@ const FormSearchResultParam = (props) => {
 
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.RESULT_PARAM_LIST,'true').then(res => {
-            console.log(res)
+        getDropdownByType(DropdownType.RESULT_PARAM_LIST, ActiveFlag.N).then(res => {
             if (res.responseCode === 200) {
                 setOptionResultParam(res.responseObject)
             } else {
@@ -43,6 +43,7 @@ const FormSearchResultParam = (props) => {
     }, [])
 
     const handleOnChangeSelectResultParamName = (object) => {
+        setResultParamName(object)
         setResultParamCode(object.data.resultParamCode)
     }
 
@@ -104,12 +105,19 @@ const FormSearchResultParam = (props) => {
                         Result Param Name :
                     </Form.Label>
                     <Col md={4}>
-                        <Select
+                        {/* <Select
                             options={optionResultParam}
                             placeholder="Select Result Param Name"
                             isSearchable={true}
                             value={resultParamName || {}}
                             onChange={e => { setResultParamName(e); handleOnChangeSelectResultParamName(e); }}
+                        /> */}
+                        <SelectSingle
+                            options={optionResultParam}
+                            placeholder="Select Result Param Name"
+                            isSearchable={true}
+                            value={resultParamName || {}}
+                            onChange={handleOnChangeSelectResultParamName}
                         />
                     </Col>
                 </Form.Group>
