@@ -3,6 +3,7 @@ import {
     // stepOption,
     edgeConditionOption,
     edgeParamConditionOption,
+    NodeType,
 } from '../config/config'
 import { format } from 'date-fns'
 
@@ -13,31 +14,31 @@ export const setLoading = (loading) => loading;
 export const convertFormatDate = (date , formatDate) => date !== null && date !== undefined ? format(new Date(date), formatDate) : undefined;
 
 function getColorNodeType(nodeType) {
-    if (nodeType === 'START') {
+    if (nodeType === NodeType.START) {
         return {
             color: "#664d03",
             backgroundColor: "#fff3cd",
             borderColor: "#ffecb5",
         }
-    } else if (nodeType === 'END') {
+    } else if (nodeType === NodeType.END) {
         return {
             color: "#055160",
             backgroundColor: "#cff4fc",
             borderColor: "#b6eff",
         }
-    } else if (nodeType === 'FUNCTION') {
+    } else if (nodeType === NodeType.FUNCTION) {
         return {
             color: "#084298",
             backgroundColor: "#cfe2ff",
             borderColor: "#b6d4fe",
         }
-    } else if (nodeType === 'DECISION') {
+    } else if (nodeType === NodeType.DECISION) {
         return {
             color: "#0f5132",
             backgroundColor: "#d1e7dd",
             borderColor: "#badbcc",
         }
-    } else if (nodeType === 'SUBFLOW') {
+    } else if (nodeType === NodeType.SUBFLOW) {
         return {
             color: "#842029",
             backgroundColor: "#f8d7da",
@@ -54,7 +55,7 @@ function getColorNodeType(nodeType) {
 }
 
 function getStyleHeaderNode(nodeType) {
-    if (nodeType === 'START') {
+    if (nodeType === NodeType.START) {
         return {
             backgroundColor: '#fff3cd',
             color: '#664d03',
@@ -63,7 +64,7 @@ function getStyleHeaderNode(nodeType) {
             border: '1px solid #ffecb5',
             borderRadius: '10px 10px 10px 10px',
         }
-    } else if (nodeType === 'END') {
+    } else if (nodeType === NodeType.END) {
         return {
             backgroundColor: '#cff4fc',
             color: '#055160',
@@ -73,7 +74,7 @@ function getStyleHeaderNode(nodeType) {
             borderTopLeftRadius: '10px',
             borderTopRightRadius: '10px'
         }
-    } else if (nodeType === 'FUNCTION') {
+    } else if (nodeType === NodeType.FUNCTION) {
         return {
             backgroundColor: '#cfe2ff',
             color: '#084298',
@@ -83,7 +84,7 @@ function getStyleHeaderNode(nodeType) {
             borderTopLeftRadius: '10px',
             borderTopRightRadius: '10px'
         }
-    } else if (nodeType === 'DECISION') {
+    } else if (nodeType === NodeType.DECISION) {
         return {
             backgroundColor: '#d1e7dd',
             color: '#0f5132',
@@ -93,7 +94,7 @@ function getStyleHeaderNode(nodeType) {
             borderTopLeftRadius: '10px',
             borderTopRightRadius: '10px'
         }
-    } else if (nodeType === 'SUBFLOW') {
+    } else if (nodeType === NodeType.SUBFLOW) {
         return {
             backgroundColor: '#f8d7da',
             color: '#842029',

@@ -12,17 +12,19 @@ import {
 // import Select from 'react-select'
 import Swal from 'sweetalert2';
 
-import { nodeTypeOption } from '../../../config/config';
+import { functionRefOption, NodeType, nodeTypeOption } from '../../../config/config';
 import { getNodeTypeObject, getColorNodeType, isNullOrUndefined } from '../../../util/Util';
 import SelectSingle from '../../tools/select-options/single/Single';
+// import { getDropdownByType } from '../../../services/util-service';
 
 function NodeModal(props) {
+    const { subFlowOptions } = props.data;
     const [nodeData, setNodeData] = useState({})
 
     const [nodeName, setNodeName] = useState("")
     const [nodeType, setNodeType] = useState([])
-    const [subFlowId, setSubFlow] = useState("")
-    const [functionRef, setFunctionRef] = useState("")
+    const [subFlowId, setSubFlow] = useState([])
+    const [functionRef, setFunctionRef] = useState([])
     const [functionRefParam, setFunctionRefParam] = useState("")
     const [defaultParam, setDefaultParam] = useState("")
 
@@ -40,13 +42,17 @@ function NodeModal(props) {
     const [validatedNodeAB, setValidatedNodeAB] = useState(false)
     const [validatedNodeEnd, setValidatedNodeEnd] = useState(false)
 
+    // const [subFlowOption, setSubFlowOption] = useState([])
+
     useEffect(() => {
+        // getDropdownByType(DropdownType.FLOW_LIST, ActiveFlag.Y).then(res => {
+        // setSubFlowOption(res.responseObject)
         setNodeData(JSON.parse(JSON.stringify(props.nodeData || {})))
         setValidatedNodeAB(false)
         setValidatedNodeEnd(false)
         if (Object.keys(props.nodeData).length !== 0) {
-            setModalNodeTypeEnd(props.nodeData["data"]["nodeType"] === 'END')
-            if (props.nodeData["data"]["nodeType"] !== 'END') {
+            setModalNodeTypeEnd(props.nodeData["data"]["nodeType"] === NodeType.END)
+            if (props.nodeData["data"]["nodeType"] !== NodeType.END) {
                 setNodeType([])
                 openCollapse([])
                 if (props.nodeData["data"]["nodeType"] !== '') {
@@ -55,8 +61,14 @@ function NodeModal(props) {
                     openCollapse(nodeType[0])
                 }
                 setNodeName(props.nodeData["data"]["nodeName"])
-                setSubFlow(props.nodeData["data"]["subFlowId"])
-                setFunctionRef(props.nodeData["data"]["functionRef"])
+                if (props.nodeData["data"]["subFlowId"] !== '') {
+                    let subflow = subFlowOptions.filter((sub) => sub.value === props.nodeData["data"]["subFlowId"])
+                    setSubFlow(subflow[0])
+                }
+                if (props.nodeData["data"]["functionRef"] !== '') {
+                    let funcRef = functionRefOption.filter((func) => func.value === props.nodeData["data"]["functionRef"])
+                    setFunctionRef(funcRef[0])
+                }
                 setFunctionRefParam(props.nodeData["data"]["functionRefParam"])
                 setDefaultParam(props.nodeData["data"]["defaultParam"])
             } else {
@@ -65,18 +77,19 @@ function NodeModal(props) {
             }
             changeColorModalByNodeType(props.nodeData["data"]["nodeType"])
         }
+        // })
     }, [props])
 
     const openCollapse = (nodeType) => {
         setNodeType(nodeType)
         if (nodeType !== undefined) {
-            setSubFlow("")
-            setFunctionRef("")
+            setSubFlow([])
+            setFunctionRef([])
             setFunctionRefParam("")
             setDefaultParam("")
-            setOpenCollapseFunction((nodeType["value"] === 'FUNCTION'))
-            setOpenCollapseSubFlow((nodeType["value"] === 'SUBFLOW'))
-            setOpenCollapseDecision((nodeType["value"] === 'DECISION'))
+            setOpenCollapseFunction((nodeType["value"] === NodeType.FUNCTION))
+            setOpenCollapseSubFlow((nodeType["value"] === NodeType.SUBFLOW))
+            setOpenCollapseDecision((nodeType["value"] === NodeType.DECISION))
             changeColorModalByNodeType(nodeType["value"])
         } else {
             setOpenCollapseFunction(false)
@@ -97,7 +110,7 @@ function NodeModal(props) {
             event.stopPropagation();
         }
         let checkDeleteEdge = false;
-        if (props.nodeData["data"]["nodeType"] !== 'END') {
+        if (props.nodeData["data"]["nodeType"] !== NodeType.END) {
             if (!validatedField) {
                 setValidatedNodeAB(true)
                 return false;
@@ -105,14 +118,12 @@ function NodeModal(props) {
             if (nodeData["data"]["nodeType"] !== ((nodeType.value !== undefined) ? `${nodeType.value}` : '')) {
                 checkDeleteEdge = true;
             } else {
-                if (nodeType.value === 'FUNCTION') {
-                    console.log((`nodeData["data"]["functionRef"] : ` + nodeData["data"]["functionRef"] + " !==functionRef : " + functionRef))
-                    console.log((nodeData["data"]["functionRef"] !== functionRef))
-                    if (nodeData["data"]["functionRef"] !== functionRef) {
+                if (nodeType.value === NodeType.FUNCTION) {
+                    if (nodeData["data"]["functionRef"] !== functionRef.value) {
                         checkDeleteEdge = true;
                     }
                 }
-                if (nodeType.value === 'SUBFLOW') {
+                if (nodeType.value === NodeType.SUBFLOW) {
                     if (nodeData["data"]["subFlowId"] !== subFlowId) {
                         checkDeleteEdge = true;
                     }
@@ -121,8 +132,8 @@ function NodeModal(props) {
             nodeData["data"]["label"] = `${nodeName}`;
             nodeData["data"]["nodeType"] = (nodeType.value !== undefined) ? `${nodeType.value}` : '';
             nodeData["data"]["nodeName"] = `${nodeName}`;
-            nodeData["data"]["subFlowId"] = `${subFlowId}`;
-            nodeData["data"]["functionRef"] = `${functionRef}`;
+            nodeData["data"]["subFlowId"] = (subFlowId.value !== undefined) ? `${subFlowId.value}` : '';
+            nodeData["data"]["functionRef"] = (functionRef.value !== undefined) ? `${functionRef.value}` : '';
             nodeData["data"]["functionRefParam"] = `${functionRefParam}`;
             nodeData["data"]["defaultParam"] = `${defaultParam}`;
         } else {
@@ -138,7 +149,7 @@ function NodeModal(props) {
     }
 
     const validatedField = () => {
-        if (props.nodeData["data"]["nodeType"] !== 'END') {
+        if (props.nodeData["data"]["nodeType"] !== NodeType.END) {
             if (nodeName === '') {
                 return false
             }
@@ -173,27 +184,25 @@ function NodeModal(props) {
     }
 
     const onCloseModal = () => {
-        console.log(nodeData)
-        if (props.nodeData["data"]["nodeType"] !== 'END') {
+        if (props.nodeData["data"]["nodeType"] !== NodeType.END) {
             if (isNullOrUndefined(nodeData["data"]["nodeType"]) || isNullOrUndefined(nodeData["data"]["nodeName"])) {
                 props.function.deleteNode(props.nodeData.id)
-            }else{
+            } else {
                 props.function.onCloseModalNode()
             }
-        }else {
+        } else {
             props.function.onCloseModalNode()
         }
 
     }
-
-
 
     return (
         <>
             <Modal
                 size="lg"
                 show={props.showModalNode}
-                onHide={props.function.onCloseModalNode}
+                // onHide={props.function.onCloseModalNode}
+                onHide={onCloseModal}
                 backdrop="static"
                 aria-labelledby="contained-modal-title-lg-vcenter"
                 centered
@@ -225,13 +234,6 @@ function NodeModal(props) {
                                 Node Type :
                             </Form.Label>
                             <Col md={6}>
-                                {/* <Select
-                                    options={nodeTypeOption}
-                                    placeholder="Select Node type"
-                                    isSearchable={false}
-                                    value={nodeType || {}}
-                                    onChange={e => { setNodeType(e); openCollapse(e); }}
-                                /> */}
                                 <SelectSingle
                                     options={nodeTypeOption}
                                     placeholder="Select Node type"
@@ -269,11 +271,12 @@ function NodeModal(props) {
                                                 Function Ref :
                                             </Form.Label>
                                             <Col md={6}>
-                                                <Form.Control
-                                                    type="text"
-                                                    placeholder="Function Ref"
-                                                    value={functionRef || ''}
-                                                    onChange={e => setFunctionRef(e.target.value)}
+                                                <SelectSingle
+                                                    options={functionRefOption}
+                                                    placeholder="Select Function Ref"
+                                                    isSearchable={true}
+                                                    value={functionRef || {}}
+                                                    onChange={e => setFunctionRef(e)}
                                                 />
                                             </Col>
                                         </Form.Group>
@@ -301,11 +304,12 @@ function NodeModal(props) {
                                                 Subflow :
                                             </Form.Label>
                                             <Col md={6}>
-                                                <Form.Control
-                                                    type="text"
-                                                    placeholder="Subflow"
-                                                    value={subFlowId || ''}
-                                                    onChange={e => setSubFlow(e.target.value)}
+                                                <SelectSingle
+                                                    options={subFlowOptions}
+                                                    placeholder="Select Subflow"
+                                                    isSearchable={false}
+                                                    value={subFlowId || {}}
+                                                    onChange={e => setSubFlow(e)}
                                                 />
                                             </Col>
                                         </Form.Group>

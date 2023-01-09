@@ -103,7 +103,6 @@ const FormDecisionControl = (props) => {
                         <br />
                         <Form.Group controlId="validationCustom01">
                             <Button
-                                // className="btn-search"
                                 variant="outline-primary"
                                 onClick={props.function.onSaveSession}>
                                 <AiIcons.AiOutlineCheck /> Save Draft
@@ -112,7 +111,6 @@ const FormDecisionControl = (props) => {
                         <br />
                         <Form.Group controlId="validationCustom01">
                             <Button
-                                // className="btn-search"
                                 variant="outline-warning"
                                 onClick={props.function.onRestoreSession}>
                                 <BiIcons.BiHistory /> Restore

@@ -14,12 +14,21 @@ import ReactFlow, {
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
 
-import { isNullOrUndefined } from '../../../util/Util';
+
+//Modal
 import NodeCustom from '../../reactflow/node-custom/Node-custom';
 import EdgeCustom from '../../reactflow/edge-custom/Edge-custom'
-import FormDecisionControl from '../form-decision-control/Form-decision-control';
 import NodeModal from '../../modal/node/Node-modal';
 import ExportModal from '../../modal/export/Export-modal';
+
+//Component other
+import FormDecisionControl from '../form-decision-control/Form-decision-control';
+// import ConnectionLine from '../../reactflow/connection-line/connectionLine';
+
+//Util and Config
+import { isNullOrUndefined } from '../../../util/Util';
+import { ActiveFlag, DropdownType, NodeType } from '../../../config/config';
+import { getDropdownByType } from '../../../services/util-service';
 
 let nodeIdRunning = 0;
 const edgeTypes = {
@@ -33,6 +42,7 @@ let nodeStart = null;
 const Decision = (props) => {
     const navigate = useNavigate()
     const SessionKey = `Session-${props.location.state.data.flowId}`
+    const { setLoadingPages, location } = props;
 
 
     const [flowMain, setFlowMain] = useState({})
@@ -48,30 +58,37 @@ const Decision = (props) => {
             function: {
                 saveEdgeParam: saveEdgeParam,
                 deleteEdge: deleteEdge,
+                setLoadingPages: setLoadingPages
             },
             nodeStart: nodeStart,
         },
     }, eds)), []);
 
+
+    const [dropdownFlowList, setDropdownFlowList] = useState([])
+
+
     useEffect(() => {
-        setFlowMain(props.location.state.data)
+        getDropdownByType(DropdownType.FLOW_LIST, ActiveFlag.Y).then(resFlowList => {
+            setDropdownFlowList(resFlowList.responseObject)
+        })
+        setFlowMain(location.state.data)
         localStorage.removeItem(SessionKey)
-        if (!isNullOrUndefined(props.location.state.data.decisionFlow)) {
-            const flow = JSON.parse(props.location.state.data.decisionFlow);
+        if (!isNullOrUndefined(location.state.data.decisionFlow)) {
+            const flow = JSON.parse(location.state.data.decisionFlow);
             if (flow) {
                 let filterNodeStart = flow.nodes.filter(
-                    (node) => node.data.nodeType.indexOf("START") !== -1
+                    (node) => node.data.nodeType.indexOf(NodeType.START) !== -1
                 );
                 nodeStart = filterNodeStart[0].id;
-
                 setNodes(flow.nodes || []);
                 setEdges(flow.edges.map((e) => {
                     e.data = {
                         function: {
                             saveEdgeParam: saveEdgeParam,
                             deleteEdge: deleteEdge,
+                            setLoadingPages: setLoadingPages
                         },
-
                         nodeStart: nodeStart,
                         edgeParam: e.data.edgeParam || []
                     }
@@ -80,7 +97,7 @@ const Decision = (props) => {
                 let arrayNodeID = flow.nodes.map((n) => { return Number.parseInt(n.id) });
                 nodeIdRunning = Math.max(...arrayNodeID)
                 nodeIdRunning++
-                localStorage.setItem(SessionKey, props.location.state.data.decisionFlow);
+                localStorage.setItem(SessionKey, location.state.data.decisionFlow);
             }
         }
     }, [])
@@ -112,13 +129,13 @@ const Decision = (props) => {
 
             if (type === "input") {
                 lable = 'Start'
-                nodeType = 'START'
+                nodeType = NodeType.START
             } else if (type === 'default') {
                 lable = 'New Node'
                 nodeType = ''
             } else {
                 lable = 'Result Node'
-                nodeType = 'END'
+                nodeType = NodeType.END
             }
 
             const newNode = {
@@ -139,7 +156,7 @@ const Decision = (props) => {
                     remark: ''
                 },
             };
-            if ((newNode.data.nodeType === "START") && nodes.filter((node) => node.data.nodeType === 'START').length > 0) {
+            if ((newNode.data.nodeType === NodeType.START) && nodes.filter((node) => node.data.nodeType === NodeType.START).length > 0) {
                 Swal.fire(
                     'Node Start Duplicate?',
                     'Unable to create duplicate startup node.',
@@ -147,11 +164,11 @@ const Decision = (props) => {
                 )
                 nodeIdRunning--;
             } else {
-                if ((newNode.data.nodeType === "START")) {
+                if ((newNode.data.nodeType === NodeType.START)) {
                     nodeStart = nodeId
                 }
                 setNodes((nds) => nds.concat(newNode));
-                if (newNode.data.nodeType !== "START") {
+                if (newNode.data.nodeType !== NodeType.START) {
                     setNodeData(newNode)
                     setOpenModalNode(true);
                 }
@@ -159,6 +176,7 @@ const Decision = (props) => {
         },
     );
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    // Modal Node
     const [openModalNode, setOpenModalNode] = useState(false);
     const [nodeData, setNodeData] = useState({})
     const onCloseModalNode = () => {
@@ -166,13 +184,13 @@ const Decision = (props) => {
     }
 
     const onNodeClick = useCallback((event, node) => {
-        if (node.data.nodeType !== "START") {
+        if (node.data.nodeType !== NodeType.START) {
             setNodeData(node)
             setOpenModalNode(true);
         }
     }, [])
 
-    const saveNode = useCallback((node,deleteEdge) => {
+    const saveNode = useCallback((node, flagDeleteEdge) => {
         setNodes((nds) =>
             nds.map((n) => {
                 if (n.id === node.id) {
@@ -182,7 +200,7 @@ const Decision = (props) => {
             })
         );
         setOpenModalNode(false);
-        if(deleteEdge)
+        if (flagDeleteEdge)
             setEdges((edges) => edges.filter((edge) => edge.source !== node.id))
     },
     )
@@ -228,14 +246,13 @@ const Decision = (props) => {
             localStorage.setItem(SessionKey, JSON.stringify(flow));
             Swal.fire('Saved Seesion', '', 'success')
         }
-
     }
 
     const onSaveDecision = () => {
         if (reactFlowInstance) {
             const flow = reactFlowInstance.toObject();
-            props.location.state.data.decisionFlow = JSON.stringify(flow);
-            navigate('/flow-management/edit', { state: props.location.state });
+            location.state.data.decisionFlow = JSON.stringify(flow);
+            navigate('/flow-management/edit', { state: location.state });
         }
     }
 
@@ -261,9 +278,12 @@ const Decision = (props) => {
     }
 
     const navigateToCreateFlow = () => {
-        navigate('/flow-management/edit', { state: props.location.state });
+        navigate('/flow-management/edit', { state: location.state });
     }
-
+    // const onEdgeUpdate = useCallback(
+    //     (oldEdge, newConnection) => setEdges((els) => updateEdge(oldEdge, newConnection, els)),
+    //     []
+    // );
 
     return (
         <div className="dndflow">
@@ -282,6 +302,7 @@ const Decision = (props) => {
                         onDrop={onDrop}
                         onDragOver={onDragOver}
                         deleteKeyCode={null}
+                        // connectionLineComponent={ConnectionLine}
                         fitView
                     >
                         <FormDecisionControl
@@ -293,7 +314,7 @@ const Decision = (props) => {
                                 navigateToCreateFlow: navigateToCreateFlow,
                                 onSaveDecision: onSaveDecision
                             }}
-                            flow={props.location.state.data} />
+                            flow={location.state.data} />
                         <MiniMap />
                         <Controls />
                         <Background color="#aaa" gap={16} />
@@ -305,6 +326,11 @@ const Decision = (props) => {
                                     saveNode: saveNode,
                                     deleteNode: deleteNode,
                                     onCloseModalNode: onCloseModalNode,
+                                }
+                            }
+                            data={
+                                {
+                                    subFlowOptions: dropdownFlowList
                                 }
                             }
                         />

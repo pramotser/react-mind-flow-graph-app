@@ -4,15 +4,16 @@ import "./home.scss";
 import { Button } from "react-bootstrap";
 import LoadingScreen from "../../components/tools/loading/LoadingScreen";
 import { useState } from "react";
-import { testGet } from "../../services/util-service";
+import { getParamListByFunctionRef } from "../../services/util-service";
 const Home = () => {
 
     const [loading, setLoading] = useState(false);
     const handlerLoading = () => {
 
         setLoading(true);
-
-        testGet().then(res => {
+        // naosNCBChecking
+        // calDBRBefore
+        getParamListByFunctionRef('naosNCBChecking').then(res => {
             console.log(res)
             setLoading(false);
         })

@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { getBezierPath } from 'reactflow';
-// import ModalEdge from '../../modal/edge/Edge-modal'
-
+import React, { useState, useCallback } from "react";
+import { getBezierPath, useStore } from 'reactflow'
 
 import EdgeModal from '../../modal/edge/Edge-modal'
 
@@ -9,6 +7,10 @@ import * as BiIcons from 'react-icons/bi'
 import * as AiIcons from 'react-icons/ai'
 
 import './edge-custom.scss';
+import { useEffect } from "react";
+import { ActiveFlag, DropdownType, NodeType } from "../../../config/config";
+import Swal from "sweetalert2";
+import { getDropdownByType } from "../../../services/util-service";
 
 const foreignObjectSize = 40;
 
@@ -26,6 +28,11 @@ export default function EdgeCustom({
 	target,
 	data,
 }) {
+	const {
+		saveEdgeParam,
+		deleteEdge,
+		setLoadingPages
+	} = data.function;
 	const [edgePath, labelX, labelY] = getBezierPath({
 		sourceX,
 		sourceY,
@@ -34,6 +41,33 @@ export default function EdgeCustom({
 		targetY,
 		targetPosition,
 	});
+	const sourceNodeDetail = useStore(
+		useCallback((store) => store.nodeInternals.get(source), [source])
+	);
+	const edgeConnectTarget = useStore(
+		useCallback((store) => store.edges.filter((edge) => edge.target === target))
+	);
+	const targetNodeDetail = useStore(
+		useCallback((store) => store.nodeInternals.get(target), [target])
+	);
+
+	useEffect(() => {
+		console.log('targetNodeDetail :', targetNodeDetail['data']);
+		if (NodeType.END === targetNodeDetail['data']['nodeType']) {
+			if (edgeConnectTarget.length > 1) {
+				Swal.fire({
+					icon: 'warning',
+					title: 'Duplicate result node!',
+					text: 'Result Nodes cannot be used together.',
+					showCancelButton: false,
+				}).then(() => {
+					deleteEdge(id)
+				})
+			}
+		}
+	}, [])
+
+
 
 	const [openModalEdge, setOpenModalEdge] = useState(false);
 	const [idEdge, setIdEdge] = useState('');
@@ -47,12 +81,12 @@ export default function EdgeCustom({
 	}
 
 	const onSaveEdgeParam = (edgeParam) => {
-		data.function.saveEdgeParam(id, edgeParam)
+		saveEdgeParam(id, edgeParam)
 		setOpenModalEdge(false);
 	}
 
 	const onDeleteEdge = (edgeId) => {
-		data.function.deleteEdge(edgeId)
+		deleteEdge(edgeId)
 		setOpenModalEdge(false);
 	}
 
@@ -92,13 +126,16 @@ export default function EdgeCustom({
 			</foreignObject>
 			<div>
 				<EdgeModal
+					setLoadingPages={setLoadingPages}
 					cModal={onCloseModalEdge}
 					onSaveEdgeParam={onSaveEdgeParam}
 					onDeleteEdge={onDeleteEdge}
 					showModalEdge={openModalEdge}
 					idEdge={idEdge}
+					nodeStart={data.nodeStart}
 					edgeParam={data.edgeParam}
 					sourceNode={source}
+					sourceNodeDetail={sourceNodeDetail}
 					targetNode={target}
 				/>
 			</div>
