@@ -43,6 +43,7 @@ export async function createFlow(createFlow) {
 }
 
 export async function updateFlow(flow) {
+    
     try {
         return fetch(ApiConfig.Service.FlowManagementService.MainPath + '/flow/updateFlow',
             {
