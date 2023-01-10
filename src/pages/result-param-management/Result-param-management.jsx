@@ -10,7 +10,7 @@ import Sidebar from "../../components/layout/sidebar/Sidebar";
 import Navbar from "../../components/layout/navbar/Navbar";
 import Datatable from "../../components/tools/datatable/Datatable";
 import LoadingScreen from "../../components/tools/loading/LoadingScreen";
-import { mode } from "../../config/config";
+import { Config } from "../../config/config";
 import FormSearchResultParam from "../../components/result-param/form-search-result-param/Form-search-result-param";
 import { deleteResultParam, getResultParamListByCondition } from "../../services/result-param-service";
 
@@ -26,7 +26,7 @@ const ResultParamManagement = () => {
         //     title: `Coming soon!`,
         //     showCancelButton: false,
         // });
-        navigate('edit', { state: { mode: mode.edit.value, data: data } });
+        navigate('edit', { state: { mode: Config.Mode.EDIT.value, data: data } });
     }
 
     const handleButtonDeleteClick = (event, data) => {

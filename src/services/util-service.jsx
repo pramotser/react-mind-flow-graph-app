@@ -1,12 +1,13 @@
 import ApiConfig from "../config/api-config.json"
-import { HeaderCallAPI, MethodType } from "../config/config"
+import { Config } from "../config/config"
+import { isNullOrUndefined } from "../util/Util"
 
 export async function getDropdownByType(dropdownType, flagShowCode) {
     try {
         return fetch(ApiConfig.Service.FlowManagementService.MainPath + '/dropdown/getListByCondition',
             {
-                headers: HeaderCallAPI.FlowManagementService,
-                method: MethodType.POST,
+                headers: Config.HeaderCallAPI.FlowManagementService,
+                method: Config.MethodType.POST,
                 body: JSON.stringify({
                     dropdownType: dropdownType,
                     flagShowCode: flagShowCode,
@@ -21,21 +22,29 @@ export async function getDropdownByType(dropdownType, flagShowCode) {
     }
 }
 
-export async function testGet() {
+export async function getParamListByFunctionRef(functionRefName, flagShowCode) {
     try {
-        return fetch(ApiConfig.Service.DecisionFunctionService.MainPath + '/Param/naosNCBChecking',
+        return fetch(ApiConfig.Service.DecisionFunctionService.MainPath + '/Param/' + functionRefName,
             {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*"
                 },
-                method: 'POST',
+                method: Config.MethodType.POST,
             })
             .then(res => res.json())
             .then((response) => {
-                console.log('response :',response);
-                return response
+                return {
+                    responseObject: response.returnJsonParamList.map((jsonParam) => {
+                        return {
+                            value: jsonParam.flowNodeEdgeParam, label: (isNullOrUndefined(flagShowCode) && flagShowCode === Config.ActiveFlag.Y)
+                                ? jsonParam.flowNodeEdgeParam + " : " + jsonParam.flowNodeEdgeParam
+                                : jsonParam.flowNodeEdgeParam, data: {
+                                    universalFieldType: jsonParam.flowNodeEdgeType
+                                }
+                        };
+                    })
+                }
             })
     } catch (error) {
         return []

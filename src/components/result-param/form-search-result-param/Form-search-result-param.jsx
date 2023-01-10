@@ -7,7 +7,7 @@ import * as AiIcons from 'react-icons/ai'
 
 import { getResultParamListByCondition } from "../../../services/result-param-service";
 import { getDropdownByType } from "../../../services/util-service";
-import { ActiveFlag, DropdownType, mode } from "../../../config/config";
+import { Config } from "../../../config/config";
 import Swal from "sweetalert2";
 import SelectSingle from "../../tools/select-options/single/Single";
 
@@ -19,7 +19,7 @@ const FormSearchResultParam = (props) => {
 
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.RESULT_PARAM_LIST, ActiveFlag.N).then(res => {
+        getDropdownByType(Config.DropdownType.RESULT_PARAM_LIST, Config.ActiveFlag.N).then(res => {
             if (res.responseCode === 200) {
                 setOptionResultParam(res.responseObject)
             } else {
@@ -32,7 +32,6 @@ const FormSearchResultParam = (props) => {
             }
         })
         getResultParamListByCondition(null).then(res => {
-            console.log(res)
             if (res.responseObject.length > 0) {
                 props.search(res.responseObject);
             } else {
@@ -75,7 +74,7 @@ const FormSearchResultParam = (props) => {
 
     const navigateToResultParamCreate = () => {
         props.setLoadingPages(true)
-        navigate('create', { state: { mode: mode.add.value } });
+        navigate('create', { state: { mode: Config.Mode.ADD.value } });
     };
 
     return (

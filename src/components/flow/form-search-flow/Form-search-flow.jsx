@@ -7,22 +7,29 @@ import * as AiIcons from 'react-icons/ai'
 
 import { getFlowByCondition } from "../../../services/decision-service";
 import { getDropdownByType } from "../../../services/util-service";
-import { ActiveFlag, DropdownType, mode } from "../../../config/config";
+import { Config } from "../../../config/config";
 import Swal from "sweetalert2";
 import SelectSingle from "../../tools/select-options/single/Single";
-import SelectCreatable from "../../tools/select-options/creatable/Creatable";
+// import SelectCreatable from "../../tools/select-options/creatable/Creatable";
 
 const FormSearchFlow = (props) => {
     const navigate = useNavigate()
     const [optionFlowName, setOptionFlowName] = useState([])
-    // const [flowId, setFlowId] = useState('')
     const [flowName, setFlowName] = useState([])
 
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.FLOW_LIST, ActiveFlag.Y).then(res => {
+        getDropdownByType(Config.DropdownType.FLOW_LIST, Config.ActiveFlag.Y).then(res => {
             if (res.responseCode === 200) {
                 setOptionFlowName(res.responseObject)
+                getFlowByCondition(null).then(res => {
+                    if (res.responseObject.length > 0) {
+                        props.search(res.responseObject);
+                    } else {
+                        props.search([])
+                    }
+                    props.setLoadingPages(false)
+                })
             } else {
                 Swal.fire({
                     icon: 'error',
@@ -30,15 +37,8 @@ const FormSearchFlow = (props) => {
                     text: `${res.responseDecription}!`,
                     showCancelButton: false,
                 })
+                props.setLoadingPages(false)
             }
-        })
-        getFlowByCondition(null).then(res => {
-            if (res.responseObject.length > 0) {
-                props.search(res.responseObject);
-            } else {
-                props.search([])
-            }
-            props.setLoadingPages(false)
         })
     }, [])
 
@@ -49,7 +49,7 @@ const FormSearchFlow = (props) => {
 
     const handleButtonSearchFlow = () => {
         props.setLoadingPages(true)
-        getFlowByCondition((flowName.value !== undefined) ? flowName.value : '').then(response => {
+        getFlowByCondition((flowName.value !== undefined) ? flowName.value : null).then(response => {
             if (response.responseObject.length > 0) {
                 props.search(response.responseObject);
             } else {
@@ -75,7 +75,7 @@ const FormSearchFlow = (props) => {
 
     const navigateToFlowCreate = () => {
         props.setLoadingPages(true)
-        navigate('create', { state: { mode: mode.add.value } });
+        navigate('create', { state: { mode: Config.Mode.ADD.value } });
     };
 
     return (
@@ -106,28 +106,21 @@ const FormSearchFlow = (props) => {
                         Flow Name :
                     </Form.Label>
                     <Col md={4}>
-                        {/* <Select
-                            options={optionFlowName}
-                            placeholder="Select Flow Name"
-                            isSearchable={true}
-                            value={flowName || {}}
-                            onChange={e => { setFlowName(e); handleOnChangeSelectFlowName(e); }}
-                        /> */}
-                        < SelectCreatable
+                        {/* < SelectCreatable
                             options={optionFlowName}
                             placeholder="Select Flow Name"
                             isSearchable={true}
                             isClearable={false}
                             value={flowName || {}}
                             onChange={handleOnChangeSelectFlowName}
-                        />
-                        {/* <SelectSingle
+                        /> */}
+                        <SelectSingle
                             options={optionFlowName}
                             placeholder="Select Flow Name"
                             isSearchable={true}
                             value={flowName || {}}
                             onChange={handleOnChangeSelectFlowName}
-                        /> */}
+                        />
                     </Col>
                 </Form.Group>
                 <div className="text-center">
