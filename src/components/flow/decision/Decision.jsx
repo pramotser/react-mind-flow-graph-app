@@ -27,7 +27,7 @@ import FormDecisionControl from '../form-decision-control/Form-decision-control'
 
 //Util and Config
 import { isNullOrUndefined } from '../../../util/Util';
-import { ActiveFlag, DropdownType, NodeType } from '../../../config/config';
+import { Config } from '../../../config/config';
 import { getDropdownByType } from '../../../services/util-service';
 
 let nodeIdRunning = 0;
@@ -69,7 +69,7 @@ const Decision = (props) => {
 
 
     useEffect(() => {
-        getDropdownByType(DropdownType.FLOW_LIST, ActiveFlag.Y).then(resFlowList => {
+        getDropdownByType(Config.DropdownType.FLOW_LIST, Config.ActiveFlag.Y).then(resFlowList => {
             setDropdownFlowList(resFlowList.responseObject)
         })
         setFlowMain(location.state.data)
@@ -78,7 +78,7 @@ const Decision = (props) => {
             const flow = JSON.parse(location.state.data.decisionFlow);
             if (flow) {
                 let filterNodeStart = flow.nodes.filter(
-                    (node) => node.data.nodeType.indexOf(NodeType.START) !== -1
+                    (node) => node.data.nodeType.indexOf(Config.NodeType.START) !== -1
                 );
                 nodeStart = filterNodeStart[0].id;
                 setNodes(flow.nodes || []);
@@ -129,13 +129,13 @@ const Decision = (props) => {
 
             if (type === "input") {
                 lable = 'Start'
-                nodeType = NodeType.START
+                nodeType = Config.NodeType.START
             } else if (type === 'default') {
                 lable = 'New Node'
                 nodeType = ''
             } else {
                 lable = 'Result Node'
-                nodeType = NodeType.END
+                nodeType = Config.NodeType.END
             }
 
             const newNode = {
@@ -156,7 +156,7 @@ const Decision = (props) => {
                     remark: ''
                 },
             };
-            if ((newNode.data.nodeType === NodeType.START) && nodes.filter((node) => node.data.nodeType === NodeType.START).length > 0) {
+            if ((newNode.data.nodeType === Config.NodeType.START) && nodes.filter((node) => node.data.nodeType === Config.NodeType.START).length > 0) {
                 Swal.fire(
                     'Node Start Duplicate?',
                     'Unable to create duplicate startup node.',
@@ -164,11 +164,11 @@ const Decision = (props) => {
                 )
                 nodeIdRunning--;
             } else {
-                if ((newNode.data.nodeType === NodeType.START)) {
+                if ((newNode.data.nodeType === Config.NodeType.START)) {
                     nodeStart = nodeId
                 }
                 setNodes((nds) => nds.concat(newNode));
-                if (newNode.data.nodeType !== NodeType.START) {
+                if (newNode.data.nodeType !== Config.NodeType.START) {
                     setNodeData(newNode)
                     setOpenModalNode(true);
                 }
@@ -184,7 +184,7 @@ const Decision = (props) => {
     }
 
     const onNodeClick = useCallback((event, node) => {
-        if (node.data.nodeType !== NodeType.START) {
+        if (node.data.nodeType !== Config.NodeType.START) {
             setNodeData(node)
             setOpenModalNode(true);
         }

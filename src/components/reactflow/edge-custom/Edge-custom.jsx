@@ -8,7 +8,7 @@ import * as AiIcons from 'react-icons/ai'
 
 import './edge-custom.scss';
 import { useEffect } from "react";
-import { ActiveFlag, DropdownType, NodeType } from "../../../config/config";
+import { Config } from "../../../config/config";
 import Swal from "sweetalert2";
 import { getDropdownByType } from "../../../services/util-service";
 
@@ -52,8 +52,7 @@ export default function EdgeCustom({
 	);
 
 	useEffect(() => {
-		console.log('targetNodeDetail :', targetNodeDetail['data']);
-		if (NodeType.END === targetNodeDetail['data']['nodeType']) {
+		if (Config.NodeType.END === targetNodeDetail['data']['nodeType']) {
 			if (edgeConnectTarget.length > 1) {
 				Swal.fire({
 					icon: 'warning',

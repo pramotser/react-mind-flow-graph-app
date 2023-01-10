@@ -1,44 +1,38 @@
-import {
-    nodeTypeOption,
-    // stepOption,
-    edgeConditionOption,
-    edgeParamConditionOption,
-    NodeType,
-} from '../config/config'
+import { Config, } from '../config/config'
 import { format } from 'date-fns'
 
 export const isNullOrUndefined = (value) => value === undefined || value == null || value.length <= 0;
 
-export const setLoading = (loading) => loading; 
+export const setLoading = (loading) => loading;
 
-export const convertFormatDate = (date , formatDate) => date !== null && date !== undefined ? format(new Date(date), formatDate) : undefined;
+export const convertFormatDate = (date, formatDate) => date !== null && date !== undefined ? format(new Date(date), formatDate) : undefined;
 
 function getColorNodeType(nodeType) {
-    if (nodeType === NodeType.START) {
+    if (nodeType === Config.NodeType.START) {
         return {
             color: "#664d03",
             backgroundColor: "#fff3cd",
             borderColor: "#ffecb5",
         }
-    } else if (nodeType === NodeType.END) {
+    } else if (nodeType === Config.NodeType.END) {
         return {
             color: "#055160",
             backgroundColor: "#cff4fc",
             borderColor: "#b6eff",
         }
-    } else if (nodeType === NodeType.FUNCTION) {
+    } else if (nodeType === Config.NodeType.FUNCTION) {
         return {
             color: "#084298",
             backgroundColor: "#cfe2ff",
             borderColor: "#b6d4fe",
         }
-    } else if (nodeType === NodeType.DECISION) {
+    } else if (nodeType === Config.NodeType.DECISION) {
         return {
             color: "#0f5132",
             backgroundColor: "#d1e7dd",
             borderColor: "#badbcc",
         }
-    } else if (nodeType === NodeType.SUBFLOW) {
+    } else if (nodeType === Config.NodeType.SUBFLOW) {
         return {
             color: "#842029",
             backgroundColor: "#f8d7da",
@@ -55,7 +49,7 @@ function getColorNodeType(nodeType) {
 }
 
 function getStyleHeaderNode(nodeType) {
-    if (nodeType === NodeType.START) {
+    if (nodeType === Config.NodeType.START) {
         return {
             backgroundColor: '#fff3cd',
             color: '#664d03',
@@ -64,7 +58,7 @@ function getStyleHeaderNode(nodeType) {
             border: '1px solid #ffecb5',
             borderRadius: '10px 10px 10px 10px',
         }
-    } else if (nodeType === NodeType.END) {
+    } else if (nodeType === Config.NodeType.END) {
         return {
             backgroundColor: '#cff4fc',
             color: '#055160',
@@ -74,7 +68,7 @@ function getStyleHeaderNode(nodeType) {
             borderTopLeftRadius: '10px',
             borderTopRightRadius: '10px'
         }
-    } else if (nodeType === NodeType.FUNCTION) {
+    } else if (nodeType === Config.NodeType.FUNCTION) {
         return {
             backgroundColor: '#cfe2ff',
             color: '#084298',
@@ -84,7 +78,7 @@ function getStyleHeaderNode(nodeType) {
             borderTopLeftRadius: '10px',
             borderTopRightRadius: '10px'
         }
-    } else if (nodeType === NodeType.DECISION) {
+    } else if (nodeType === Config.NodeType.DECISION) {
         return {
             backgroundColor: '#d1e7dd',
             color: '#0f5132',
@@ -94,7 +88,7 @@ function getStyleHeaderNode(nodeType) {
             borderTopLeftRadius: '10px',
             borderTopRightRadius: '10px'
         }
-    } else if (nodeType === NodeType.SUBFLOW) {
+    } else if (nodeType === Config.NodeType.SUBFLOW) {
         return {
             backgroundColor: '#f8d7da',
             color: '#842029',
@@ -118,15 +112,10 @@ function getStyleHeaderNode(nodeType) {
     }
 }
 ////  migate
-export const getNodeTypeObject = (nodeType) => (nodeTypeOption.filter((nto) => nto.value === nodeType))
+export const getNodeTypeObject = (nodeType) => (Config.NodeTypeOption.filter((nto) => nto.value === nodeType))
 
+export const getEdgeConditionOptionObject = (edgeCondition) => (Config.EdgeConditionOption.filter((eco) => eco.value === edgeCondition))
 
-// export const getStepObject = (step) => (stepOption.filter((so) => so.value === step))
-
-export const getEdgeConditionOptionObject = (edgeCondition) => (edgeConditionOption.filter((eco) => eco.value === edgeCondition))
-
-// export const getEdgeTypeOptionObject = (edgeType) => (edgeTypeOption.filter((eto) => eto.value === edgeType))
-
-export const getEdgeParamConditionOptionObject = (edgeParamCondition) => (edgeParamConditionOption.filter((epco) => epco.value === edgeParamCondition))
+export const getEdgeParamConditionOptionObject = (edgeParamCondition) => (Config.EdgeParamConditionOption.filter((epco) => epco.value === edgeParamCondition))
 
 export { getColorNodeType, getStyleHeaderNode }

@@ -1,13 +1,13 @@
 import ApiConfig from "../config/api-config.json"
-import { ActiveFlag, HeaderCallAPI, MethodType } from "../config/config"
+import { Config } from "../config/config"
 import { isNullOrUndefined } from "../util/Util"
 
 export async function getDropdownByType(dropdownType, flagShowCode) {
     try {
         return fetch(ApiConfig.Service.FlowManagementService.MainPath + '/dropdown/getListByCondition',
             {
-                headers: HeaderCallAPI.FlowManagementService,
-                method: MethodType.POST,
+                headers: Config.HeaderCallAPI.FlowManagementService,
+                method: Config.MethodType.POST,
                 body: JSON.stringify({
                     dropdownType: dropdownType,
                     flagShowCode: flagShowCode,
@@ -29,16 +29,15 @@ export async function getParamListByFunctionRef(functionRefName, flagShowCode) {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': "*"
                 },
-                method: 'POST',
+                method: Config.MethodType.POST,
             })
             .then(res => res.json())
             .then((response) => {
                 return {
                     responseObject: response.returnJsonParamList.map((jsonParam) => {
                         return {
-                            value: jsonParam.flowNodeEdgeParam, label: (isNullOrUndefined(flagShowCode) && flagShowCode === ActiveFlag.Y)
+                            value: jsonParam.flowNodeEdgeParam, label: (isNullOrUndefined(flagShowCode) && flagShowCode === Config.ActiveFlag.Y)
                                 ? jsonParam.flowNodeEdgeParam + " : " + jsonParam.flowNodeEdgeParam
                                 : jsonParam.flowNodeEdgeParam, data: {
                                     universalFieldType: jsonParam.flowNodeEdgeType

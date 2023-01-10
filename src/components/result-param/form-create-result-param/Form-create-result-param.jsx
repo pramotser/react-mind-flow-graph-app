@@ -7,9 +7,7 @@ import * as AiIcons from 'react-icons/ai'
 import Swal from "sweetalert2";
 
 import { isNullOrUndefined } from "../../../util/Util";
-import {
-    mode
-} from '../../../config/config'
+import { Config } from '../../../config/config'
 import { createResultParam, updateResultParam } from "../../../services/result-param-service";
 
 
@@ -26,15 +24,11 @@ const FormCreateResultParam = (props) => {
 
     useEffect(() => {
         props.setLoadingPages(true)
-        // getDropdownByType(DropdownType.RESULT_PARAM_LIST).then(res => {
-        //     setResultParamOption(res.responseObject);
         initialForm()
-        if (modePage !== mode.add.value) {
-            console.log(props)
+        if (modePage !== Config.Mode.ADD.value) {
             setDataToForm(props.location.state)
         }
         props.setLoadingPages(false)
-        // });
     }, [])
 
     const initialForm = () => {
@@ -53,7 +47,7 @@ const FormCreateResultParam = (props) => {
     const onBtnClearForm = () => {
         props.setLoadingPages(true)
         initialForm();
-        if (modePage !== mode.add.value) {
+        if (modePage !== Config.Mode.ADD.value) {
             setDataToForm(props.location.state)
         }
         props.setLoadingPages(false)
@@ -88,13 +82,13 @@ const FormCreateResultParam = (props) => {
 
             Swal.fire({
                 icon: 'info',
-                title: `${'Do you want to save' + ((modePage === mode.edit.value) ? ' the changes?' : '?')}`,
+                title: `${'Do you want to save' + ((modePage === Config.Mode.EDIT.value) ? ' the changes?' : '?')}`,
                 showCancelButton: true,
                 confirmButtonText: 'Save',
             }).then((result) => {
                 if (result.isConfirmed) {
                     props.setLoadingPages(true)
-                    if (modePage !== mode.edit.value) {
+                    if (modePage !== Config.Mode.EDIT.value) {
                         createResultParam(resultParam).then(res => {
                             props.setLoadingPages(false)
                             if (res.responseCode === 200) {
@@ -169,7 +163,7 @@ const FormCreateResultParam = (props) => {
                             placeholder="Result Param Code"
                             value={resultParamCode}
                             onChange={e => setResultParamCode(e.target.value)}
-                            disabled={(modePage === mode.edit.value)}
+                            disabled={(modePage === Config.Mode.EDIT.value)}
                             required
                         />
                         <Form.Control.Feedback type="invalid">

@@ -8,12 +8,7 @@ import Swal from "sweetalert2";
 
 import DatepickerCustom from "../../tools/datepicker/Datepicker";
 import { isNullOrUndefined } from "../../../util/Util";
-import {
-    ActiveFlag,
-    DropdownType,
-    formatDatetime,
-    mode
-} from '../../../config/config'
+import { Config } from '../../../config/config'
 import { getDropdownByType } from "../../../services/util-service";
 import { createFlow, updateFlow } from "../../../services/decision-service";
 import SelectSingle from "../../tools/select-options/single/Single";
@@ -38,10 +33,10 @@ const FormCreateFlow = (props) => {
     const [decisionFlow, setDecisionFlow] = useState('')
     useEffect(() => {
         props.setLoadingPages(true)
-        getDropdownByType(DropdownType.RESULT_PARAM_LIST, ActiveFlag.N).then(res => {
+        getDropdownByType(Config.DropdownType.RESULT_PARAM_LIST, Config.ActiveFlag.N).then(res => {
             setResultParamOption(res.responseObject);
             initialForm()
-            if (modePage !== mode.add.value) {
+            if (modePage !== Config.Mode.ADD.value) {
                 setDataToForm(props.location.state, res.responseObject)
             }
             props.setLoadingPages(false)
@@ -77,7 +72,7 @@ const FormCreateFlow = (props) => {
         initialForm();
         setValidated(false)
         setValidateOptionResult(false)
-        if (modePage !== mode.add.value) {
+        if (modePage !== Config.Mode.ADD.value) {
             setDataToForm(props.location.state, resultParamOption)
         }
         props.setLoadingPages(false)
@@ -88,6 +83,15 @@ const FormCreateFlow = (props) => {
     }
 
     const onBtnDecision = () => {
+
+        // if (props.location.state.data.flowName !== `${flowName}` || props.location.state.data.resultParam !== `${resultParam.value}` || props.location.state.data.isActive !== `${(isActive === true) ? 'Y' : 'N '}`) {
+        //     Swal.fire({
+        //         icon: 'warning',
+        //         title: 'The information is incorrect.!',
+        //         text: 'Please complete the information.',
+        //         showCancelButton: false,
+        //     })
+        // }
         navigate('decision', { state: props.location.state });
     };
 
@@ -121,13 +125,13 @@ const FormCreateFlow = (props) => {
             props.setLoadingPages(false)
             Swal.fire({
                 icon: 'info',
-                title: `${'Do you want to save' + ((modePage === mode.edit.value) ? ' the changes?' : '?')}`,
+                title: `${'Do you want to save' + ((modePage === Config.Mode.EDIT.value) ? ' the changes?' : '?')}`,
                 showCancelButton: true,
                 confirmButtonText: 'Save',
             }).then((result) => {
                 props.setLoadingPages(true)
                 if (result.isConfirmed) {
-                    if (modePage !== mode.edit.value) {
+                    if (modePage !== Config.Mode.EDIT.value) {
                         createFlow(flow).then(responseObject => {
                             props.setLoadingPages(false)
                             if (responseObject.responseCode === 200) {
@@ -207,7 +211,7 @@ const FormCreateFlow = (props) => {
                             placeholder="Flow ID"
                             value={flowId}
                             onChange={e => setFlowId(e.target.value)}
-                            disabled={(modePage === mode.edit.value)}
+                            disabled={(modePage === Config.Mode.EDIT.value)}
                             required
                         />
                         <Form.Control.Feedback type="invalid">
@@ -283,7 +287,7 @@ const FormCreateFlow = (props) => {
                     <Col md={2} className='text-left'>
                         <DatepickerCustom
                             selected={startDate}
-                            dateFormat={formatDatetime}
+                            dateFormat={Config.FormatDatetime}
                             maxDate={endDate}
                             placeholderText={'Start Date'}
                             onChange={setStartDate}
@@ -297,7 +301,7 @@ const FormCreateFlow = (props) => {
                     <Col md={2}>
                         <DatepickerCustom
                             selected={endDate}
-                            dateFormat={formatDatetime}
+                            dateFormat={Config.FormatDatetime}
                             minDate={startDate}
                             placeholderText={'End Date'}
                             onChange={setEndDate}
@@ -307,7 +311,7 @@ const FormCreateFlow = (props) => {
                         />
                     </Col>
                 </Form.Group>
-                <Form.Group as={Row} className="mb-4" hidden={(modePage !== mode.edit.value)}>
+                <Form.Group as={Row} className="mb-4" hidden={(modePage !== Config.Mode.EDIT.value)}>
                     <Form.Label className="text-right" column md={4} >
                         Decision Flow:
                     </Form.Label>

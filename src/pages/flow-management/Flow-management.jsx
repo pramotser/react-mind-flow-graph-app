@@ -13,7 +13,7 @@ import Datatable from "../../components/tools/datatable/Datatable";
 import LoadingScreen from "../../components/tools/loading/LoadingScreen";
 import { getFlowByCondition } from "../../services/decision-service";
 import { deleteFlow } from "../../services/decision-service";
-import { mode } from "../../config/config";
+import {  Config } from "../../config/config";
 
 const FlowManagement = () => {
     const navigate = useNavigate()
@@ -21,7 +21,7 @@ const FlowManagement = () => {
     const [searchData, setSearchData] = useState([])
 
     const handleButtonEditClick = (event, data) => {
-        navigate('edit', { state: { mode: mode.edit.value, data: data } });
+        navigate('edit', { state: { mode: Config.Mode.EDIT.value, data: data } });
     }
 
     const handleButtonDeleteClick = (event, data) => {
@@ -150,6 +150,7 @@ const FlowManagement = () => {
                         <h1>Flow Management</h1>
                     </div>
                     <FormSearchFlow
+                        // optionFlowList={optionFlowList}
                         search={search}
                         setLoadingPages={setLoadingPages}
                     />

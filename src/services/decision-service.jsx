@@ -1,6 +1,6 @@
 import ApiConfig from "../config/api-config.json";
 
-export async function getFlowByCondition(flowName) {
+export async function getFlowByCondition(flowId) {
     try {
         return fetch(ApiConfig.Service.FlowManagementService.MainPath + '/flow/getFlowListByCondition',
             {
@@ -10,7 +10,7 @@ export async function getFlowByCondition(flowName) {
                 },
                 method: 'POST',
                 body: JSON.stringify({
-                    flowName: flowName,
+                    flowId: flowId,
                 })
             })
             .then(res => res.json())

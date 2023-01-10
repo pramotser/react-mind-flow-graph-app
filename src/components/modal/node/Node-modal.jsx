@@ -9,13 +9,11 @@ import {
     Row,
     Col,
 } from 'react-bootstrap'
-// import Select from 'react-select'
 import Swal from 'sweetalert2';
 
-import { functionRefOption, NodeType, nodeTypeOption } from '../../../config/config';
+import { Config } from '../../../config/config';
 import { getNodeTypeObject, getColorNodeType, isNullOrUndefined } from '../../../util/Util';
 import SelectSingle from '../../tools/select-options/single/Single';
-// import { getDropdownByType } from '../../../services/util-service';
 
 function NodeModal(props) {
     const { subFlowOptions } = props.data;
@@ -40,19 +38,18 @@ function NodeModal(props) {
     const [textColor, setTextColor] = useState("")
 
     const [validatedNodeAB, setValidatedNodeAB] = useState(false)
+    const [validatedOptionNodeType, setValidatedOptionNodeType] = useState(false)
+    const [validatedOptionFuncRef, setValidatedOptionFuncRef] = useState(false)
+    const [validatedOptionSubflow, setValidatedOptionSubflow] = useState(false)
     const [validatedNodeEnd, setValidatedNodeEnd] = useState(false)
 
-    // const [subFlowOption, setSubFlowOption] = useState([])
-
     useEffect(() => {
-        // getDropdownByType(DropdownType.FLOW_LIST, ActiveFlag.Y).then(res => {
-        // setSubFlowOption(res.responseObject)
         setNodeData(JSON.parse(JSON.stringify(props.nodeData || {})))
         setValidatedNodeAB(false)
         setValidatedNodeEnd(false)
         if (Object.keys(props.nodeData).length !== 0) {
-            setModalNodeTypeEnd(props.nodeData["data"]["nodeType"] === NodeType.END)
-            if (props.nodeData["data"]["nodeType"] !== NodeType.END) {
+            setModalNodeTypeEnd(props.nodeData["data"]["nodeType"] === Config.NodeType.END)
+            if (props.nodeData["data"]["nodeType"] !== Config.NodeType.END) {
                 setNodeType([])
                 openCollapse([])
                 if (props.nodeData["data"]["nodeType"] !== '') {
@@ -66,7 +63,7 @@ function NodeModal(props) {
                     setSubFlow(subflow[0])
                 }
                 if (props.nodeData["data"]["functionRef"] !== '') {
-                    let funcRef = functionRefOption.filter((func) => func.value === props.nodeData["data"]["functionRef"])
+                    let funcRef = Config.FunctionRefOption.filter((func) => func.value === props.nodeData["data"]["functionRef"])
                     setFunctionRef(funcRef[0])
                 }
                 setFunctionRefParam(props.nodeData["data"]["functionRefParam"])
@@ -77,7 +74,6 @@ function NodeModal(props) {
             }
             changeColorModalByNodeType(props.nodeData["data"]["nodeType"])
         }
-        // })
     }, [props])
 
     const openCollapse = (nodeType) => {
@@ -87,9 +83,11 @@ function NodeModal(props) {
             setFunctionRef([])
             setFunctionRefParam("")
             setDefaultParam("")
-            setOpenCollapseFunction((nodeType["value"] === NodeType.FUNCTION))
-            setOpenCollapseSubFlow((nodeType["value"] === NodeType.SUBFLOW))
-            setOpenCollapseDecision((nodeType["value"] === NodeType.DECISION))
+            setValidatedOptionFuncRef(false)
+            setValidatedOptionSubflow(false)
+            setOpenCollapseFunction((nodeType["value"] === Config.NodeType.FUNCTION))
+            setOpenCollapseSubFlow((nodeType["value"] === Config.NodeType.SUBFLOW))
+            setOpenCollapseDecision((nodeType["value"] === Config.NodeType.DECISION))
             changeColorModalByNodeType(nodeType["value"])
         } else {
             setOpenCollapseFunction(false)
@@ -110,20 +108,23 @@ function NodeModal(props) {
             event.stopPropagation();
         }
         let checkDeleteEdge = false;
-        if (props.nodeData["data"]["nodeType"] !== NodeType.END) {
-            if (!validatedField) {
-                setValidatedNodeAB(true)
+
+        if (props.nodeData["data"]["nodeType"] !== Config.NodeType.END) {
+            if (!validatedField()) {
+                setValidatedOptionNodeType(isNullOrUndefined(nodeType.value))
+                setValidatedOptionFuncRef(isNullOrUndefined(functionRef.value))
+                setValidatedOptionSubflow(isNullOrUndefined(subFlowId.value))
                 return false;
             }
             if (nodeData["data"]["nodeType"] !== ((nodeType.value !== undefined) ? `${nodeType.value}` : '')) {
                 checkDeleteEdge = true;
             } else {
-                if (nodeType.value === NodeType.FUNCTION) {
+                if (nodeType.value === Config.NodeType.FUNCTION) {
                     if (nodeData["data"]["functionRef"] !== functionRef.value) {
                         checkDeleteEdge = true;
                     }
                 }
-                if (nodeType.value === NodeType.SUBFLOW) {
+                if (nodeType.value === Config.NodeType.SUBFLOW) {
                     if (nodeData["data"]["subFlowId"] !== subFlowId) {
                         checkDeleteEdge = true;
                     }
@@ -137,27 +138,37 @@ function NodeModal(props) {
             nodeData["data"]["functionRefParam"] = `${functionRefParam}`;
             nodeData["data"]["defaultParam"] = `${defaultParam}`;
         } else {
-            if (!validatedField) {
-                setValidatedNodeEnd(true)
+            if (!validatedField()) {
                 return false;
             }
             nodeData["data"]["result"] = (resultParam) ? `${resultParam}` : ''
             nodeData["data"]["remark"] = (remark) ? `${remark}` : ''
         }
-
         props.function.saveNode(nodeData, checkDeleteEdge)
     }
 
     const validatedField = () => {
-        if (props.nodeData["data"]["nodeType"] !== NodeType.END) {
-            if (nodeName === '') {
+        if (props.nodeData["data"]["nodeType"] !== Config.NodeType.END) {
+            setValidatedNodeAB(true)
+            if (isNullOrUndefined(nodeName)) {
                 return false
             }
-            if ((nodeType.value === undefined)) {
+            if (isNullOrUndefined(nodeType.value)) {
                 return false
+            }
+            if (!isNullOrUndefined(nodeType.value) && nodeType.value === Config.NodeType.FUNCTION) {
+                if (isNullOrUndefined(functionRef.value)) {
+                    return false
+                }
+            }
+            if (!isNullOrUndefined(nodeType.value) && nodeType.value === Config.NodeType.SUBFLOW) {
+                if (isNullOrUndefined(subFlowId.value)) {
+                    return false
+                }
             }
         } else {
-            if (resultParam === '') {
+            setValidatedNodeEnd(true)
+            if (isNullOrUndefined(resultParam)) {
                 return false
             }
         }
@@ -184,7 +195,7 @@ function NodeModal(props) {
     }
 
     const onCloseModal = () => {
-        if (props.nodeData["data"]["nodeType"] !== NodeType.END) {
+        if (props.nodeData["data"]["nodeType"] !== Config.NodeType.END) {
             if (isNullOrUndefined(nodeData["data"]["nodeType"]) || isNullOrUndefined(nodeData["data"]["nodeName"])) {
                 props.function.deleteNode(props.nodeData.id)
             } else {
@@ -235,12 +246,20 @@ function NodeModal(props) {
                             </Form.Label>
                             <Col md={6}>
                                 <SelectSingle
-                                    options={nodeTypeOption}
+                                    options={Config.NodeTypeOption}
                                     placeholder="Select Node type"
                                     isSearchable={false}
                                     value={nodeType || {}}
                                     onChange={openCollapse}
                                 />
+                                <div style={{
+                                    width: '100%',
+                                    marginTop: '0.25rem',
+                                    fontSize: '.875em',
+                                    color: '#dc3545'
+                                }}>
+                                    {validatedOptionNodeType ? 'Please provide a valid Node Type.' : ""}
+                                </div>
                             </Col>
                         </Form.Group>
                         <Form.Group className="mb-3">
@@ -272,12 +291,20 @@ function NodeModal(props) {
                                             </Form.Label>
                                             <Col md={6}>
                                                 <SelectSingle
-                                                    options={functionRefOption}
+                                                    options={Config.FunctionRefOption}
                                                     placeholder="Select Function Ref"
                                                     isSearchable={true}
                                                     value={functionRef || {}}
                                                     onChange={e => setFunctionRef(e)}
                                                 />
+                                                <div style={{
+                                                    width: '100%',
+                                                    marginTop: '0.25rem',
+                                                    fontSize: '.875em',
+                                                    color: '#dc3545'
+                                                }}>
+                                                    {validatedOptionFuncRef ? 'Please provide a valid Function Ref.' : ""}
+                                                </div>
                                             </Col>
                                         </Form.Group>
                                         <Form.Group as={Row} className="mb-4">
@@ -311,6 +338,14 @@ function NodeModal(props) {
                                                     value={subFlowId || {}}
                                                     onChange={e => setSubFlow(e)}
                                                 />
+                                                <div style={{
+                                                    width: '100%',
+                                                    marginTop: '0.25rem',
+                                                    fontSize: '.875em',
+                                                    color: '#dc3545'
+                                                }}>
+                                                    {validatedOptionSubflow ? 'Please provide a valid Subflow.' : ""}
+                                                </div>
                                             </Col>
                                         </Form.Group>
                                         <Form.Group as={Row} className="mb-4">

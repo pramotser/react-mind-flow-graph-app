@@ -2,13 +2,7 @@ import { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap'
 import Select from 'react-select'
 
-import {
-    edgeConditionOption,
-    edgeParamConditionOption,
-    DropdownType,
-    ActiveFlag,
-    NodeType
-} from '../../../config/config';
+import { Config } from '../../../config/config';
 import {
     getEdgeConditionOptionObject,
     getEdgeParamConditionOptionObject,
@@ -22,6 +16,7 @@ import './edge-modal.scss'
 import Datatable from '../../tools/datatable/Datatable';
 import { getDropdownByType, getParamListByFunctionRef } from '../../../services/util-service';
 import CreatableSelect from 'react-select/creatable';
+import Swal from 'sweetalert2';
 
 let edgeParamIdRunning = 0;
 function EdgeModal(props) {
@@ -40,14 +35,14 @@ function EdgeModal(props) {
             sortable: true,
             reorder: true,
             center: true,
-            width: "200px",
+            width: "250px",
             cell: (row) => (
                 <>
                     <Select
                         className='select-in-table'
-                        style={{ minWidth: "200px" }}
-                        styles={{ position: 'relative' }}
-                        options={edgeConditionOption}
+                        // style={{ minWidth: "200px" }}
+                        // styles={{ position: 'relative' }}
+                        options={Config.EdgeConditionOption}
                         placeholder="Edge Condition"
                         isSearchable={false}
                         defaultValue={getEdgeConditionOptionObject(row.edgeCondition)}
@@ -61,7 +56,7 @@ function EdgeModal(props) {
             sortable: true,
             reorder: true,
             center: true,
-            width: "200px",
+            width: "250px",
             cell: (row) => (
                 <>
                     <Select
@@ -81,12 +76,12 @@ function EdgeModal(props) {
             sortable: true,
             reorder: true,
             center: true,
-            width: "200px",
+            width: "250px",
             cell: (row) => (
                 <>
                     <Select
                         className='select-in-table'
-                        options={(!isNullOrUndefined(row.edgeType)) ? edgeParamConditionOption.filter((option) => option.data.type === row.edgeType) : edgeParamConditionOption}
+                        options={(!isNullOrUndefined(row.edgeType)) ? Config.EdgeParamConditionOption.filter((option) => option.data.type === row.edgeType) : Config.EdgeParamConditionOption}
                         placeholder="Edge Param Condition"
                         isSearchable={false}
                         isClearable={true}
@@ -102,12 +97,12 @@ function EdgeModal(props) {
             sortable: true,
             reorder: true,
             center: true,
-            width: "200px",
+            width: "250px",
             cell: (row) => (
                 <>
                     <Select
                         className='select-in-table'
-                        options={edgeParamValueOption}
+                        options={edgeParamValueOption.filter((edgeParamValue) => edgeParamValue.value !== row.edgeParam)}
                         placeholder="Edge Param Compare"
                         isSearchable={true}
                         isClearable={true}
@@ -123,12 +118,12 @@ function EdgeModal(props) {
             sortable: true,
             reorder: true,
             center: true,
-            width: "200px",
+            width: "250px",
             cell: (row) => (
                 <>
                     <CreatableSelect
                         className='select-in-table'
-                        options={edgeParamValueOption}
+                        options={edgeParamValueOption.filter((edgeParamValue) => edgeParamValue.value !== row.edgeParam)}
                         placeholder="Edge Value Compare"
                         isClearable={true}
                         isSearchable={true}
@@ -165,25 +160,25 @@ function EdgeModal(props) {
     ];
     const [edgeParamOption, setEdgeParamOption] = useState([])
     const [edgeParamValueOption, setEdgeParamValueOption] = useState([])
-    
+
     // const generateEdgeParam = () => `${edgeParamData.length.toString().padStart(3, '0')}`
     const generateEdgeParam = () => `${(edgeParamIdRunning++).toString()}`
     useEffect(() => {
         if (sourceNode !== nodeStart) {
             if (!isNullOrUndefined(sourceNodeDetail)) {
                 setLoadingPages(true)
-                getDropdownByType(DropdownType.UNIVERSAL_FIELD_LIST, ActiveFlag.N).then(resUniver => {
+                getDropdownByType(Config.DropdownType.UNIVERSAL_FIELD_LIST, Config.ActiveFlag.N).then(resUniver => {
                     let edgeParamOptions = resUniver.responseObject
-                    setEdgeParamData(JSON.parse(JSON.stringify(edgeParam || [])))
-                    if (!isNullOrUndefined(edgeParam)) {
-                        let edgeParamId = edgeParam.map((ep) => { return Number.parseInt(ep.edgeParamId) });
+                    setEdgeParamData(JSON.parse(JSON.stringify(props.edgeParam || [])))
+                    if (!isNullOrUndefined(props.edgeParam)) {
+                        let edgeParamId = props.edgeParam.map((ep) => { return Number.parseInt(ep.edgeParamId) });
                         edgeParamIdRunning = Math.max(...edgeParamId)
                         edgeParamIdRunning++
                     } else {
                         edgeParamIdRunning = 0;
                     }
-                    if (sourceNodeDetail['data']['nodeType'] === NodeType.SUBFLOW) {
-                        getDropdownByType(DropdownType.FLOW_LIST, ActiveFlag.Y).then(resSub => {
+                    if (sourceNodeDetail['data']['nodeType'] === Config.NodeType.SUBFLOW) {
+                        getDropdownByType(Config.DropdownType.FLOW_LIST, Config.ActiveFlag.Y).then(resSub => {
                             let subFlowList = resSub.responseObject.filter((sub) => sub.value === sourceNodeDetail['data']['subFlowId']);
                             if (subFlowList.length > 0) {
                                 subFlowList = subFlowList.map((sub) => {
@@ -201,9 +196,9 @@ function EdgeModal(props) {
                         })
                         setLoadingPages(false)
                     }
-                    else if (sourceNodeDetail['data']['nodeType'] === NodeType.FUNCTION) {
+                    else if (sourceNodeDetail['data']['nodeType'] === Config.NodeType.FUNCTION) {
                         setLoadingPages(true);
-                        getParamListByFunctionRef(sourceNodeDetail['data']['functionRef'], ActiveFlag.N).then(resFuncRef => {
+                        getParamListByFunctionRef(sourceNodeDetail['data']['functionRef'], Config.ActiveFlag.N).then(resFuncRef => {
                             setEdgeParamOption(resFuncRef.responseObject);
                             setEdgeParamValueOption(edgeParamOptions.concat(resFuncRef.responseObject));
                             setLoadingPages(false);
@@ -265,19 +260,62 @@ function EdgeModal(props) {
     }
 
     const onSave = () => {
+        if (!validate()) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'The information is incorrect.!',
+                text: 'Please complete the information.',
+                showCancelButton: false,
+            })
+            return false;
+        }
         props.onSaveEdgeParam(edgeParamData);
+    }
+
+    const validate = () => {
+        let validate = true;
+        for (let i = 0; i < edgeParamData.length; i++) {
+            if (isNullOrUndefined(edgeParamData[i].edgeCondition)) {
+                validate = false;
+                break;
+            }
+            // if (isNullOrUndefined(edgeParamData[i].edgeType)) {
+            // validate = false;
+            // break;
+            // }
+            if (isNullOrUndefined(edgeParamData[i].edgeParam)) {
+                validate = false;
+                break;
+            }
+            if (isNullOrUndefined(edgeParamData[i].edgeParamCondition)) {
+                validate = false;
+                break;
+            }
+            if (isNullOrUndefined(edgeParamData[i].edgeParamCompare) && isNullOrUndefined(edgeParamData[i].edgeValueCompare)) {
+                validate = false;
+                break;
+            }
+        }
+        return validate;
+
     }
 
     const onDelete = () => {
         props.onDeleteEdge(props.idEdge)
     }
+    const onCloseModal = () => {
+        setEdgeParamData(JSON.parse(JSON.stringify(props.edgeParam || [])))
+        props.cModal()
+
+    }
 
     return (
         <>
             <Modal
+                dialogClassName="modal-width"
                 size="xl"
                 show={props.showModalEdge}
-                onHide={props.cModal}
+                onHide={onCloseModal}
                 backdrop="static"
                 aria-labelledby="contained-modal-title-lg-vcenter"
                 centered
@@ -303,7 +341,7 @@ function EdgeModal(props) {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="outline-secondary" onClick={props.cModal}>
+                    <Button variant="outline-secondary" onClick={onCloseModal}>
                         Close
                     </Button>
                     <Button variant="outline-danger" onClick={onDelete}>
